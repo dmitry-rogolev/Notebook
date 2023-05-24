@@ -3,12 +3,6 @@
         <div 
             @keyup.left="left" 
             @keyup.right="right" 
-            @keyup.tab.exact="right"
-            @keyup.shift.tab.exact="left"
-            @keyup.down="isBlur = true"
-            @keyup.up="isBlur = true"
-            @keyup.enter="isBlur = true"
-            @keyup.space="isBlur = true"
             ref="menu" 
             role="menubar" 
             class="bg-gray-100 dark:bg-gray-700 border-b border-solid border-gray-100 dark:border-gray-800 h-8 shadow flex"
@@ -36,55 +30,37 @@ export default {
             items: null, 
             index: 0, 
             focused: null, 
-            isBlur: false, 
         };
     }, 
 
     methods: {
         defineValues() {
-            this.items = $(this.$refs.menu).children(':not([tabindex=-1])');
+            this.menu = $(this.$refs.menu);
+            this.items = $(this.$refs.menu).children(':not([tabindex=-1])').find('.trigger');
         }, 
-        defineTabListener() {
-            $(document).on('keyup', this.tab);
-        }, 
-        removeTabListener() {
-            $(document).off('keyup', this.tab);
-        }, 
-        isNoFocus() {
-            return ! this.items.has(document.activeElement).length;
-        }, 
-        tab(e) {
-            if (e.code === 'Tab') {
-                if (this.isNoFocus()) {
-                    this.index = 0;
-                    this.focused = null;
-                }
+        defineFocused() {
+            this.focused = null;
+            this.index = 0;
+
+            if (this.isFocus()) {
+                this.focused = $(document.activeElement);
+                this.index = this.items.index(this.focused);
             }
         }, 
-        defineFocusedClickListener() {
-            this.focused.on('click', this.focusedClick);
-        }, 
-        removeFocusedClickListener() {
-            if (this.focused) {
-                this.focused.off('click', this.focusedClick);
-            }
-        }, 
-        focusedClick() {
-            this.isBlur = true;
-        }, 
+        isFocus() {
+            return !! this.menu.has(document.activeElement).length;
+        },  
         left() {
-            if (! this.isBlur) {
-                if (this.focused) {
-                    this.defineFocusToPrevItem();
-                } else {
-                    this.defineFocusToLastItem();
-                }
+            this.defineFocused();
+
+            if (this.focused) {
+                this.defineFocusToPrevItem();
             } else {
-                this.isBlur = false;
+                this.defineFocusToLastItem();
             }
         }, 
         right() {
-            this.isBlur = false;
+            this.defineFocused();
 
             if (this.focused) {
                 this.defineFocusToNextItem();
@@ -93,42 +69,29 @@ export default {
             }
         }, 
         defineFocusToFirstItem() {
-            this.removeFocusedClickListener();
             this.index = 0;
             this.focused = this.items.eq(this.index);
-            this.focused.find('.trigger').first().focus();
-            this.defineFocusedClickListener();
+            this.focused.focus();
         }, 
         defineFocusToLastItem() {
-            this.removeFocusedClickListener();
             this.index = this.items.length - 1;
             this.focused = this.items.eq(this.index);
-            this.focused.find('.trigger').first().focus();
-            this.defineFocusedClickListener();
+            this.focused.focus();
         }, 
         defineFocusToNextItem() {
-            this.removeFocusedClickListener();
             this.index = this.index == this.items.length - 1 ? 0 : this.index + 1;
             this.focused = this.items.eq(this.index);
-            this.focused.find('.trigger').first().focus();
-            this.defineFocusedClickListener();
+            this.focused.focus();
         }, 
         defineFocusToPrevItem() {
-            this.removeFocusedClickListener();
             this.index = this.index == 0 ? this.items.length - 1 : this.index - 1;
             this.focused = this.items.eq(this.index);
-            this.focused.find('.trigger').first().focus();
-            this.defineFocusedClickListener();
+            this.focused.focus();
         }, 
     }, 
 
     mounted() {
         this.defineValues();
-        this.defineTabListener();
-    }, 
-
-    unmounted() {
-        this.removeTabListener();
     }, 
 };
 </script>

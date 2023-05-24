@@ -8,7 +8,7 @@
             ref="trigger" 
             @click="toggle"
             @keyup.enter.exact="open(); down();" 
-            @keyup.space.exact.prevent="open(); down();"
+            @keyup.space.exact.prevent="focusFirstItem = true; open();"
             >
             <slot name="trigger"></slot>
         </div>
@@ -30,12 +30,10 @@
                 :class="[widthClass, alignmentClass]"
                 style="display: none;"
                 @click="close"
-                @keyup.left.exact="close" 
-                @keyup.right.exact="close" 
-                @keyup.down.exact="down" 
-                @keyup.up.exact="up"
-                @keyup.tab.exact.stop="down"
-                @keyup.shift.tab.exact.stop="up"
+                @keyup.left.exact="defineTriggerFocus(); close();" 
+                @keyup.right.exact="defineTriggerFocus(); close();" 
+                @keyup.down.exact.stop="down" 
+                @keyup.up.exact.stop="up"
             >
                 <div ref="menu" role="menu" :id="menuToken" class="rounded-md ring-1 ring-black ring-opacity-5 bg-white dark:bg-gray-800" :class="contentClass">
                     <slot name="content"></slot>
@@ -59,6 +57,8 @@ export default {
     data() {
         return {
             active: false, 
+            default: false, 
+            menu: null, 
             items: null, 
             index: 0, 
             focused: null, 
@@ -104,12 +104,15 @@ export default {
     methods: {
         open() {
             this.active = true;
+            this.default = true;
             this.defineTabListener();
             this.$emit('show');
         }, 
         close() {
             this.active = false;
+            this.default = false;
             this.focused = null;
+            this.index = 0;
             this.removeTabListener();
             this.$emit('close');
         }, 
@@ -121,11 +124,29 @@ export default {
             }
         }, 
         defineValues() {
-            this.items = $(this.$refs.menu).children('[role=menuitem]:not([tabindex=-1])');
+            this.menu = $(this.$refs.menu);
+            this.items = this.menu.find('[role=menuitem]:not([tabindex=-1]) > *');
             this.trigger = $(this.$refs.trigger).find('.trigger').first();
+        }, 
+        defineFocused() {
+            this.focused = null;
+            this.index = 0;
+
+            if (this.default) {
+                this.default = false;
+                return;
+            }
+
+            if (this.isFocus()) {
+                this.focused = $(document.activeElement);
+                this.index = this.items.index(this.focused);
+            }
         }, 
         defineTriggerAriaControls() {
             this.trigger.attr('aria-controls', this.menuToken);
+        }, 
+        defineTriggerFocus() {
+            this.trigger.focus();
         }, 
         defineTabListener() {
             $(document).on('keyup', this.tab);
@@ -133,12 +154,12 @@ export default {
         removeTabListener() {
             $(document).off('keyup', this.tab);
         }, 
-        isNoFocus() {
-            return ! this.items.has(document.activeElement).length;
+        isFocus() {
+            return !! this.menu.has(document.activeElement).length;
         }, 
         tab(e) {
             if (e.code === 'Tab') {
-                if (this.isNoFocus()) {
+                if (! this.isFocus()) {
                     this.close();
                 }
             }
@@ -155,24 +176,26 @@ export default {
         defineFocusToFirstItem() {
             this.index = 0;
             this.focused = this.items.eq(this.index);
-            this.focused.children().first().focus();
+            this.focused.focus();
         }, 
         defineFocusToLastItem() {
             this.index = this.items.length - 1;
             this.focused = this.items.eq(this.index);
-            this.focused.children().first().focus();
+            this.focused.focus();
         }, 
         defineFocusToNextItem() {
             this.index = this.index == this.items.length - 1 ? 0 : this.index + 1;
             this.focused = this.items.eq(this.index);
-            this.focused.children().first().focus();
+            this.focused.focus();
         }, 
         defineFocusToPrevItem() {
             this.index = this.index == 0 ? this.items.length - 1 : this.index - 1;
             this.focused = this.items.eq(this.index);
-            this.focused.children().first().focus();
+            this.focused.focus();
         }, 
         down() {
+            this.defineFocused();
+
             if (!this.focused) {
                 this.defineFocusToFirstItem();
             } else {
@@ -180,6 +203,8 @@ export default {
             }
         }, 
         up() {
+            this.defineFocused();
+
             if (!this.focused) {
                 this.defineFocusToLastItem();
             } else {
