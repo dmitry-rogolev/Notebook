@@ -1,0 +1,69 @@
+<template>
+    <section class="flex">
+        <div class="bg-white dark:bg-gray-800 border-gray-100 dark:border-gray-700 border-r shadow border-solid h-full z-10 overflow-y-auto">
+            <slot name="triggers"></slot>
+        </div>
+        <transition 
+            mode="out-in"
+            enter-active-class="transition ease-out duration-200"
+            enter-from-class="transform -translate-x-full"
+            enter-to-class="transform translate-x-0"
+            leave-active-class="transition ease-in duration-75"
+            leave-from-class="transform translate-x-0"
+            leave-to-class="transform -translate-x-full"
+            >
+            <div v-if="active" class="bg-white dark:bg-gray-800 border-gray-100 dark:border-gray-700 border-r shadow border-solid h-full min-w-[8rem] w-32 md:w-40 lg:w-52 xl:w-64 overflow-y-auto resize-x">
+                <slot name="contents"></slot>
+            </div>
+        </transition>
+    </section>
+</template>
+
+<script>
+import BarTriggerComponent from '@/Components/Sidebar/Trigger.vue';
+import BarContentComponent from '@/Components/Sidebar/Content.vue';
+
+export default {
+    name: 'SidebarComponent', 
+
+    components: {
+        BarTriggerComponent, 
+        BarContentComponent, 
+    }, 
+
+    data() {
+        return {
+            
+        };
+    }, 
+
+    props: {
+        active: {
+            type: Boolean, 
+            default: false, 
+        }, 
+        resize: {
+            type: Function, 
+            required: true, 
+        }, 
+    }, 
+
+    methods: {
+        defineWindowResizeListener() {
+            $(window).on('resize', this.resize);
+        }, 
+        removeWindowResizeListener() {
+            $(window).off('resize', this.resize);
+        }, 
+    }, 
+
+    mounted() {
+        this.resize();
+        this.defineWindowResizeListener();
+    }, 
+
+    unmounted() {
+        this.removeWindowResizeListener();
+    }, 
+};
+</script>
