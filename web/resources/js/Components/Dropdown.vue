@@ -1,14 +1,14 @@
 <template>
     <div 
         class="relative" 
-        @keyup.down.exact="focusFirstItem = true; open();" 
-        @keyup.up.exact="focusLastItem = true; open();"
+        @keyup.down.exact="focusFirstItem = true; this.default = true; open();" 
+        @keyup.up.exact="focusLastItem = true; this.default = true; open();"
         >
         <div 
             ref="trigger" 
             @click="toggle"
-            @keyup.enter.exact="open(); down();" 
-            @keyup.space.exact.prevent="focusFirstItem = true; open();"
+            @keyup.enter.exact="this.default = true; open(); down();" 
+            @keyup.space.exact.prevent="focusFirstItem = true; this.default = true; open();"
             >
             <slot name="trigger"></slot>
         </div>
@@ -104,13 +104,11 @@ export default {
     methods: {
         open() {
             this.active = true;
-            this.default = true;
             this.defineTabListener();
             this.$emit('show');
         }, 
         close() {
             this.active = false;
-            this.default = false;
             this.focused = null;
             this.index = 0;
             this.removeTabListener();
