@@ -1,5 +1,5 @@
 <template>
-    <Link :href="route('welcome')" class="flex flex-nowrap items-center text-indigo-600 dark:text-gray-100 hover:text-indigo-500 transition duration-300 ease-in-out">
+    <Link :href="route('welcome')" class="flex flex-nowrap items-center px-2 text-indigo-600 hover:text-indigo-500 dark:text-indigo-600 transition duration-300 ease-in-out focus-visible:outline-none focus:ring-2">
         <ApplicationMarkComponent />
         <div class="ml-4">
             Notebook

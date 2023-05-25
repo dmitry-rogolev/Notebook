@@ -1,11 +1,11 @@
 <template>
-    <section class="bg-white dark:bg-gray-800 shadow flex flex-col flex-auto">
+    <section class="bg-gray-100 dark:bg-slate-800 shadow flex flex-col flex-auto">
         <div 
             @keyup.left="left" 
             @keyup.right="right" 
             ref="menu" 
             role="menubar" 
-            class="bg-gray-100 dark:bg-gray-700 border-b border-solid border-gray-100 dark:border-gray-800 h-8 shadow flex"
+            class="bg-gray-100 dark:bg-slate-700 border-b border-gray-200 dark:border-gray-600 shadow flex px-1 sm:px-2"
             >
             <slot name="menu"></slot>
         </div>

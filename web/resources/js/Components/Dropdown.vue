@@ -35,7 +35,7 @@
                 @keyup.down.exact.stop="down" 
                 @keyup.up.exact.stop="up"
             >
-                <div ref="menu" role="menu" :id="menuToken" class="rounded-md ring-1 ring-black ring-opacity-5 bg-white dark:bg-gray-800" :class="contentClass">
+                <div ref="menu" role="menu" :id="menuToken" class="rounded-md ring-1 ring-black ring-opacity-5 bg-white dark:bg-gray-800 py-1" :class="contentClass">
                     <slot name="content"></slot>
                 </div>
             </div>
@@ -50,7 +50,7 @@ export default {
     name: 'DropdownComponent', 
 
     emits: [
-        'show',
+        'open',
         'close',  
     ], 
 
@@ -105,7 +105,7 @@ export default {
         open() {
             this.active = true;
             this.defineTabListener();
-            this.$emit('show');
+            this.$emit('open');
         }, 
         close() {
             this.active = false;
