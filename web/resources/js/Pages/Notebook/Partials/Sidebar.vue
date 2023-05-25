@@ -1,21 +1,21 @@
 <template>
     <SidebarComponent :active="isNote || isSearch" :id="sidebarToken" :resize="resize">
         <template #triggers>
-            <BarTriggerComponent @click="isSearch = false; isNote = !isNote;" :active="isNote"><i class="fa-solid fa-note-sticky"></i></BarTriggerComponent>
-            <BarTriggerComponent @click="isNote = false; isSearch = !isSearch;" :active="isSearch"><i class="fa-sharp fa-solid fa-magnifying-glass"></i></BarTriggerComponent>
-            <BarTriggerComponent><i class="fa-solid fa-plus"></i></BarTriggerComponent>
+            <BarTriggerComponent :aria-controls="notesMenuToken" @click="isSearch = false; isNote = !isNote;" :active="isNote"><i class="fa-solid fa-note-sticky"></i></BarTriggerComponent>
+            <BarTriggerComponent :aria-controls="searchMenuToken" @click="isNote = false; isSearch = !isSearch;" :active="isSearch"><i class="fa-sharp fa-solid fa-magnifying-glass"></i></BarTriggerComponent>
+            <BarTriggerComponent @click="$emit('create:note')"><i class="fa-solid fa-plus"></i></BarTriggerComponent>
             <BarTriggerComponent v-if="!dark" @click="toggleDark"><i class="fa-solid fa-sun"></i></BarTriggerComponent>
             <BarTriggerComponent v-else @click="toggleDark"><i class="fa-solid fa-moon"></i></BarTriggerComponent>
         </template>
         <template #contents>
-            <BarContentComponent v-if="isNote">
-                <BarNoteComponent v-for="note in notes" :key="note.id" :note="note" />
+            <BarContentComponent role="menu" :id="notesMenuToken" v-if="isNote">
+                <BarNoteComponent v-for="note in notes" :key="note.id" :note="note" @click="$emit('open:note', note)" :active="note.id == this.note?.id" />
             </BarContentComponent>
-            <BarContentComponent v-else-if="isSearch">
-                <form @submit.prevent="findNotes" class="p-1">
-                    <InputComponent @input="findNotes" @keyup.enter="findNotes" v-model="search" type="text" autofocus class="w-full px-2 py-1 text-sm" placeholder="Search" />
-                </form>
-                <BarNoteComponent v-for="note in foundNotes" :key="note.id" :note="note" />
+            <BarContentComponent role="menu" :id="searchMenuToken" v-else-if="isSearch">
+                <div class="p-1">
+                    <InputComponent @input="$emit('search', $event.target.value)" @keyup.enter="$emit('search', $event.target.value)" type="text" autofocus class="w-full px-2 py-1 text-sm" placeholder="Search" />
+                </div>
+                <BarNoteComponent v-for="note in found" :key="note.id" :note="note" @click="$emit('open:note', note)" :active="note.id == this.note?.id" />
             </BarContentComponent>
         </template>
     </SidebarComponent>
@@ -40,14 +40,19 @@ export default {
         InputComponent, 
     }, 
 
+    emits: [
+        'open:note', 
+        'create:note', 
+        'search', 
+    ], 
+
     data() {
         return {
-            notes: null, 
             isNote: false, 
             isSearch: false, 
             sidebarToken: token(), 
-            search: '', 
-            foundNotes: null, 
+            notesMenuToken: token(), 
+            searchMenuToken: token(), 
         };
     }, 
 
@@ -60,31 +65,28 @@ export default {
         }, 
     }, 
 
-    methods: {
-        fetchNotes() {
-            axios.get('/api/notes').then((response) => {
-                this.notes = response.data.data;
-            });
+    props: {
+        note: {
+            type: Object, 
+            default: null, 
         }, 
+        notes: {
+            type: Array, 
+            default: [], 
+        }, 
+        found: {
+            type: Array, 
+            default: [], 
+        }, 
+    }, 
+
+    methods: {
         resize() {
             $('#' + this.sidebarToken).height($(window).height() - 4 * this.rem - 1);
         }, 
         toggleDark() {
             this.$store.dispatch('dark', !this.dark);
         }, 
-        findNotes() {
-            if (this.search) {
-                axios.get('/api/notes?search=' + this.search).then((response) => {
-                    this.foundNotes = response.data.data;
-                });
-            } else {
-                this.foundNotes = null;
-            }
-        }, 
-    }, 
-
-    mounted() {
-        this.fetchNotes();
     }, 
 };
 </script>

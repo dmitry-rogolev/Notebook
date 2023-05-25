@@ -4,7 +4,6 @@ namespace App\Http\Controllers\Note;
 
 use App\Http\Requests\Note\StoreRequest;
 use App\Http\Resources\NoteResource;
-use Illuminate\Http\Request;
 
 class StoreController extends BaseController
 {
@@ -14,6 +13,8 @@ class StoreController extends BaseController
     public function __invoke(StoreRequest $request)
     {
         $validated = $request->validated();
+
+        $validated['user_id'] = $request->user()->id;
 
         $note = $this->service->store($validated);
 

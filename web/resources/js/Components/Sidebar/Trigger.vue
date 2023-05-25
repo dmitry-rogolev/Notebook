@@ -3,6 +3,9 @@
         type="button"
         class="trigger block py-3 px-4 text-2xl bg-transparent border-0 focus:text-indigo-500 dark:focus:text-indigo-600 focus-visible:outline-none transition duration-200 ease-in-out"
         :class="{'text-indigo-500': active, 'text-gray-500 dark:text-gray-400 hover:text-gray-700 dark:hover:text-gray-300': !active}"
+        role="button"
+        aria-haspopup="menu"
+        :aria-expanded="active"
         >
         <slot></slot>
     </button>
