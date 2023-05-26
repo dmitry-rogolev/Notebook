@@ -8,10 +8,10 @@
             <BarTriggerComponent v-else @click="toggleDark"><i class="fa-solid fa-moon"></i></BarTriggerComponent>
         </template>
         <template #contents>
-            <BarContentComponent role="menu" :id="notesMenuToken" v-if="isNote">
+            <BarContentComponent :id="notesMenuToken" v-if="isNote">
                 <BarNoteComponent v-for="note in notes" :key="note.id" :note="note" @click="$emit('open:note', note)" :active="note.id == this.note?.id" />
             </BarContentComponent>
-            <BarContentComponent role="menu" :id="searchMenuToken" v-else-if="isSearch">
+            <BarContentComponent :id="searchMenuToken" v-else-if="isSearch">
                 <div class="p-1">
                     <InputComponent @input="$emit('search', $event.target.value)" @keyup.enter="$emit('search', $event.target.value)" type="text" autofocus class="w-full px-2 py-1 text-sm" placeholder="Search" />
                 </div>

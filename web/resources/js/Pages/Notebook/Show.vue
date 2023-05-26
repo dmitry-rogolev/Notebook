@@ -22,8 +22,12 @@
                 @create="create"
                 @update="update"
                 @delete="this.delete()" 
+                @create:notification="newNotification"
                 :note="note" 
                 />
+
+            <NotificationManagerComponent :notifications="notifications" />
+
         </div>
     </AppLayout>
 </template>
@@ -32,6 +36,7 @@
 import AppLayout from '@/Layouts/AppLayout.vue';
 import SidebarPartial from '@/Pages/Notebook/Partials/Sidebar.vue';
 import WindowPartial from '@/Pages/Notebook/Partials/Window.vue';
+import NotificationManagerComponent from '@/Components/NotificationManager.vue';
 
 export default {
     name: 'NotebookPage', 
@@ -40,6 +45,7 @@ export default {
         AppLayout, 
         SidebarPartial, 
         WindowPartial, 
+        NotificationManagerComponent, 
     }, 
 
     data() {
@@ -47,6 +53,7 @@ export default {
             record: null, 
             notes: null, 
             found: null, 
+            notifications: [], 
         };
     }, 
 
@@ -65,7 +72,7 @@ export default {
                     if (i !== -1) {
                         this.notes[i] = note;
                     } else {
-                        this.fetchNotes();
+                        this.notes.push(note);
                     }
                 }
 
@@ -105,12 +112,20 @@ export default {
         create(note = {}) {
             axios.post('/api/notes', note).then((response) => {
                 this.note = response.data.data;
+
+                this.newNotification({
+                    message: 'Created', 
+                    success: true, 
+                });
             });
         }, 
         update(note) {
-            console.log(note);
             axios.patch('/api/notes/' + this.note.id, note).then((response) => {
                 this.note = response.data.data;
+                this.newNotification({
+                    message: 'Saved', 
+                    success: true, 
+                });
             });
         }, 
         delete() {
@@ -127,8 +142,16 @@ export default {
             }
 
             this.note = this.notes[this.notes.length - 1];
-        }, 
 
+            this.newNotification({
+                message: 'Deleted', 
+                success: true, 
+            });
+        }, 
+        newNotification(notification) {
+            this.notifications.push(notification);
+            setTimeout(() => this.notifications.shift(), 2000);
+        }, 
     }, 
 
     mounted() {

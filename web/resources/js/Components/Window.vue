@@ -5,11 +5,11 @@
             @keyup.right="right" 
             ref="menu" 
             role="menubar" 
-            class="bg-gray-100 dark:bg-slate-700 border-b border-gray-200 dark:border-gray-600 shadow flex px-1 sm:px-2"
+            class="bg-gray-100 dark:bg-slate-700 border-b border-gray-200 dark:border-gray-600 shadow flex px-1 sm:px-2 print:hidden"
             >
             <slot name="menu"></slot>
         </div>
-        <div>
+        <div class="print">
             <slot name="header"></slot>
         </div>
         <div class="flex-auto">
@@ -30,6 +30,7 @@ export default {
             items: null, 
             index: 0, 
             focused: null, 
+            menu: null, 
         };
     }, 
 

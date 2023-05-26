@@ -1,91 +1,56 @@
-<script setup>
-import { computed, onMounted, onUnmounted, watch } from 'vue';
-
-const props = defineProps({
-    show: {
-        type: Boolean,
-        default: false,
-    },
-    maxWidth: {
-        type: String,
-        default: '2xl',
-    },
-    closeable: {
-        type: Boolean,
-        default: true,
-    },
-});
-
-const emit = defineEmits(['close']);
-
-watch(() => props.show, () => {
-    if (props.show) {
-        document.body.style.overflow = 'hidden';
-    } else {
-        document.body.style.overflow = null;
-    }
-});
-
-const close = () => {
-    if (props.closeable) {
-        emit('close');
-    }
-};
-
-const closeOnEscape = (e) => {
-    if (e.key === 'Escape' && props.show) {
-        close();
-    }
-};
-
-onMounted(() => document.addEventListener('keydown', closeOnEscape));
-
-onUnmounted(() => {
-    document.removeEventListener('keydown', closeOnEscape);
-    document.body.style.overflow = null;
-});
-
-const maxWidthClass = computed(() => {
-    return {
-        'sm': 'sm:max-w-sm',
-        'md': 'sm:max-w-md',
-        'lg': 'sm:max-w-lg',
-        'xl': 'sm:max-w-xl',
-        '2xl': 'sm:max-w-2xl',
-    }[props.maxWidth];
-});
-</script>
-
 <template>
     <teleport to="body">
-        <transition leave-active-class="duration-200">
-            <div v-show="show" class="fixed inset-0 overflow-y-auto px-4 py-6 sm:px-0 z-50" scroll-region>
-                <transition
-                    enter-active-class="ease-out duration-300"
-                    enter-from-class="opacity-0"
-                    enter-to-class="opacity-100"
-                    leave-active-class="ease-in duration-200"
-                    leave-from-class="opacity-100"
-                    leave-to-class="opacity-0"
+        <transition
+            enter-active-class="transition ease-out duration-300"
+            enter-from-class="opacity-0"
+            leave-active-class="transition ease-in duration-200"
+            leave-to-class="opacity-0"
+            >
+            <div
+                v-if="active"
+                class="fixed top-0 left-0 bottom-0 right-0 z-40 overflow-hidden bg-gray-900/10"
+                @click.self="$emit('close')"
+                @keyup.esc="$emit('close')"
                 >
-                    <div v-show="show" class="fixed inset-0 transform transition-all" @click="close">
-                        <div class="absolute inset-0 bg-gray-500 dark:bg-gray-900 opacity-75" />
+                <section
+                    ref="modal"
+                    class="fixed top-0 left-0 bottom-0 right-0 z-50 overflow-x-hidden overflow-y-auto flex justify-center items-center"
+                    role="dialog"
+                    aria-modal="true"
+                    tabindex="-1"
+                    >
+                    <div class="relative max-w-[400px] flex-auto text-gray-700 dark:text-gray-300 bg-white dark:bg-gray-800 border border-gray-200 dark:border-gray-600 rounded-lg shadow-lg">
+                        <div class="flex flex-nowrap">
+                            <div class="flex-auto">
+                                <slot name="header"></slot>
+                            </div>
+                            <button @click="$emit('close')" type="button" class="bg-white hover:bg-gray-100 dark:bg-gray-800 dark:hover:bg-gray-700 rounded-tr-lg rounded-bl-lg px-4 py-2 transition duration-200 ease-in-out">
+                                <i class="fa-solid fa-xmark"></i>
+                            </button>
+                        </div>
+                        <div>
+                            <slot name="content"></slot>
+                        </div>
                     </div>
-                </transition>
-
-                <transition
-                    enter-active-class="ease-out duration-300"
-                    enter-from-class="opacity-0 translate-y-4 sm:translate-y-0 sm:scale-95"
-                    enter-to-class="opacity-100 translate-y-0 sm:scale-100"
-                    leave-active-class="ease-in duration-200"
-                    leave-from-class="opacity-100 translate-y-0 sm:scale-100"
-                    leave-to-class="opacity-0 translate-y-4 sm:translate-y-0 sm:scale-95"
-                >
-                    <div v-show="show" class="mb-6 bg-white dark:bg-gray-800 rounded-lg overflow-hidden shadow-xl transform transition-all sm:w-full sm:mx-auto" :class="maxWidthClass">
-                        <slot v-if="show" />
-                    </div>
-                </transition>
+                </section>
             </div>
         </transition>
     </teleport>
 </template>
+
+<script>
+export default {
+    name: 'ModalComponent', 
+
+    emits: [
+        'close', 
+    ], 
+
+    props: {
+        active: {
+            type: Boolean, 
+            default: false, 
+        },
+    }
+}
+</script>
