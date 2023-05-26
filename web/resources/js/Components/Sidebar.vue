@@ -1,6 +1,6 @@
 <template>
     <section class="flex print:hidden" role="menubar">
-        <div class="bg-white dark:bg-gray-800 border-gray-200 dark:border-gray-600 border-r h-full overflow-y-auto z-10">
+        <div class="bg-white dark:bg-gray-800 border-gray-300 dark:border-gray-600 border-r h-full overflow-y-auto z-10">
             <slot name="triggers"></slot>
         </div>
         <transition 
@@ -14,7 +14,7 @@
             >
             <div 
                 v-if="active" 
-                class="bg-white dark:bg-gray-800 border-gray-200 dark:border-gray-600 border-r h-full min-w-[8rem] w-32 md:w-40 lg:w-52 xl:w-64 overflow-y-auto resize-x focus-visible:outline-none" 
+                class="bg-white dark:bg-gray-800 border-gray-300 dark:border-gray-600 border-r h-full min-w-[8rem] w-32 md:w-40 lg:w-52 xl:w-64 overflow-y-auto resize-x focus-visible:outline-none" 
                 tabindex="-1"
                 role="menu" 
                 >

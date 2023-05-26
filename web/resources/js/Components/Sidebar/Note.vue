@@ -2,7 +2,7 @@
     <button 
         type="button"
         role="menuitem"
-        class="p-2 lg:p-3 border-b border-gray-200 dark:border-gray-600 transition duration-200 ease-in-out select-none w-full text-left focus-visible:outline-none focus:bg-indigo-200 dark:focus:bg-indigo-900"
+        class="p-2 lg:p-3 border-b border-gray-300 dark:border-gray-600 transition duration-200 ease-in-out select-none w-full text-left focus-visible:outline-none focus:bg-indigo-200 dark:focus:bg-indigo-900"
         :class="{'bg-gray-50 hover:bg-gray-100 dark:bg-slate-800 cursor-pointer dark:hover:bg-slate-700': !active, 'bg-indigo-200 dark:bg-indigo-900 cursor-default': active}"
         >
         <h5 class="truncate text-base lg:text-lg font-bold text-gray-700 dark:text-gray-300">{{ note.title ?? 'No name' }}</h5>

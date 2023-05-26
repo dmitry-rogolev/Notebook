@@ -5,17 +5,17 @@
             @keyup.right="right" 
             ref="menu" 
             role="menubar" 
-            class="bg-gray-100 dark:bg-slate-700 border-b border-gray-200 dark:border-gray-600 shadow flex px-1 sm:px-2 print:hidden"
+            class="relative bg-gray-100 dark:bg-slate-700 border-b border-gray-300 dark:border-gray-600 shadow flex px-1 sm:px-2 print:hidden"
             >
             <slot name="menu"></slot>
         </div>
-        <div class="print">
+        <div class="relative">
             <slot name="header"></slot>
         </div>
-        <div class="flex-auto">
+        <div class="flex-auto relative">
             <slot name="body"></slot>
         </div>
-        <div>
+        <div class="relative">
             <slot name="footer"></slot>
         </div>
     </section>

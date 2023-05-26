@@ -30,7 +30,7 @@
                         Profile
                     </DropdownLinkComponent>
 
-                    <div class="border-t border-gray-200 dark:border-gray-600"></div>
+                    <div class="border-t border-gray-300 dark:border-gray-600"></div>
 
                     <DropdownLinkComponent as="button" @click="logout">
                         Log Out

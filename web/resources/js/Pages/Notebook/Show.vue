@@ -23,6 +23,7 @@
                 @update="update"
                 @delete="this.delete()" 
                 @create:notification="newNotification"
+                @exit="close"
                 :note="note" 
                 />
 
@@ -65,27 +66,29 @@ export default {
             set(note) {
                 this.record = note;
 
-                if (this.notes && this.notes.length) {
-                    let i = this.notes.findIndex((item) => {
-                        return item.id == note.id;
-                    });
-                    if (i !== -1) {
-                        this.notes[i] = note;
-                    } else {
-                        this.notes.push(note);
+                if (note) {
+                    if (this.notes && this.notes.length) {
+                        let i = this.notes.findIndex((item) => {
+                            return item.id == note.id;
+                        });
+                        if (i !== -1) {
+                            this.notes[i] = note;
+                        } else {
+                            this.notes.push(note);
+                        }
                     }
-                }
 
-                if (this.found && this.found.length) {
-                    let i = this.found.findIndex((item) => {
-                        return item.id == note.id;
-                    });
-                    if (i !== -1) {
-                        this.found[i] = note;
-                    } else {
-                        this.findNotes();
-                    }
-                } 
+                    if (this.found && this.found.length) {
+                        let i = this.found.findIndex((item) => {
+                            return item.id == note.id;
+                        });
+                        if (i !== -1) {
+                            this.found[i] = note;
+                        } else {
+                            this.findNotes();
+                        }
+                    } 
+                }
             }, 
         }, 
     }, 
@@ -93,6 +96,9 @@ export default {
     methods: {
         open(note) {
             this.note = note;
+        }, 
+        close() {
+            this.note = null;
         }, 
         fetchNotes() {
             axios.get('/api/notes').then((response) => {
@@ -120,13 +126,22 @@ export default {
             });
         }, 
         update(note) {
-            axios.patch('/api/notes/' + this.note.id, note).then((response) => {
-                this.note = response.data.data;
-                this.newNotification({
-                    message: 'Saved', 
-                    success: true, 
+            if (! note) {
+                note = {
+                    title: '', 
+                    text: '', 
+                };
+            }
+
+            if (this.note.title != note.title || this.note.text != note.text) {
+                axios.patch('/api/notes/' + this.note.id, note).then((response) => {
+                    this.note = response.data.data;
+                    this.newNotification({
+                        message: 'Saved', 
+                        success: true, 
+                    });
                 });
-            });
+            }
         }, 
         delete() {
             axios.delete('/api/notes/' + this.note.id);
