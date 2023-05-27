@@ -7,7 +7,7 @@ function token(count = 60, prefix = 'token_') {
     return token;
 }
 
-function escapeHtml(text) {
+function escapeHtml(str) {
     var map = {
         '&': '&amp;',
         '<': '&lt;',
@@ -16,7 +16,12 @@ function escapeHtml(text) {
         "'": '&#039;'
     };
     
-    return text.replace(/[&<>"']/g, function(m) { return map[m]; });
+    return str.replace(/[&<>"']/g, function(m) { return map[m]; });
 }
 
-export { token, escapeHtml };
+function escapeRegex(str) {
+	return str.replace(/([\\\.\+\*\?\[\^\]\$\(\)\{\}\=\!\<\>\|\:])/g, "\\$1");
+}
+
+
+export { token, escapeHtml, escapeRegex };

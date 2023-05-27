@@ -92,10 +92,10 @@
                     <DropdownLinkComponent @click="$emit('exit')" as="button">
                         <div class="flex flex-nowrap items-center">
                             <div class="flex-auto">
-                                <i class="fa-solid fa-xmark w-6 text-center mr-2"></i>
+                                <i class="fa-solid fa-door-open w-6 text-center mr-2"></i>
                                 <span>Exit</span>
                             </div>
-                            <div class="text-xs font-bold">Ctrl + Q</div>
+                            <div class="text-xs font-bold">Alt + Q</div>
                         </div>
                     </DropdownLinkComponent>
 
@@ -158,7 +158,7 @@
                         </div>
                     </DropdownLinkComponent>
 
-                    <DropdownLinkComponent @click="$emit('delete')" as="button">
+                    <DropdownLinkComponent @click="this.delete" as="button">
                         <div class="flex flex-nowrap items-center">
                             <div class="flex-auto">
                                 <i class="fa-solid fa-trash w-6 text-center mr-2"></i>
@@ -194,18 +194,12 @@
                     <DropdownLinkComponent @click="openReplacer" as="button">
                         <div class="flex flex-nowrap items-center">
                             <div class="flex-auto">
-                                <i class="fa-solid fa-magnifying-glass w-6 text-center mr-2"></i>
+                                <i class="fa-solid fa-right-left w-6 text-center mr-2"></i>
                                 <span>Replace</span>
                             </div>
                             <div class="text-xs font-bold">Alt + R</div>
                         </div>
                     </DropdownLinkComponent>
-
-                    <div class="border-t border-gray-300 dark:border-gray-600" tabindex="-1"></div>
-
-                    <DropdownLinkComponent as="button">Find in files</DropdownLinkComponent>
-
-                    <DropdownLinkComponent as="button">Replace in files</DropdownLinkComponent>
 
                 </template>
             </DropdownComponent>
@@ -273,17 +267,17 @@
                     <i class="fa-solid fa-trash"></i>
                 </button>
                 <SelectorComponent 
-                    @toggle:case="this.isCase = ! this.isCase" 
+                    @toggle:case="isCase = ! isCase" 
                     @close="closeSelector" 
                     @update:replaceModelValue="replaceValue = $event" 
-                    @update:selectModelValue="selectValue = $event" 
+                    @update:selectModelValue="foundValue = $event" 
                     @replace="replaceFound"
                     @undo="undoReplace"
-                    :selectModelValue="selectValue"
+                    :selectModelValue="foundValue"
                     :replaceModelValue="replaceValue"
                     :active="isOpenSelector" 
                     :replacerActive="isOpenReplacer" 
-                    :case="this.isCase"  
+                    :case="isCase"  
                     />
             </div>
         </template>
@@ -292,7 +286,7 @@
                 ref="textarea" 
                 @input="record.text = $event.target.textContent" 
                 autofocus 
-                class="px-3 sm:px-4 md:px-5 py-3 bg-gray-50 dark:bg-slate-800 text-gray-800 dark:text-gray-200 text-base focus-visible:outline-none whitespace-pre-wrap overflow-y-auto overflow-x-hidden" 
+                class="px-3 sm:px-4 md:px-5 py-3 bg-gray-50 dark:bg-slate-800 text-gray-800 dark:text-gray-200 text-base focus-visible:outline-none whitespace-pre-line overflow-y-auto overflow-x-hidden print:absolute print:z-[1000]" 
                 role="textbox" 
                 contenteditable="true" 
                 aria-multiline="true"
@@ -301,7 +295,7 @@
             </div>
         </template>
         <template #footer>
-            <div ref="statusbar" class="bg-gray-100 dark:bg-slate-700 h-8 border-gray-300 dark:border-gray-600 border-t text-gray-700 dark:text-gray-300 text-sm">
+            <div ref="statusbar" class="bg-gray-100 dark:bg-slate-700 h-8 border-gray-300 dark:border-gray-600 border-t text-gray-700 dark:text-gray-300 text-sm ">
 
             </div>
         </template>
@@ -316,7 +310,7 @@ import DropdownLinkComponent from '@/Components/DropdownLink.vue';
 import ModalComponent from '@/Components/Modal.vue';
 import InputComponent from '@/Components/TextInput.vue';
 import SelectorComponent from '@/Components/Selector.vue';
-import { escapeHtml } from '@/helpers';
+import { escapeHtml, escapeRegex } from '@/helpers';
 
 export default {
     name: 'WindowPartial', 
@@ -360,7 +354,7 @@ export default {
             autosaveInterval: 60000, 
             textarea: null, 
             statusbar: null, 
-            select: '',
+            found: '',
             case: true, 
             replaceValue: '',
         };
@@ -370,13 +364,13 @@ export default {
         autosave() {
             return this.$store.state.autosave;
         }, 
-        selectValue: {
+        foundValue: {
             get() {
-                return this.select;
+                return this.found;
             }, 
             set(v) {
-                this.select = v;
-                if (this.select) {
+                this.found = v;
+                if (this.found) {
                     this.selectFound();
                 } else {
                     this.clearFound();
@@ -389,7 +383,7 @@ export default {
             }, 
             set(v) {
                 this.case = v;
-                if (this.select) {
+                if (this.found) {
                     this.selectFound();
                 }
             }, 
@@ -493,6 +487,10 @@ export default {
             this.textarea.focus();
             document.execCommand('paste');
         }, 
+        delete() {
+            this.textarea.focus();
+            document.execCommand('delete');
+        }, 
         selectAll() {
             this.textarea.focus();
             document.execCommand('selectAll');
@@ -502,30 +500,53 @@ export default {
         }, 
         closeSelector() {
             this.isOpenSelector = false;
-            this.selectValue = '';
+            this.foundValue = '';
             this.closeReplacer();
         }, 
+        select(search = '', replace = null, isCase = true) {
+            if (search) {
+                if (typeof replace == 'boolean') {
+                    isCase = replace;
+                    replace = null;
+                }
+
+                let text = this.record.text, 
+                    regex = new RegExp(escapeRegex(search), isCase ? 'ig' : 'g'), 
+                    result = '', from = 0, to = 0, found = '';
+
+                while (found = regex.exec(text)) {
+                    to = regex.lastIndex - found[0].length;
+
+                    if (to < 0) {
+                        to = 0;
+                    }
+
+                    result = result.concat(escapeHtml(text.slice(from, to)), '<span class="bg-indigo-200 dark:bg-indigo-900">' + escapeHtml(replace ?? found[0]) + '</span>');
+                    from = regex.lastIndex ;
+                }
+
+                if (from < text.length) {
+                    result = result.concat(escapeHtml(text.slice(from)));
+                }
+
+                this.textarea.html(result);
+
+                if (replace) {
+                    this.record.text = this.textarea.text();
+                }
+            }
+        }, 
         selectFound() {
-            let text = escapeHtml(this.record.text);
-            let regex = new RegExp('(' + escapeHtml(this.selectValue) + ')', this.isCase ? 'ig' : 'g');
-            this.textarea.html(text.replaceAll(regex, '<span class="bg-indigo-200 dark:bg-indigo-900">$1</span>'));
+            this.select(this.foundValue, this.isCase);
         }, 
         replaceFound() {
-            if (this.replaceValue && this.selectValue) {
-                let text = escapeHtml(this.record.text);
-
-                let regex = new RegExp(escapeHtml(this.selectValue), this.isCase ? 'ig' : 'g');
-                this.textarea.html(text.replaceAll(regex, '<span class="bg-indigo-200 dark:bg-indigo-900">' + escapeHtml(this.replaceValue) + '</span>'));
-                this.record.text = this.textarea.text();
+            if (this.replaceValue) {
+                this.select(this.foundValue, this.replaceValue, this.isCase);
             }
         }, 
         undoReplace() {
-            if (this.replaceValue && this.selectValue) {
-                let text = escapeHtml(this.record.text);
-
-                let regex = new RegExp(escapeHtml(this.replaceValue), this.isCase ? 'ig' : 'g');
-                this.textarea.html(text.replaceAll(regex, '<span class="bg-indigo-200 dark:bg-indigo-900">' + escapeHtml(this.selectValue) + '</span>'));
-                this.record.text = this.textarea.text();
+            if (this.foundValue) {
+                this.select(this.replaceValue, this.foundValue, this.isCase);
             }
         }, 
         clearFound() {
@@ -574,11 +595,6 @@ export default {
             // Exit
             else if (e.altKey && e.code == 'KeyQ') {
                 this.$emit('exit');
-            }
-
-            // Delete
-            else if (e.code == 'Delete') {
-                this.$emit('delete');
             }
 
             // Select all
