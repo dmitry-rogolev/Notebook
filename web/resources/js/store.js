@@ -5,6 +5,7 @@ const store = createStore({
         return {
             dark: false, 
             autosave: true, 
+            windowHeight: 0, 
         };
     }, 
 
@@ -23,6 +24,9 @@ const store = createStore({
         }, 
         autosave(state, autosave) {
             state.autosave = autosave;
+        }, 
+        windowHeight(state, windowHeight) {
+            state.windowHeight = windowHeight;
         }, 
     }, 
 

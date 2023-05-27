@@ -63,6 +63,9 @@ export default {
         dark() {
             return this.$store.state.dark;
         }, 
+        windowHeight() {
+            return this.$store.state.windowHeight;
+        }, 
     }, 
 
     props: {
@@ -82,7 +85,9 @@ export default {
 
     methods: {
         resize() {
-            $('#' + this.sidebarToken).height($(window).height() - 4 * this.rem - 1);
+            let windowHeight = $(window).height() - 4 * this.rem - 1;
+            this.$store.commit('windowHeight', windowHeight);
+            $('#' + this.sidebarToken).height(windowHeight);
         }, 
         toggleDark() {
             this.$store.dispatch('dark', !this.dark);

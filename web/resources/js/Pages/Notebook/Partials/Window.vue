@@ -191,7 +191,15 @@
                         </div>
                     </DropdownLinkComponent>
 
-                    <DropdownLinkComponent as="button">Replace</DropdownLinkComponent>
+                    <DropdownLinkComponent @click="openReplacer" as="button">
+                        <div class="flex flex-nowrap items-center">
+                            <div class="flex-auto">
+                                <i class="fa-solid fa-magnifying-glass w-6 text-center mr-2"></i>
+                                <span>Replace</span>
+                            </div>
+                            <div class="text-xs font-bold">Alt + R</div>
+                        </div>
+                    </DropdownLinkComponent>
 
                     <div class="border-t border-gray-300 dark:border-gray-600" tabindex="-1"></div>
 
@@ -264,14 +272,36 @@
                 <button @click="$emit('delete')" type="button" class="px-4 py-2 bg-gray-50 hover:bg-gray-100 dark:bg-slate-800 dark:hover:bg-slate-700 focus:bg-gray-100 dark:focus:bg-slate-700 border-b border-gray-300 dark:border-gray-600 dark:focus:border-gray-600 text-gray-700 dark:text-gray-300 select-none focus-visible:outline-none transition duration-200 ease-in-out print:hidden">
                     <i class="fa-solid fa-trash"></i>
                 </button>
-                <SelectorComponent :active="isOpenSelector" @close="closeSelector" />
+                <SelectorComponent 
+                    @toggle:case="this.isCase = ! this.isCase" 
+                    @close="closeSelector" 
+                    @update:replaceModelValue="replaceValue = $event" 
+                    @update:selectModelValue="selectValue = $event" 
+                    @replace="replaceFound"
+                    @undo="undoReplace"
+                    :selectModelValue="selectValue"
+                    :replaceModelValue="replaceValue"
+                    :active="isOpenSelector" 
+                    :replacerActive="isOpenReplacer" 
+                    :case="this.isCase"  
+                    />
             </div>
         </template>
         <template #body>
-            <textarea ref="text" v-model="record.text" autofocus class="h-full w-full px-3 sm:px-4 md:px-5 py-3 bg-gray-50 dark:bg-slate-800 text-gray-800 dark:text-gray-200 text-base border-0 focus:ring-0 resize-none"></textarea>
+            <div 
+                ref="textarea" 
+                @input="record.text = $event.target.textContent" 
+                autofocus 
+                class="px-3 sm:px-4 md:px-5 py-3 bg-gray-50 dark:bg-slate-800 text-gray-800 dark:text-gray-200 text-base focus-visible:outline-none whitespace-pre-wrap overflow-y-auto overflow-x-hidden" 
+                role="textbox" 
+                contenteditable="true" 
+                aria-multiline="true"
+                >
+                {{ note.text }}
+            </div>
         </template>
         <template #footer>
-            <div class="bg-gray-100 dark:bg-slate-700 h-8 border-gray-300 dark:border-gray-600 border-t text-gray-700 dark:text-gray-300 text-sm">
+            <div ref="statusbar" class="bg-gray-100 dark:bg-slate-700 h-8 border-gray-300 dark:border-gray-600 border-t text-gray-700 dark:text-gray-300 text-sm">
 
             </div>
         </template>
@@ -286,6 +316,7 @@ import DropdownLinkComponent from '@/Components/DropdownLink.vue';
 import ModalComponent from '@/Components/Modal.vue';
 import InputComponent from '@/Components/TextInput.vue';
 import SelectorComponent from '@/Components/Selector.vue';
+import { escapeHtml } from '@/helpers';
 
 export default {
     name: 'WindowPartial', 
@@ -319,6 +350,7 @@ export default {
             isOpenHelp: false, 
             isOpenFileModal: false, 
             isOpenSelector: false, 
+            isOpenReplacer: false, 
             record: {
                 title: this.note.title, 
                 text: this.note.text, 
@@ -326,13 +358,41 @@ export default {
             fileName: '', 
             timerAutosave: null, 
             autosaveInterval: 60000, 
-            text: null, 
+            textarea: null, 
+            statusbar: null, 
+            select: '',
+            case: true, 
+            replaceValue: '',
         };
     }, 
 
     computed: {
         autosave() {
             return this.$store.state.autosave;
+        }, 
+        selectValue: {
+            get() {
+                return this.select;
+            }, 
+            set(v) {
+                this.select = v;
+                if (this.select) {
+                    this.selectFound();
+                } else {
+                    this.clearFound();
+                }
+            }, 
+        }, 
+        isCase: {
+            get() {
+                return this.case;
+            }, 
+            set(v) {
+                this.case = v;
+                if (this.select) {
+                    this.selectFound();
+                }
+            }, 
         }, 
     }, 
 
@@ -352,7 +412,8 @@ export default {
             this.fileName = '';
         },
         defineValues() {
-            this.text = $(this.$refs.text);
+            this.textarea = $(this.$refs.textarea);
+            this.statusbar = $(this.$refs.statusbar);
         }, 
         openFile() {
             let input = document.createElement('input');
@@ -413,27 +474,27 @@ export default {
             window.print();
         }, 
         undo() {
-            this.text.focus();
+            this.textarea.focus();
             document.execCommand('undo');
         }, 
         redo() {
-            this.text.focus();
+            this.textarea.focus();
             document.execCommand('redo');
         }, 
         cut() {
-            this.text.focus();
+            this.textarea.focus();
             document.execCommand('cut');
         }, 
         copy() {
-            this.text.focus();
+            this.textarea.focus();
             document.execCommand('copy');
         }, 
         paste() {
-            this.text.focus();
+            this.textarea.focus();
             document.execCommand('paste');
         }, 
         selectAll() {
-            this.text.focus();
+            this.textarea.focus();
             document.execCommand('selectAll');
         }, 
         openSelector() {
@@ -441,9 +502,45 @@ export default {
         }, 
         closeSelector() {
             this.isOpenSelector = false;
+            this.selectValue = '';
+            this.closeReplacer();
         }, 
-        find() {
-            this.text
+        selectFound() {
+            let text = escapeHtml(this.record.text);
+            let regex = new RegExp('(' + escapeHtml(this.selectValue) + ')', this.isCase ? 'ig' : 'g');
+            this.textarea.html(text.replaceAll(regex, '<span class="bg-indigo-200 dark:bg-indigo-900">$1</span>'));
+        }, 
+        replaceFound() {
+            if (this.replaceValue && this.selectValue) {
+                let text = escapeHtml(this.record.text);
+
+                let regex = new RegExp(escapeHtml(this.selectValue), this.isCase ? 'ig' : 'g');
+                this.textarea.html(text.replaceAll(regex, '<span class="bg-indigo-200 dark:bg-indigo-900">' + escapeHtml(this.replaceValue) + '</span>'));
+                this.record.text = this.textarea.text();
+            }
+        }, 
+        undoReplace() {
+            if (this.replaceValue && this.selectValue) {
+                let text = escapeHtml(this.record.text);
+
+                let regex = new RegExp(escapeHtml(this.replaceValue), this.isCase ? 'ig' : 'g');
+                this.textarea.html(text.replaceAll(regex, '<span class="bg-indigo-200 dark:bg-indigo-900">' + escapeHtml(this.selectValue) + '</span>'));
+                this.record.text = this.textarea.text();
+            }
+        }, 
+        clearFound() {
+            this.textarea.text(this.record.text);
+        }, 
+        openReplacer() {
+            if (! this.isOpenSelector) {
+                this.openSelector();
+            }
+
+            this.isOpenReplacer = true;
+        }, 
+        closeReplacer() {
+            this.isOpenReplacer = false;
+            this.replaceValue = '';
         }, 
         keyupListener(e) {
             e.preventDefault();
@@ -492,6 +589,11 @@ export default {
             // Find
             else if (e.altKey && e.code == 'KeyF') {
                 this.openSelector();
+            }
+
+            // Replace
+            else if (e.altKey && e.code == 'KeyR') {
+                this.openReplacer();
             }
         }, 
         defineListeners() {

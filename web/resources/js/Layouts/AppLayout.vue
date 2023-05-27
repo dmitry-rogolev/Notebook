@@ -2,7 +2,7 @@
     <div :class="{dark: dark}">
         <Head :title="title" />
 
-        <div class="min-h-screen bg-gray-100 dark:bg-gray-900 flex flex-col">
+        <div class="min-h-screen bg-gray-100 dark:bg-gray-900 flex flex-col overflow-x-hidden">
             
             <ApplicationHeaderPartial />
 

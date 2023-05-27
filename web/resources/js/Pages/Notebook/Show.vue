@@ -28,7 +28,6 @@
                 />
 
             <NotificationManagerComponent :notifications="notifications" />
-
         </div>
     </AppLayout>
 </template>

@@ -1,5 +1,5 @@
 <template>
-    <section class="bg-gray-100 dark:bg-slate-800 shadow flex flex-col flex-auto">
+    <section class="bg-gray-100 dark:bg-slate-800 shadow flex flex-col flex-auto overflow-hidden" :style="{height: windowHeight + 'px', maxHeight: windowHeight + 'px'}">
         <div 
             @keyup.left="left" 
             @keyup.right="right" 
@@ -12,7 +12,7 @@
         <div class="relative">
             <slot name="header"></slot>
         </div>
-        <div class="flex-auto relative">
+        <div class="flex-auto flex flex-col overflow-y-auto">
             <slot name="body"></slot>
         </div>
         <div class="relative">
@@ -32,6 +32,12 @@ export default {
             focused: null, 
             menu: null, 
         };
+    }, 
+
+    computed: {
+        windowHeight() {
+            return this.$store.state.windowHeight;
+        }, 
     }, 
 
     methods: {
