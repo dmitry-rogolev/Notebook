@@ -37,6 +37,7 @@ import AppLayout from '@/Layouts/AppLayout.vue';
 import SidebarPartial from '@/Pages/Notebook/Partials/Sidebar.vue';
 import WindowPartial from '@/Pages/Notebook/Partials/Window.vue';
 import NotificationManagerComponent from '@/Components/NotificationManager.vue';
+import { escapeHtml, cutTags } from '@/helpers';
 
 export default {
     name: 'NotebookPage', 
@@ -66,6 +67,14 @@ export default {
                 this.record = note;
 
                 if (note) {
+                    if (! note.title) {
+                        this.record.title = '';
+                    }
+
+                    if (! note.text) {
+                        this.record.text = '';
+                    }
+
                     if (this.notes && this.notes.length) {
                         let i = this.notes.findIndex((item) => {
                             return item.id == note.id;
@@ -115,6 +124,9 @@ export default {
             }
         }, 
         create(note = {}) {
+            if (note && note.text) {
+                note.text = cutTags(note.text);
+            }
             axios.post('/api/notes', note).then((response) => {
                 this.note = response.data.data;
 
@@ -133,6 +145,9 @@ export default {
             }
 
             if (this.note.title != note.title || this.note.text != note.text) {
+                if (note && note.text) {
+                    note.text = cutTags(note.text);
+                }
                 axios.patch('/api/notes/' + this.note.id, note).then((response) => {
                     this.note = response.data.data;
                     this.newNotification({

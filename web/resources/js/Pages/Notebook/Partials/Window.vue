@@ -203,18 +203,36 @@
 
                 </template>
             </DropdownComponent>
+
             <DropdownComponent role="menuitem" @open="isOpenInsert = true" @close="isOpenInsert = false" contentClass="-mt-1">
                 <template #trigger>
                     <WindowMenuButtonComponent :active="isOpenInsert">Insert</WindowMenuButtonComponent>
                 </template>
                 <template #content>
-                    <DropdownLinkComponent as="button">List</DropdownLinkComponent>
+
+                    <DropdownLinkComponent @click="openInsertListModal" as="button">
+                        <div class="flex flex-nowrap items-center">
+                            <div class="flex-auto">
+                                <i class="fa-solid fa-list w-6 text-center mr-2"></i>
+                                <span>List</span>
+                            </div>
+                            <div class="text-xs font-bold">Alt + L</div>
+                        </div>
+                    </DropdownLinkComponent>
+
+                    <ModalInsertListPartial :active="isOpenInsertListModal" @create:list="insertList" @close="closeInsertListModal" />
+
                     <DropdownLinkComponent as="button">Link</DropdownLinkComponent>
+
                     <DropdownLinkComponent as="button">Date/Time</DropdownLinkComponent>
+
                     <DropdownLinkComponent as="button">Symbols</DropdownLinkComponent>
+
                     <DropdownLinkComponent as="button">Smilies</DropdownLinkComponent>
+
                 </template>
             </DropdownComponent>
+
             <DropdownComponent role="menuitem" @open="isOpenFormat = true" @close="isOpenFormat = false" contentClass="-mt-1">
                 <template #trigger>
                     <WindowMenuButtonComponent :active="isOpenFormat">Format</WindowMenuButtonComponent>
@@ -284,14 +302,14 @@
         <template #body>
             <div 
                 ref="textarea" 
-                @input="record.text = $event.target.textContent" 
+                @input="record.text = $event.target.innerHTML" 
                 autofocus 
-                class="px-3 sm:px-4 md:px-5 py-3 bg-gray-50 dark:bg-slate-800 text-gray-800 dark:text-gray-200 text-base focus-visible:outline-none whitespace-pre-line overflow-y-auto overflow-x-hidden print:absolute print:z-[1000]" 
+                class="h-full px-3 sm:px-4 md:px-5 py-3 bg-gray-50 dark:bg-slate-800 text-gray-800 dark:text-gray-200 text-base focus-visible:outline-none whitespace-pre-line overflow-y-auto overflow-x-hidden print:absolute print:z-[1000]" 
                 role="textbox" 
                 contenteditable="true" 
                 aria-multiline="true"
                 >
-                {{ note.text }}
+
             </div>
         </template>
         <template #footer>
@@ -310,7 +328,8 @@ import DropdownLinkComponent from '@/Components/DropdownLink.vue';
 import ModalComponent from '@/Components/Modal.vue';
 import InputComponent from '@/Components/TextInput.vue';
 import SelectorComponent from '@/Components/Selector.vue';
-import { escapeHtml, escapeRegex } from '@/helpers';
+import ModalInsertListPartial from '@/Pages/Notebook/Partials/ModalInsertList.vue';
+import { escapeHtml, escapeRegex, cutTags } from '@/helpers';
 
 export default {
     name: 'WindowPartial', 
@@ -323,6 +342,7 @@ export default {
         ModalComponent, 
         InputComponent, 
         SelectorComponent, 
+        ModalInsertListPartial, 
     }, 
 
     emits: [
@@ -345,6 +365,7 @@ export default {
             isOpenFileModal: false, 
             isOpenSelector: false, 
             isOpenReplacer: false, 
+            isOpenInsertListModal: false, 
             record: {
                 title: this.note.title, 
                 text: this.note.text, 
@@ -404,6 +425,7 @@ export default {
                 text: this.note.text, 
             };
             this.fileName = '';
+            this.textarea.html(this.record.text);
         },
         defineValues() {
             this.textarea = $(this.$refs.textarea);
@@ -418,7 +440,7 @@ export default {
                     input.files[0].arrayBuffer().then((arrayBuffer) => {
                         this.$emit('create', {
                             title: input.files[0].name, 
-                            text: new TextDecoder().decode(arrayBuffer), 
+                            text: cutTags(new TextDecoder().decode(arrayBuffer)), 
                         });
                     });
                 }
@@ -426,7 +448,7 @@ export default {
             input.click();
         }, 
         openFileModal() {
-            this.fileName = (this.record.title ?? 'No name') + '.txt';
+            this.fileName = (this.record.title ? this.record.title : 'No name') + '.txt';
             this.isOpenFileModal = true;
         }, 
         closeFileModal() {
@@ -511,28 +533,41 @@ export default {
                 }
 
                 let text = this.record.text, 
-                    regex = new RegExp(escapeRegex(search), isCase ? 'ig' : 'g'), 
-                    result = '', from = 0, to = 0, found = '';
+                    tagRegexp = new RegExp('<\/?[^>]+>', 'igm'), 
+                    searchRegexp = new RegExp('(' + escapeHtml(escapeRegex(search)) + ')', isCase ? 'igm' : 'gm'), 
+                    result = '', from = 0, to = 0, found = '', sub = '';
 
-                while (found = regex.exec(text)) {
-                    to = regex.lastIndex - found[0].length;
+                while (found = tagRegexp.exec(text)) {
+                    to = tagRegexp.lastIndex - found[0].length;
 
                     if (to < 0) {
                         to = 0;
                     }
 
-                    result = result.concat(escapeHtml(text.slice(from, to)), '<span class="bg-indigo-200 dark:bg-indigo-900">' + escapeHtml(replace ?? found[0]) + '</span>');
-                    from = regex.lastIndex ;
+                    sub = text.slice(from, to);
+
+                    if (sub) {
+                        sub = sub.replace(searchRegexp, '<a class="bg-indigo-200 dark:bg-indigo-900">' + (replace ?? '$1') + '</a>');
+                    }
+
+                    result = result.concat(sub, found[0]);
+
+                    from = tagRegexp.lastIndex;
                 }
 
                 if (from < text.length) {
-                    result = result.concat(escapeHtml(text.slice(from)));
+                    sub = text.slice(from);
+
+                    if (sub) {
+                        sub = sub.replace(searchRegexp, '<a class="bg-indigo-200 dark:bg-indigo-900">' + (replace ?? '$1') + '</a>');
+                        result = result.concat(sub);
+                    }
                 }
 
                 this.textarea.html(result);
 
                 if (replace) {
-                    this.record.text = this.textarea.text();
+                    this.record.text = cutTags(this.textarea.html());
                 }
             }
         }, 
@@ -550,7 +585,7 @@ export default {
             }
         }, 
         clearFound() {
-            this.textarea.text(this.record.text);
+            this.textarea.html(this.record.text);
         }, 
         openReplacer() {
             if (! this.isOpenSelector) {
@@ -562,6 +597,70 @@ export default {
         closeReplacer() {
             this.isOpenReplacer = false;
             this.replaceValue = '';
+        }, 
+        openInsertListModal() {
+            this.isOpenInsertListModal = true;
+        }, 
+        closeInsertListModal() {
+            this.isOpenInsertListModal = false;
+        }, 
+        insertList($event) {
+            let tag, mark;
+
+            switch($event) {
+                case 'decimal': tag = 'ol'; mark = 'decimal'; break;
+                case 'decimal-leading-zero': tag = 'ol'; mark = '[decimal-leading-zero]'; break;
+                case 'upper-roman': tag = 'ol'; mark = '[upper-roman]'; break;
+                case 'lower-roman': tag = 'ol'; mark = '[lower-roman]'; break;
+                case 'upper-alpha': tag = 'ol'; mark = '[upper-alpha]'; break;
+                case 'lower-alpha': tag = 'ol'; mark = '[lower-alpha]'; break;
+                case 'lower-greek': tag = 'ol'; mark = '[lower-greek]'; break;
+                case 'armenian': tag = 'ol'; mark = '[armenian]'; break;
+                case 'georgian': tag = 'ol'; mark = '[georgian]'; break;
+                case 'disc': tag = 'ul'; mark = 'disc'; break;
+                case 'circle': tag = 'ul'; mark = 'circle'; break;
+                case 'square': tag = 'ul'; mark = 'square'; break;
+                default: tag = 'ul'; mark = 'disc'; break;
+            };
+
+            let selection = window.getSelection(), 
+                focus = this.getChildNodeOfTextarea(selection.focusNode), 
+                div = $('<div></div>'), 
+                list = $('<' + tag + ' class="list-inside list-' + mark + '"></' + tag + '>'), 
+                li = $('<li></li>'), 
+                br = $('<div><br /></div>');
+            
+            list.append(li);
+            div.append(list);
+            focus.after(div);
+            div.after(br);
+
+            this.setCursor(li[0]);
+        }, 
+        setCursor(el, offset = 0) {
+            let range = new Range(), 
+                selection = window.getSelection();
+
+            range.setStart(el, 0);
+            range.collapse(true);
+
+            selection.removeAllRanges();
+            selection.addRange(range);
+        }, 
+        getChildNodeOfTextarea(node) {
+            node = $(node);
+
+            if (node.is(this.textarea)) {
+                return this.textarea.children().last();
+            }
+
+            let parent = node.parent();
+
+            if (parent.is(this.textarea)) {
+                return node;
+            }
+
+            return this.getChildNodeOfTextarea(parent);
         }, 
         keyupListener(e) {
             e.preventDefault();
@@ -611,6 +710,11 @@ export default {
             else if (e.altKey && e.code == 'KeyR') {
                 this.openReplacer();
             }
+
+            // Insert list
+            else if (e.altKey && e.code == 'KeyL') {
+                this.openInsertListModal();
+            }
         }, 
         defineListeners() {
             $(document).on('keyup', this.keyupListener);
@@ -630,6 +734,8 @@ export default {
         if (this.autosave) {
             this.onAutosave();
         }
+
+        this.reset();
     }, 
 
     updated() {
