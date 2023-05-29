@@ -241,7 +241,7 @@
                     <DropdownLinkComponent @click="openInsertEmoticonsModal" as="button">
                         <div class="flex flex-nowrap items-center">
                             <div class="flex-auto">
-                                <i class="fa-regular fa-face-grin-wink w-6 text-center mr-2"></i>
+                                <i class="fa-solid fa-face-grin-wink w-6 text-center mr-2"></i>
                                 <span>Emoticons</span>
                             </div>
                             <div class="text-xs font-bold">Alt + E</div>
