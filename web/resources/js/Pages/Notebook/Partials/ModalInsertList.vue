@@ -108,7 +108,6 @@ export default {
             isNotNumbered: false, 
             numberedToken: token(), 
             notNumberedToken: token(), 
-            isDefineFocus: false, 
             numbered: [
                 'decimal-leading-zero', 
                 'upper-roman', 
@@ -139,8 +138,7 @@ export default {
 
     watch: {
         active() {
-            this.isNumbered = true;
-            this.isNotNumbered = false;
+            this.openNumbered();
         }, 
     }, 
 
@@ -157,18 +155,18 @@ export default {
             this.items.first().focus();
         },
         openNumbered() {
-            this.closeNotNumbered();
             this.isNumbered = true;
+            this.closeNotNumbered();
         }, 
         closeNumbered() {
-            this.isNumbered = true;
+            this.isNumbered = false;
         }, 
         openNotNumbered() {
+            this.isNotNumbered = true;
             this.closeNumbered();
-            this.isNumbered = true;
         }, 
         closeNotNumbered() {
-            this.isNumbered = true;
+            this.isNotNumbered = false;
         }, 
         defineFocused() {
             this.focused = null;

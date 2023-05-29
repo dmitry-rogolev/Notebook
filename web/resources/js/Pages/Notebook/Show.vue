@@ -6,7 +6,7 @@
             </h2>
         </template>
 
-        <div class="flex-auto flex">
+        <div class="flex-auto flex overflow-hidden">
 
             <SidebarPartial 
                 @open:note="open" 

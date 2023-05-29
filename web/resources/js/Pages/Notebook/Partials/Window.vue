@@ -222,13 +222,37 @@
 
                     <ModalInsertListPartial :active="isOpenInsertListModal" @create:list="insertList" @close="closeInsertListModal" />
 
-                    <DropdownLinkComponent as="button">Link</DropdownLinkComponent>
+                    <DropdownLinkComponent @click="openInsertSymbolsModal" as="button">
+                        <div class="flex flex-nowrap items-center">
+                            <div class="flex-auto">
+                                <i class="fa-solid fa-at w-6 text-center mr-2"></i>
+                                <span>Symbols</span>
+                            </div>
+                            <div class="text-xs font-bold">Alt + Y</div>
+                        </div>
+                    </DropdownLinkComponent>
 
-                    <DropdownLinkComponent as="button">Date/Time</DropdownLinkComponent>
+                    <ModalInsertSymbolsPartial 
+                        :active="isOpenInsertSymbolsModal" 
+                        @create:symbol="insertSymbol" 
+                        @close="closeInsertSymbolsModal" 
+                        />
 
-                    <DropdownLinkComponent as="button">Symbols</DropdownLinkComponent>
+                    <DropdownLinkComponent @click="openInsertEmoticonsModal" as="button">
+                        <div class="flex flex-nowrap items-center">
+                            <div class="flex-auto">
+                                <i class="fa-regular fa-face-grin-wink w-6 text-center mr-2"></i>
+                                <span>Emoticons</span>
+                            </div>
+                            <div class="text-xs font-bold">Alt + E</div>
+                        </div>
+                    </DropdownLinkComponent>
 
-                    <DropdownLinkComponent as="button">Smilies</DropdownLinkComponent>
+                    <ModalInsertEmoticonsPartial 
+                        :active="isOpenInsertEmoticonsModal" 
+                        @create:emoticon="insertSymbol" 
+                        @close="closeInsertEmoticonsModal" 
+                        />
 
                 </template>
             </DropdownComponent>
@@ -329,6 +353,8 @@ import ModalComponent from '@/Components/Modal.vue';
 import InputComponent from '@/Components/TextInput.vue';
 import SelectorComponent from '@/Components/Selector.vue';
 import ModalInsertListPartial from '@/Pages/Notebook/Partials/ModalInsertList.vue';
+import ModalInsertSymbolsPartial from '@/Pages/Notebook/Partials/ModalInsertSymbols.vue';
+import ModalInsertEmoticonsPartial from '@/Pages/Notebook/Partials/ModalInsertEmoticons.vue';
 import { escapeHtml, escapeRegex, cutTags } from '@/helpers';
 
 export default {
@@ -343,6 +369,8 @@ export default {
         InputComponent, 
         SelectorComponent, 
         ModalInsertListPartial, 
+        ModalInsertSymbolsPartial, 
+        ModalInsertEmoticonsPartial, 
     }, 
 
     emits: [
@@ -366,6 +394,8 @@ export default {
             isOpenSelector: false, 
             isOpenReplacer: false, 
             isOpenInsertListModal: false, 
+            isOpenInsertSymbolsModal: false, 
+            isOpenInsertEmoticonsModal: false, 
             record: {
                 title: this.note.title, 
                 text: this.note.text, 
@@ -641,7 +671,7 @@ export default {
             let range = new Range(), 
                 selection = window.getSelection();
 
-            range.setStart(el, 0);
+            range.setStart(el, offset);
             range.collapse(true);
 
             selection.removeAllRanges();
@@ -661,6 +691,41 @@ export default {
             }
 
             return this.getChildNodeOfTextarea(parent);
+        }, 
+        openInsertSymbolsModal() {
+            this.isOpenInsertSymbolsModal = true;
+        }, 
+        openInsertEmoticonsModal() {
+            this.isOpenInsertEmoticonsModal = true;
+        }, 
+        closeInsertSymbolsModal() {
+            this.isOpenInsertSymbolsModal = false;
+        }, 
+        closeInsertEmoticonsModal() {
+            this.isOpenInsertEmoticonsModal = false;
+        }, 
+        insertSymbol($event) {
+            let selection = document.getSelection(), 
+                focus = $(selection.focusNode), 
+                offset = selection.focusOffset;
+
+            if (focus[0].nodeType == 3) {
+                let text = focus.text(),
+                    nodeBefore = $(document.createTextNode(text.slice(0, offset))),
+                    nodeAfter = $(document.createTextNode(text.slice(offset))),
+                    span = $('<span></span>');
+                    
+                span.html($event);
+                focus.before(nodeBefore);
+                focus.remove();
+                nodeBefore.after(span);
+                span.after(nodeAfter);
+                this.setCursor(span[0], 1);
+            } else {
+                let text = focus.html();
+                focus.html(''.concat(text.slice(0, offset), $event, text.slice(offset)));
+                this.setCursor(focus[0], offset + 1);
+            }
         }, 
         keyupListener(e) {
             e.preventDefault();
@@ -714,6 +779,16 @@ export default {
             // Insert list
             else if (e.altKey && e.code == 'KeyL') {
                 this.openInsertListModal();
+            }
+
+            // Insert symbols
+            else if (e.altKey && e.code == 'KeyY') {
+                this.openInsertSymbolsModal();
+            }
+
+            // Insert emoticons
+            else if (e.altKey && e.code == 'KeyE') {
+                this.openInsertEmoticonsModal();
             }
         }, 
         defineListeners() {
