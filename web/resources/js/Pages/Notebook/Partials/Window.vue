@@ -262,8 +262,23 @@
                     <WindowMenuButtonComponent :active="isOpenFormat">Format</WindowMenuButtonComponent>
                 </template>
                 <template #content>
-                    <DropdownLinkComponent as="button">Word wrap</DropdownLinkComponent>
-                    <DropdownLinkComponent as="button">Font</DropdownLinkComponent>
+
+                    <DropdownLinkComponent @click="openFontModal" as="button">
+                        <div class="flex flex-nowrap items-center">
+                            <div class="flex-auto">
+                                <i class="fa-solid fa-font w-6 text-center mr-2"></i>
+                                <span>Font</span>
+                            </div>
+                            <div class="text-xs font-bold">Alt + T</div>
+                        </div>
+                    </DropdownLinkComponent>
+
+                    <ModalFontPartial 
+                        :active="isOpenFontModal" 
+                        @update:font="updateFont"
+                        @close="closeFontModal" 
+                        />
+
                 </template>
             </DropdownComponent>
             <DropdownComponent role="menuitem" @open="isOpenTools = true" @close="isOpenTools = false" contentClass="-mt-1">
@@ -337,7 +352,7 @@
             </div>
         </template>
         <template #footer>
-            <div ref="statusbar" class="bg-gray-100 dark:bg-slate-700 h-8 border-gray-300 dark:border-gray-600 border-t text-gray-700 dark:text-gray-300 text-sm ">
+            <div ref="statusbar" class="bg-gray-100 dark:bg-slate-700 h-8 border-gray-300 dark:border-gray-600 border-t text-gray-700 dark:text-gray-300 text-sm">
 
             </div>
         </template>
@@ -355,6 +370,7 @@ import SelectorComponent from '@/Components/Selector.vue';
 import ModalInsertListPartial from '@/Pages/Notebook/Partials/ModalInsertList.vue';
 import ModalInsertSymbolsPartial from '@/Pages/Notebook/Partials/ModalInsertSymbols.vue';
 import ModalInsertEmoticonsPartial from '@/Pages/Notebook/Partials/ModalInsertEmoticons.vue';
+import ModalFontPartial from '@/Pages/Notebook/Partials/ModalFont.vue';
 import { escapeHtml, escapeRegex, cutTags } from '@/helpers';
 
 export default {
@@ -371,6 +387,7 @@ export default {
         ModalInsertListPartial, 
         ModalInsertSymbolsPartial, 
         ModalInsertEmoticonsPartial, 
+        ModalFontPartial, 
     }, 
 
     emits: [
@@ -396,6 +413,7 @@ export default {
             isOpenInsertListModal: false, 
             isOpenInsertSymbolsModal: false, 
             isOpenInsertEmoticonsModal: false, 
+            isOpenFontModal: false, 
             record: {
                 title: this.note.title, 
                 text: this.note.text, 
@@ -414,6 +432,9 @@ export default {
     computed: {
         autosave() {
             return this.$store.state.autosave;
+        }, 
+        font() {
+            return this.$store.state.font;
         }, 
         foundValue: {
             get() {
@@ -438,6 +459,9 @@ export default {
                     this.selectFound();
                 }
             }, 
+        }, 
+        fontStyles() {
+            return `'${this.font.name}', ${this.font.family}`;
         }, 
     }, 
 
@@ -727,6 +751,103 @@ export default {
                 this.setCursor(focus[0], offset + 1);
             }
         }, 
+        openFontModal() {
+            this.isOpenFontModal = true;
+        }, 
+        closeFontModal() {
+            this.isOpenFontModal = false;
+        }, 
+        updateFont($event) {
+            let selection = document.getSelection(), 
+                range = selection.getRangeAt(0), 
+                span = document.createElement('span');
+            
+            span.style.fontFamily = `'${$event.name}', ${$event.family}`;
+
+            if (range.collapsed) {
+                let startWords = range.commonAncestorContainer.textContent.slice(0, range.endOffset).split(' ');
+                let endWords = range.commonAncestorContainer.textContent.slice(range.endOffset).split(' ');
+                let offset = startWords[startWords.length - 1].length;
+
+                span.textContent = startWords[startWords.length - 1] + endWords[0];
+
+                if (! startWords[startWords.length - 1] || ! endWords[0]) {
+                    range.insertNode(span);
+                    this.setCursor(span);
+                } else {
+                    startWords.pop();
+                    endWords.shift();
+                    let startText = startWords.join(' ');
+                    let endText = endWords.join(' ');
+
+                    if (! startText && ! endText && ! range.commonAncestorContainer.parentElement.isSameNode(this.$refs.textarea)) {
+                        range.commonAncestorContainer.parentElement.style.fontFamily = `'${$event.name}', ${$event.family}`;
+                    } else {
+                        range.commonAncestorContainer.before(document.createTextNode(startText + ' '));
+                        range.commonAncestorContainer.before(span);
+                        range.commonAncestorContainer.before(document.createTextNode(' ' + endWords.join(' ')));
+                        range.commonAncestorContainer.remove();
+
+                        this.setCursor(span.firstChild, offset);
+                    }
+                }
+            } else {
+                console.log(range);
+                let startText = range.startContainer.textContent;
+                let startFirstNode = document.createTextNode(startText.slice(0, range.startOffset));
+                let startSecondNode = document.createElement('span');
+                startSecondNode.textContent = startText.slice(range.startOffset);
+                startSecondNode.style.fontFamily = `'${$event.name}', ${$event.family}`;
+
+                let endText = range.endContainer.textContent;
+                let endFirstNode = document.createElement('span');
+                endFirstNode.textContent = endText.slice(0, range.endOffset);
+                endFirstNode.style.fontFamily = `'${$event.name}', ${$event.family}`;
+                let endSecondNode = document.createTextNode(endText.slice(range.endOffset));
+
+                range.startContainer.before(startFirstNode);
+                range.endContainer.after(endSecondNode);
+
+                range.startContainer.remove();
+                range.endContainer.remove();
+
+                startFirstNode.after(startSecondNode);
+                endSecondNode.before(endFirstNode);
+
+                let node = startSecondNode.nextElementSibling;
+
+                this.eachChildren(node, endFirstNode, (child) => {
+                    child.style.fontFamily = `'${$event.name}', ${$event.family}`;
+                });
+
+                range = new Range();
+                range.setStartBefore(startSecondNode);
+                range.setEndAfter(endFirstNode);
+                selection.removeAllRanges();
+                selection.addRange(range);
+            }
+        }, 
+        eachChildren(from, to, callback) {
+            while (! from.isSameNode(to)) {
+                if (from.children.length) {
+                    for (let v of from.children) {
+                        if (this.eachChildren(v, to, callback)) {
+                            return true;
+                        }
+                    }
+                } else {
+                    callback(from);
+                }
+
+                from = from.nextElementSibling;
+
+                if (! from) {
+                    return false;
+                }
+            }
+
+            return true;
+        }, 
         keyupListener(e) {
             e.preventDefault();
             e.stopPropagation();
@@ -790,6 +911,11 @@ export default {
             else if (e.altKey && e.code == 'KeyE') {
                 this.openInsertEmoticonsModal();
             }
+
+            // Font
+            else if (e.altKey && e.code == 'KeyT') {
+                this.openFontModal();
+            }
         }, 
         defineListeners() {
             $(document).on('keyup', this.keyupListener);
@@ -801,6 +927,7 @@ export default {
 
     mounted() {
         this.$store.dispatch('autosave');
+        this.$store.dispatch('font');
 
         this.defineValues();
 
