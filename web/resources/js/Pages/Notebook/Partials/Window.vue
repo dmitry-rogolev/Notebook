@@ -759,94 +759,57 @@ export default {
         }, 
         updateFont($event) {
             let selection = document.getSelection(), 
-                range = selection.getRangeAt(0), 
-                span = document.createElement('span');
-            
-            span.style.fontFamily = `'${$event.name}', ${$event.family}`;
+                range = selection.getRangeAt(0);
 
-            if (range.collapsed) {
-                let startWords = range.commonAncestorContainer.textContent.slice(0, range.endOffset).split(' ');
-                let endWords = range.commonAncestorContainer.textContent.slice(range.endOffset).split(' ');
-                let offset = startWords[startWords.length - 1].length;
+            let startAnchor = document.createTextNode('');
+            let endAnchor = document.createTextNode('');
 
-                span.textContent = startWords[startWords.length - 1] + endWords[0];
+            range.insertNode(startAnchor);
+            range.collapse();
+            range.insertNode(endAnchor);
 
-                if (! startWords[startWords.length - 1] || ! endWords[0]) {
-                    range.insertNode(span);
-                    this.setCursor(span);
-                } else {
-                    startWords.pop();
-                    endWords.shift();
-                    let startText = startWords.join(' ');
-                    let endText = endWords.join(' ');
+            let nodes = this.getTextNodes(this.$refs.textarea);
 
-                    if (! startText && ! endText && ! range.commonAncestorContainer.parentElement.isSameNode(this.$refs.textarea)) {
-                        range.commonAncestorContainer.parentElement.style.fontFamily = `'${$event.name}', ${$event.family}`;
-                    } else {
-                        range.commonAncestorContainer.before(document.createTextNode(startText + ' '));
-                        range.commonAncestorContainer.before(span);
-                        range.commonAncestorContainer.before(document.createTextNode(' ' + endWords.join(' ')));
-                        range.commonAncestorContainer.remove();
+            nodes = nodes.slice(nodes.findIndex((v) => v.isSameNode(startAnchor)) + 1);
+            nodes = nodes.slice(0, nodes.findIndex((v) => v.isSameNode(endAnchor)));
 
-                        this.setCursor(span.firstChild, offset);
-                    }
-                }
-            } else {
-                console.log(range);
-                let startText = range.startContainer.textContent;
-                let startFirstNode = document.createTextNode(startText.slice(0, range.startOffset));
-                let startSecondNode = document.createElement('span');
-                startSecondNode.textContent = startText.slice(range.startOffset);
-                startSecondNode.style.fontFamily = `'${$event.name}', ${$event.family}`;
-
-                let endText = range.endContainer.textContent;
-                let endFirstNode = document.createElement('span');
-                endFirstNode.textContent = endText.slice(0, range.endOffset);
-                endFirstNode.style.fontFamily = `'${$event.name}', ${$event.family}`;
-                let endSecondNode = document.createTextNode(endText.slice(range.endOffset));
-
-                range.startContainer.before(startFirstNode);
-                range.endContainer.after(endSecondNode);
-
-                range.startContainer.remove();
-                range.endContainer.remove();
-
-                startFirstNode.after(startSecondNode);
-                endSecondNode.before(endFirstNode);
-
-                let node = startSecondNode.nextElementSibling;
-
-                this.eachChildren(node, endFirstNode, (child) => {
-                    child.style.fontFamily = `'${$event.name}', ${$event.family}`;
+            nodes.forEach((v) => {
+                this.wrap(this.$refs.textarea, v, (container) => {
+                    container.classList.add('font');
+                    container.style.fontFamily = `'${$event.name}', ${$event.family}`;
                 });
-
-                range = new Range();
-                range.setStartBefore(startSecondNode);
-                range.setEndAfter(endFirstNode);
-                selection.removeAllRanges();
-                selection.addRange(range);
+            });
+        }, 
+        wrap(base, wrap, callback) {
+            if (this.isContainer(wrap.parentElement, base)) {
+                callback(wrap.parentElement);
+            } else if (wrap.textContent) {
+                let container = this.getContainer(wrap);
+                wrap.before(container);
+                wrap.remove();
+                callback(container);
             }
         }, 
-        eachChildren(from, to, callback) {
-            while (! from.isSameNode(to)) {
-                if (from.children.length) {
-                    for (let v of from.children) {
-                        if (this.eachChildren(v, to, callback)) {
-                            return true;
-                        }
-                    }
+        isContainer(element, base) {
+            return (! element.isSameNode(base)) && element.tagName == "SPAN" && element.childNodes.length === 1;
+        }, 
+        getContainer(node) {
+            let container = document.createElement('span');
+            container.textContent = node.textContent;
+            return container;
+        }, 
+        getTextNodes(node) {
+            let nodes = [];
+
+            node.childNodes.forEach((v) => {
+                if (v.nodeType == 3) {
+                    nodes.push(v);
                 } else {
-                    callback(from);
+                    nodes = nodes.concat(this.getTextNodes(v));
                 }
+            })
 
-                from = from.nextElementSibling;
-
-                if (! from) {
-                    return false;
-                }
-            }
-
-            return true;
+            return nodes;
         }, 
         keyupListener(e) {
             e.preventDefault();
