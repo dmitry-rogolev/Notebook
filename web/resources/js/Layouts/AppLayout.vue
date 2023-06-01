@@ -1,28 +1,22 @@
 <template>
     <div :class="{dark: dark}">
         <Head :title="title" />
-
+        
         <div class="min-h-screen bg-gray-100 dark:bg-gray-900 flex flex-col">
-            
-            <ApplicationHeaderPartial />
-
-            <main class="flex-auto flex flex-col">
-                <slot></slot>
-            </main>
+            <slot></slot>
         </div>
+
     </div>
 </template>
 
 <script>
 import { Head } from '@inertiajs/vue3';
-import ApplicationHeaderPartial from '@/Layouts/Partials/Header.vue';
 
 export default {
     name: 'AppLayout', 
 
     components: {
         Head, 
-        ApplicationHeaderPartial, 
     }, 
 
     computed: {

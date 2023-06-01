@@ -35,18 +35,9 @@
                         @after-enter="afterEnter"
                         >
                         <ul v-if="isNumbered" :id="numberedToken" role="menu" class="flex flex-wrap">
-                            <li role="menuitem" class="m-1">
-                                <CardButtonComponent @click="$emit('create:list', 'decimal'); $emit('close');">
-                                    <ol class="list-decimal list-inside text-xs px-3 py-3 w-20">
-                                        <li>Item 1</li>
-                                        <li>Item 2</li>
-                                        <li>Item 3</li>
-                                    </ol>
-                                </CardButtonComponent>
-                            </li>
                             <li v-for="mark in numbered" role="menuitem" class="m-1">
                                 <CardButtonComponent @click="$emit('create:list', mark); $emit('close');">
-                                    <ol class="list-inside text-xs px-3 py-3 w-20" :class="['list-[' + mark + ']']">
+                                    <ol class="list-inside text-xs px-3 py-3 w-20" :style="{'list-style-type': mark}">
                                         <li>Item 1</li>
                                         <li>Item 2</li>
                                         <li>Item 3</li>
@@ -55,18 +46,9 @@
                             </li>
                         </ul>
                         <ul v-else-if="isNotNumbered" :id="notNumberedToken" role="menu" class="flex flex-wrap">
-                            <li role="menuitem" class="m-1">
-                                <CardButtonComponent @click="$emit('create:list', 'disc'); $emit('close');">
-                                    <ul class="list-disc list-inside text-xs px-3 py-3 w-20">
-                                        <li>Item 1</li>
-                                        <li>Item 2</li>
-                                        <li>Item 3</li>
-                                    </ul>
-                                </CardButtonComponent>
-                            </li>
                             <li v-for="mark in notNumbered" role="menuitem" class="m-1">
                                 <CardButtonComponent @click="$emit('create:list', mark); $emit('close');">
-                                    <ul class="list-inside text-xs px-3 py-3 w-20" :class="['list-[' + mark + ']']">
+                                    <ul class="list-inside text-xs px-3 py-3 w-20" :style="{'list-style-type': mark}">
                                         <li>Item 1</li>
                                         <li>Item 2</li>
                                         <li>Item 3</li>
@@ -109,6 +91,7 @@ export default {
             numberedToken: token(), 
             notNumberedToken: token(), 
             numbered: [
+                'decimal', 
                 'decimal-leading-zero', 
                 'upper-roman', 
                 'lower-roman', 
@@ -119,6 +102,7 @@ export default {
                 'georgian', 
             ], 
             notNumbered: [
+                'disc', 
                 'circle', 
                 'square', 
             ], 

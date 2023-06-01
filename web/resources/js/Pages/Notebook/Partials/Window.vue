@@ -281,41 +281,70 @@
 
                 </template>
             </DropdownComponent>
+
             <DropdownComponent role="menuitem" @open="isOpenTools = true" @close="isOpenTools = false" contentClass="-mt-1">
                 <template #trigger>
                     <WindowMenuButtonComponent :active="isOpenTools">Tools</WindowMenuButtonComponent>
                 </template>
+                
                 <template #content>
-                    <DropdownLinkComponent as="button">Word wrap</DropdownLinkComponent>
-                    <DropdownLinkComponent as="button">Font</DropdownLinkComponent>
+
+                    <DropdownLinkComponent @click="isSpellchecking = ! isSpellchecking" as="button">
+                        <div class="flex flex-nowrap items-center">
+                            <div class="flex items-center">
+                                <i v-if="isSpellchecking" class="fa-solid fa-check w-6 text-center mr-2"></i>
+                                <div v-else class="w-6 mr-2"></div>
+                            </div>
+                            <div class="flex-auto">Spellchecking</div>
+                        </div>
+                    </DropdownLinkComponent>
+
                 </template>
             </DropdownComponent>
+
             <DropdownComponent role="menuitem" @open="isOpenView = true" @close="isOpenView = false" contentClass="-mt-1">
                 <template #trigger>
                     <WindowMenuButtonComponent :active="isOpenView">View</WindowMenuButtonComponent>
                 </template>
                 <template #content>
-                    <DropdownLinkComponent as="button">Status bar</DropdownLinkComponent>
-                    <DropdownLinkComponent as="button">In full screen</DropdownLinkComponent>
+
+                    <DropdownLinkComponent @click="isShowStatusBar = ! isShowStatusBar" as="button">
+                        <div class="flex flex-nowrap items-center">
+                            <div class="flex items-center">
+                                <i v-if="isShowStatusBar" class="fa-solid fa-check w-6 text-center mr-2"></i>
+                                <div v-else class="w-6 mr-2"></div>
+                            </div>
+                            <div class="flex-auto">Status bar</div>
+                        </div>
+                    </DropdownLinkComponent>
+
+                    <DropdownLinkComponent @click="$emit('toggle:fullscreen')" as="button">
+                        <div class="flex flex-nowrap items-center">
+                            <div class="flex items-center">
+                                <i v-if="activeFullScreen" class="fa-solid fa-check w-6 text-center mr-2"></i>
+                                <div v-else class="w-6 mr-2"></div>
+                            </div>
+                            <div class="flex-auto">In full screen</div>
+                            <div class="text-xs font-bold">Alt + I</div>
+                        </div>
+                    </DropdownLinkComponent>
+
                 </template>
             </DropdownComponent>
-            <DropdownComponent role="menuitem" @open="isOpenHelp = true" @close="isOpenHelp = false" contentClass="-mt-1">
-                <template #trigger>
-                    <WindowMenuButtonComponent :active="isOpenHelp">Help</WindowMenuButtonComponent>
-                </template>
-                <template #content>
-                    <DropdownLinkComponent as="button">Status bar</DropdownLinkComponent>
-                    <DropdownLinkComponent as="button">In full screen</DropdownLinkComponent>
-                </template>
-            </DropdownComponent>
+
             <div role="menuitem" class="ml-auto">
-                <WindowMenuButtonComponent><i class="fa-solid fa-up-right-and-down-left-from-center"></i></WindowMenuButtonComponent>
+                <WindowMenuButtonComponent @click="$emit('toggle:fullscreen')">
+                    <i v-if="activeFullScreen" class="fa-solid fa-down-left-and-up-right-to-center fa-rotate-90"></i>
+                    <i v-else class="fa-solid fa-up-right-and-down-left-from-center fa-rotate-90"></i>
+                </WindowMenuButtonComponent>
             </div>
+
             <div role="menuitem">
                 <button role="button" @click="$emit('exit')" type="button" class="trigger px-2 sm:px-3 md:px-4 py-1 text-base lg:text-lg text-gray-700 dark:text-gray-300 hover:bg-gray-200 dark:hover:bg-slate-600 focus:bg-gray-200 dark:focus:bg-slate-600 focus-visible:outline-none transition duration-200 ease-in-out select-none">
                     <i class="fa-solid fa-xmark"></i>
                 </button>
             </div>
+
         </template>
         <template #header>
             <div class="flex">
@@ -347,14 +376,21 @@
                 role="textbox" 
                 contenteditable="true" 
                 aria-multiline="true"
+                :spellcheck="isSpellchecking"
                 >
 
             </div>
         </template>
         <template #footer>
-            <div ref="statusbar" class="bg-gray-100 dark:bg-slate-700 h-8 border-gray-300 dark:border-gray-600 border-t text-gray-700 dark:text-gray-300 text-sm">
+            <transition name="statusbar" mode="out-in">
+                <div 
+                    v-show="isShowStatusBar"
+                    ref="statusbar" 
+                    class="bg-gray-100 dark:bg-slate-700 h-8 border-gray-300 dark:border-gray-600 border-t text-gray-700 dark:text-gray-300 text-sm"
+                    >
 
-            </div>
+                </div>
+            </transition>
         </template>
     </WindowComponent>
 </template>
@@ -396,6 +432,7 @@ export default {
         'delete', 
         'create:notification', 
         'exit', 
+        'toggle:fullscreen', 
     ], 
 
     data() {
@@ -414,6 +451,8 @@ export default {
             isOpenInsertSymbolsModal: false, 
             isOpenInsertEmoticonsModal: false, 
             isOpenFontModal: false, 
+            isSpellchecking: true, 
+            isShowStatusBar: true, 
             record: {
                 title: this.note.title, 
                 text: this.note.text, 
@@ -469,6 +508,10 @@ export default {
         note: {
             type: Object, 
             required: true, 
+        }, 
+        activeFullScreen: {
+            type: Boolean, 
+            default: false, 
         }, 
     }, 
 
@@ -663,14 +706,14 @@ export default {
 
             switch($event) {
                 case 'decimal': tag = 'ol'; mark = 'decimal'; break;
-                case 'decimal-leading-zero': tag = 'ol'; mark = '[decimal-leading-zero]'; break;
-                case 'upper-roman': tag = 'ol'; mark = '[upper-roman]'; break;
-                case 'lower-roman': tag = 'ol'; mark = '[lower-roman]'; break;
-                case 'upper-alpha': tag = 'ol'; mark = '[upper-alpha]'; break;
-                case 'lower-alpha': tag = 'ol'; mark = '[lower-alpha]'; break;
-                case 'lower-greek': tag = 'ol'; mark = '[lower-greek]'; break;
-                case 'armenian': tag = 'ol'; mark = '[armenian]'; break;
-                case 'georgian': tag = 'ol'; mark = '[georgian]'; break;
+                case 'decimal-leading-zero': tag = 'ol'; mark = 'decimal-leading-zero'; break;
+                case 'upper-roman': tag = 'ol'; mark = 'upper-roman'; break;
+                case 'lower-roman': tag = 'ol'; mark = 'lower-roman'; break;
+                case 'upper-alpha': tag = 'ol'; mark = 'upper-alpha'; break;
+                case 'lower-alpha': tag = 'ol'; mark = 'lower-alpha'; break;
+                case 'lower-greek': tag = 'ol'; mark = 'lower-greek'; break;
+                case 'armenian': tag = 'ol'; mark = 'armenian'; break;
+                case 'georgian': tag = 'ol'; mark = 'georgian'; break;
                 case 'disc': tag = 'ul'; mark = 'disc'; break;
                 case 'circle': tag = 'ul'; mark = 'circle'; break;
                 case 'square': tag = 'ul'; mark = 'square'; break;
@@ -680,7 +723,7 @@ export default {
             let selection = window.getSelection(), 
                 focus = this.getChildNodeOfTextarea(selection.focusNode), 
                 div = $('<div></div>'), 
-                list = $('<' + tag + ' class="list-inside list-' + mark + '"></' + tag + '>'), 
+                list = $(`<${tag} class="list-inside" style="list-style-type: ${mark}"></${tag}>`), 
                 li = $('<li></li>'), 
                 br = $('<div><br /></div>');
             
@@ -879,6 +922,11 @@ export default {
             else if (e.altKey && e.code == 'KeyT') {
                 this.openFontModal();
             }
+
+            // In full screen
+            else if (e.altKey && e.code == 'KeyI') {
+                this.$emit('toggle:fullscreen');
+            }
         }, 
         defineListeners() {
             $(document).on('keyup', this.keyupListener);
@@ -914,3 +962,15 @@ export default {
     }
 };
 </script>
+
+<style scoped>
+.statusbar-enter-active,
+.statusbar-leave-active {
+  transition: all 0.5s ease;
+}
+.statusbar-enter-from,
+.statusbar-leave-to {
+  opacity: 0;
+  transform: translateY(100%);
+}
+</style>
