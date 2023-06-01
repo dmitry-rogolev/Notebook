@@ -1,5 +1,5 @@
 <template>
-    <header class="bg-white dark:bg-gray-800 border-b border-gray-300 dark:border-gray-600 print:hidden">
+    <header class="bg-white dark:bg-gray-800 border-b border-gray-300 dark:border-gray-600 print:hidden select-none">
         <nav class="px-4 sm:px-6 lg:px-8 flex justify-between h-16">
 
             <div class="flex">

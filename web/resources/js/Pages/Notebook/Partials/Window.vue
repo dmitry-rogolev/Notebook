@@ -804,24 +804,26 @@ export default {
             let selection = document.getSelection(), 
                 range = selection.getRangeAt(0);
 
-            let startAnchor = document.createTextNode('');
-            let endAnchor = document.createTextNode('');
+            if (this.$refs.textarea.contains(range.startContainer)) {
+                let startAnchor = document.createTextNode('');
+                let endAnchor = document.createTextNode('');
 
-            range.insertNode(startAnchor);
-            range.collapse();
-            range.insertNode(endAnchor);
+                range.insertNode(startAnchor);
+                range.collapse();
+                range.insertNode(endAnchor);
 
-            let nodes = this.getTextNodes(this.$refs.textarea);
+                let nodes = this.getTextNodes(this.$refs.textarea);
 
-            nodes = nodes.slice(nodes.findIndex((v) => v.isSameNode(startAnchor)) + 1);
-            nodes = nodes.slice(0, nodes.findIndex((v) => v.isSameNode(endAnchor)));
+                nodes = nodes.slice(nodes.findIndex((v) => v.isSameNode(startAnchor)) + 1);
+                nodes = nodes.slice(0, nodes.findIndex((v) => v.isSameNode(endAnchor)));
 
-            nodes.forEach((v) => {
-                this.wrap(this.$refs.textarea, v, (container) => {
-                    container.classList.add('font');
-                    container.style.fontFamily = `'${$event.name}', ${$event.family}`;
+                nodes.forEach((v) => {
+                    this.wrap(this.$refs.textarea, v, (container) => {
+                        container.classList.add('font');
+                        container.style.fontFamily = `'${$event.name}', ${$event.family}`;
+                    });
                 });
-            });
+            }
         }, 
         wrap(base, wrap, callback) {
             if (this.isContainer(wrap.parentElement, base)) {
