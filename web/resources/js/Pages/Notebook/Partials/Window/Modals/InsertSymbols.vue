@@ -104,13 +104,13 @@ import ModalComponent from '@/Components/Modal.vue';
 import TabLinkComponent from '@/Components/TabLink.vue';
 import CardButtonComponent from '@/Components/CardButton.vue';
 import { token } from '@/helpers';
-import symbols from '../../../assets/symbols.json';
-import arrows from '../../../assets/arrows.json';
-import currencies from '../../../assets/currencies.json';
-import letters from '../../../assets/letters.json';
-import math from '../../../assets/math.json';
-import numbers from '../../../assets/numbers.json';
-import punctuation from '../../../assets/punctuation.json';
+import symbols from '@/assets/symbols.json';
+import arrows from '@/assets/arrows.json';
+import currencies from '@/assets/currencies.json';
+import letters from '@/assets/letters.json';
+import math from '@/assets/math.json';
+import numbers from '@/assets/numbers.json';
+import punctuation from '@/assets/punctuation.json';
 
 export default {
     name: 'ModalInsertSymbolsPartial', 

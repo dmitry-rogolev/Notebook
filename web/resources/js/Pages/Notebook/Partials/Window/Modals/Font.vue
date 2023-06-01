@@ -36,7 +36,7 @@
 import ModalComponent from '@/Components/Modal.vue';
 import TabLinkComponent from '@/Components/TabLink.vue';
 import CardButtonComponent from '@/Components/CardButton.vue';
-import FontPartial from '@/Pages/Notebook/Partials/Font.vue';
+import FontPartial from '@/Pages/Notebook/Partials/Window/Modals/Font/Font.vue';
 import { token } from '@/helpers';
 
 export default {

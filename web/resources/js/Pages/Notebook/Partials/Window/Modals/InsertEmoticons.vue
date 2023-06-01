@@ -44,7 +44,7 @@ import ModalComponent from '@/Components/Modal.vue';
 import TabLinkComponent from '@/Components/TabLink.vue';
 import CardButtonComponent from '@/Components/CardButton.vue';
 import { token } from '@/helpers';
-import emoticons from '../../../assets/emoji.json';
+import emoticons from '@/assets/emoji.json';
 
 export default {
     name: 'ModalInsertSymbolsPartial', 

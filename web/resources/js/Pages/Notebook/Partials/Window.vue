@@ -348,10 +348,13 @@
         </template>
         <template #header>
             <div class="flex">
+
                 <input v-model="record.title" type="text" class="flex-auto px-3 sm:px-4 md:px-5 py-2 bg-gray-50 dark:bg-slate-800 border-0 border-b border-r border-gray-300 dark:border-gray-600 focus:border-gray-300 dark:focus:border-gray-600 text-gray-900 dark:text-gray-100 text-xl focus:ring-0 focus-visible:outline-none" placeholder="Enter the title" />
-                <button @click="$emit('delete')" type="button" class="px-4 py-2 bg-gray-50 hover:bg-gray-100 dark:bg-slate-800 dark:hover:bg-slate-700 focus:bg-gray-100 dark:focus:bg-slate-700 border-b border-gray-300 dark:border-gray-600 dark:focus:border-gray-600 text-gray-700 dark:text-gray-300 select-none focus-visible:outline-none transition duration-200 ease-in-out print:hidden">
+                
+                <button @click="$emit('delete')" type="button" class="px-4 py-2 bg-gray-50 hover:bg-gray-100 dark:bg-slate-800 dark:hover:bg-slate-700 focus:bg-gray-100 dark:focus:bg-slate-700 border-b border-r border-gray-300 dark:border-gray-600 dark:focus:border-gray-600 text-gray-700 dark:text-gray-300 select-none focus-visible:outline-none transition duration-200 ease-in-out print:hidden">
                     <i class="fa-solid fa-trash"></i>
                 </button>
+
                 <SelectorComponent 
                     @toggle:case="isCase = ! isCase" 
                     @close="closeSelector" 
@@ -365,6 +368,7 @@
                     :replacerActive="isOpenReplacer" 
                     :case="isCase"  
                     />
+
             </div>
         </template>
         <template #body>
@@ -403,10 +407,10 @@ import DropdownLinkComponent from '@/Components/DropdownLink.vue';
 import ModalComponent from '@/Components/Modal.vue';
 import InputComponent from '@/Components/TextInput.vue';
 import SelectorComponent from '@/Components/Selector.vue';
-import ModalInsertListPartial from '@/Pages/Notebook/Partials/ModalInsertList.vue';
-import ModalInsertSymbolsPartial from '@/Pages/Notebook/Partials/ModalInsertSymbols.vue';
-import ModalInsertEmoticonsPartial from '@/Pages/Notebook/Partials/ModalInsertEmoticons.vue';
-import ModalFontPartial from '@/Pages/Notebook/Partials/ModalFont.vue';
+import ModalInsertListPartial from '@/Pages/Notebook/Partials/Window/Modals/InsertList.vue';
+import ModalInsertSymbolsPartial from '@/Pages/Notebook/Partials/Window/Modals/InsertSymbols.vue';
+import ModalInsertEmoticonsPartial from '@/Pages/Notebook/Partials/Window/Modals/InsertEmoticons.vue';
+import ModalFontPartial from '@/Pages/Notebook/Partials/Window/Modals/Font.vue';
 import { escapeHtml, escapeRegex, cutTags } from '@/helpers';
 
 export default {
@@ -453,6 +457,7 @@ export default {
             isOpenFontModal: false, 
             isSpellchecking: true, 
             isShowStatusBar: true, 
+            isOpenTextSize: false, 
             record: {
                 title: this.note.title, 
                 text: this.note.text, 
