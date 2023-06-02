@@ -1,40 +1,42 @@
 <template>
     <ModalComponent :active="active" @close="$emit('close')" @after-enter="afterEnter">
+
         <template #header>
             <div class="px-4 py-2">
                 <h5 class="text-base">Insert list</h5>
             </div>
         </template>
+
         <template #content>
+
             <div class="px-4 pb-4 pt-2">
+
                 <ul role="menubar" class="flex flex-nowrap border-b border-gray-300 dark:border-gray-600 mb-3">
+                    
                     <li role="menuitem" class="mr-4">
-                        <TabLinkComponent @click="openNumbered" :active="isNumbered" :aria-controls="numberedToken">
+                        <TabLinkComponent @click="isOpenNumbered = true; isOpenNotNumbered = false;" :active="isOpenNumbered" :aria-controls="numberedToken">
                             <i class="fa-solid fa-list-ol w-6 text-center mr-2"></i>
                             <span>Numbered</span>
                         </TabLinkComponent>
                     </li>
+
                     <li role="menuitem">
-                        <TabLinkComponent @click="openNotNumbered" :active="isNotNumbered" :aria-controls="notNumberedToken">
+                        <TabLinkComponent @click="isOpenNotNumbered = true; isOpenNumbered = false;" :active="isOpenNotNumbered" :aria-controls="notNumberedToken">
                             <i class="fa-solid fa-list w-6 text-center mr-2"></i>
                             <span>Not numbered</span>
                         </TabLinkComponent>
                     </li>
+
                 </ul>
+
                 <div 
-                    ref="cards"
+                    ref="menu"
                     @keyup.left="left" 
                     @keyup.right="right" 
                     >
-                    <transition 
-                        mode="out-in"
-                        enter-active-class="transition ease-out duration-300"
-                        enter-from-class="opacity-0"
-                        leave-active-class="transition ease-in duration-200"
-                        leave-to-class="opacity-0"
-                        @after-enter="afterEnter"
-                        >
-                        <ul v-if="isNumbered" :id="numberedToken" role="menu" class="flex flex-wrap">
+                    <transition name="list" mode="out-in" @after-enter="afterEnter">
+
+                        <ul v-if="isOpenNumbered" :id="numberedToken" role="menu" class="flex flex-wrap">
                             <li v-for="mark in numbered" role="menuitem" class="m-1">
                                 <CardButtonComponent @click="$emit('create:list', mark); $emit('close');">
                                     <ol class="list-inside text-xs px-3 py-3 w-20" :style="{'list-style-type': mark}">
@@ -45,7 +47,8 @@
                                 </CardButtonComponent>
                             </li>
                         </ul>
-                        <ul v-else-if="isNotNumbered" :id="notNumberedToken" role="menu" class="flex flex-wrap">
+
+                        <ul v-else-if="isOpenNotNumbered" :id="notNumberedToken" role="menu" class="flex flex-wrap">
                             <li v-for="mark in notNumbered" role="menuitem" class="m-1">
                                 <CardButtonComponent @click="$emit('create:list', mark); $emit('close');">
                                     <ul class="list-inside text-xs px-3 py-3 w-20" :style="{'list-style-type': mark}">
@@ -56,10 +59,14 @@
                                 </CardButtonComponent>
                             </li>
                         </ul>
+
                     </transition>
                 </div>
+                
             </div>
+
         </template>
+
     </ModalComponent>
 </template>
 
@@ -85,9 +92,8 @@ export default {
 
     data() {
         return {
-            cards: null, 
-            isNumbered: true, 
-            isNotNumbered: false, 
+            isOpenNumbered: false, 
+            isOpenNotNumbered: false, 
             numberedToken: token(), 
             notNumberedToken: token(), 
             numbered: [
@@ -109,7 +115,6 @@ export default {
             items: null, 
             index: 0, 
             focused: null, 
-            isToggle: false, 
         };
     }, 
 
@@ -122,47 +127,38 @@ export default {
 
     watch: {
         active() {
-            this.openNumbered();
+            this.isOpenNotNumbered = false;
+            this.isOpenNumbered = true;
         }, 
     }, 
 
     methods: {
+        defineValues() {
+            this.items = this.$refs.menu.querySelectorAll('.card:not([tabindex="-1"])');
+        }, 
+        defineFocus() {
+            this.items.item(0).focus();
+        },
         afterEnter() {
             this.defineValues();
             this.defineFocus();
-        }, 
-        defineValues() {
-            this.cards = $(this.$refs.cards);
-            this.items = this.cards.find('.card:not([tabindex=-1])');
-        }, 
-        defineFocus() {
-            this.items.first().focus();
-        },
-        openNumbered() {
-            this.isNumbered = true;
-            this.closeNotNumbered();
-        }, 
-        closeNumbered() {
-            this.isNumbered = false;
-        }, 
-        openNotNumbered() {
-            this.isNotNumbered = true;
-            this.closeNumbered();
-        }, 
-        closeNotNumbered() {
-            this.isNotNumbered = false;
         }, 
         defineFocused() {
             this.focused = null;
             this.index = 0;
 
             if (this.isFocus()) {
-                this.focused = $(document.activeElement);
-                this.index = this.items.index(this.focused);
+                this.focused = document.activeElement;
+                this.items.forEach((item, index) => {
+                    if (item.isSameNode(this.focused)) {
+                        this.index = index;
+                        return false;
+                    }
+                });
             }
         }, 
         isFocus() {
-            return !! this.cards.has(document.activeElement).length;
+            return this.$refs.menu.contains(document.activeElement);
         },  
         left() {
             this.defineFocused();
@@ -184,24 +180,35 @@ export default {
         }, 
         defineFocusToFirstItem() {
             this.index = 0;
-            this.focused = this.items.eq(this.index);
+            this.focused = this.items.item(this.index);
             this.focused.focus();
         }, 
         defineFocusToLastItem() {
             this.index = this.items.length - 1;
-            this.focused = this.items.eq(this.index);
+            this.focused = this.items.item(this.index);
             this.focused.focus();
         }, 
         defineFocusToNextItem() {
             this.index = this.index == this.items.length - 1 ? 0 : this.index + 1;
-            this.focused = this.items.eq(this.index);
+            this.focused = this.items.item(this.index);
             this.focused.focus();
         }, 
         defineFocusToPrevItem() {
             this.index = this.index == 0 ? this.items.length - 1 : this.index - 1;
-            this.focused = this.items.eq(this.index);
+            this.focused = this.items.item(this.index);
             this.focused.focus();
         }, 
     }, 
 };
 </script>
+
+<style scoped>
+.list-enter-active,
+.list-leave-active {
+    transition: all 0.3s ease;
+}
+.list-enter-from,
+.list-leave-to {
+    opacity: 0;
+}
+</style>

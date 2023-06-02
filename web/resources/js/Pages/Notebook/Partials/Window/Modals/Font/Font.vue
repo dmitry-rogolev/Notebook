@@ -4,31 +4,31 @@
         <ul role="menubar" class="border-gray-300 dark:border-gray-600 border-r">
 
             <li role="menuitem" class="mb-2">
-                <TabLinkComponent @click="openSerif" :active="isOpenSerif" :aria-controls="serifToken" align="right" class="w-full text-right px-2">
+                <TabLinkComponent @click="closeAll(); isOpenSerif = true" :active="isOpenSerif" :aria-controls="serifToken" align="right" class="w-full text-right px-2">
                     Serif
                 </TabLinkComponent>
             </li>
 
             <li role="menuitem" class="mb-2">
-                <TabLinkComponent @click="openSans" :active="isOpenSans" :aria-controls="sansToken" align="right" class="w-full text-right px-2">
+                <TabLinkComponent @click="closeAll(); isOpenSans = true" :active="isOpenSans" :aria-controls="sansToken" align="right" class="w-full text-right px-2">
                     Sans
                 </TabLinkComponent>
             </li>
 
             <li role="menuitem" class="mb-2">
-                <TabLinkComponent @click="openCursive" :active="isOpenCursive" :aria-controls="cursiveToken" align="right" class="w-full text-right px-2">
+                <TabLinkComponent @click="closeAll(); isOpenCursive = true" :active="isOpenCursive" :aria-controls="cursiveToken" align="right" class="w-full text-right px-2">
                     Cursive
                 </TabLinkComponent>
             </li>
 
             <li role="menuitem" class="mb-2">
-                <TabLinkComponent @click="openFantasy" :active="isOpenFantasy" :aria-controls="fantasyToken" align="right" class="w-full text-right px-2">
+                <TabLinkComponent @click="closeAll(); isOpenFantasy = true" :active="isOpenFantasy" :aria-controls="fantasyToken" align="right" class="w-full text-right px-2">
                     Fantasy
                 </TabLinkComponent>
             </li>
             
             <li role="menuitem">
-                <TabLinkComponent @click="openMono" :active="isOpenMono" :aria-controls="isOpenMono" align="right" class="w-full text-right px-2">
+                <TabLinkComponent @click="closeAll(); isOpenMono = true" :active="isOpenMono" :aria-controls="isOpenMono" align="right" class="w-full text-right px-2">
                     Mono
                 </TabLinkComponent>
             </li>
@@ -37,7 +37,7 @@
 
         <div ref="menu" class="flex-auto overflow-y-auto h-52">
 
-            <transition name="font" mode="out-in">
+            <transition name="font" mode="out-in" @after-enter="afterEnter">
 
                 <ul v-if="isOpenSerif" role="menu" :id="serifToken" class="px-2 overflow-y-auto h-52">
                     <li role="menuitem" v-for="(item, index) in fonts.serif" class="mb-2 last:mb-0">
@@ -132,7 +132,6 @@ export default {
 
     data() {
         return {
-            menu: null, 
             items: null, 
             fonts: null, 
             serifToken: token(), 
@@ -156,63 +155,27 @@ export default {
 
     methods: {
         defineValues() {
-            this.menu = $(this.$refs.menu);
-            this.items = this.menu.find('.card:not([tabindex=-1])');
+            this.items = this.$refs.menu.querySelectorAll('.card:not([tabindex="-1"])');
         }, 
         defineFocus() {
-            this.items.first().focus();
+            this.items.item(0).focus();
         },
         afterEnter() {
             this.defineValues();
             this.defineFocus();
         }, 
-        openSerif() {
-            this.closeAll();
-            this.isOpenSerif = true;
-        }, 
-        closeSerif() {
-            this.isOpenSerif = false;
-        }, 
-        openSans() {
-            this.closeAll();
-            this.isOpenSans = true;
-        }, 
-        closeSans() {
-            this.isOpenSans = false;
-        }, 
-        openCursive() {
-            this.closeAll();
-            this.isOpenCursive = true;
-        }, 
-        closeCursive() {
-            this.isOpenCursive = false;
-        }, 
-        openFantasy() {
-            this.closeAll();
-            this.isOpenFantasy = true;
-        }, 
-        closeFantasy() {
-            this.isOpenFantasy = false;
-        }, 
-        openMono() {
-            this.closeAll();
-            this.isOpenMono = true;
-        }, 
-        closeMono() {
-            this.isOpenMono = false;
-        }, 
         closeAll() {
-            this.closeSerif();
-            this.closeSans();
-            this.closeCursive();
-            this.closeFantasy();
-            this.closeMono();
+            this.isOpenSerif = false;
+            this.isOpenSans = false;
+            this.isOpenCursive = false;
+            this.isOpenFantasy = false;
+            this.isOpenMono = false;
         }, 
     }, 
 
     mounted() {
         this.fonts = fonts;
-        this.openSerif();
+        this.isOpenSerif = true;
     }
 };
 </script>
