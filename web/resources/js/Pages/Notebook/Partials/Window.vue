@@ -52,6 +52,7 @@
 
             <WindowStatusbarPartial 
                 v-show="isShowStatusBar" 
+                :text="record.text"
                 />
 
         </template>
