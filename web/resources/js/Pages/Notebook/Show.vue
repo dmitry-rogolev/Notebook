@@ -26,14 +26,14 @@
 
                 <WindowPartial 
                     v-if="note" 
-                    @create="create"
-                    @update="update"
-                    @delete="this.delete()" 
+                    @create:note="create"
+                    @update:note="update"
+                    @delete:note="this.delete()" 
                     @create:notification="newNotification"
                     @exit="close"
+                    @toggle:fullscreen="isFullScreen = ! isFullScreen"
                     :note="note"
                     :activeFullScreen="isFullScreen"
-                    @toggle:fullscreen="isFullScreen = ! isFullScreen"
                     />
 
                 <NotificationManagerComponent :notifications="notifications" />

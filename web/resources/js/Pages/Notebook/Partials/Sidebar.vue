@@ -1,25 +1,35 @@
 <template>
     <transition name="fullscreen" mode="out-in" @after-enter="afterEnter" @after-leave="afterEnter">
-        <SidebarComponent v-show="! activeFullScreen" :active="activeNotes || activeSearch" :id="sidebarToken" :resize="resize">
+
+        <SidebarComponent ref="sidebar" v-show="! activeFullScreen" :style="{height: windowHeight + 'px'}" :active="activeNotes || activeSearch" :id="sidebarToken" :resize="resize">
+            
             <template #triggers>
+
                 <BarTriggerComponent ref="notes" :aria-controls="notesMenuToken" @click="$emit('open:notes')" :active="activeNotes"><i class="fa-solid fa-note-sticky"></i></BarTriggerComponent>
                 <BarTriggerComponent ref="search" :aria-controls="searchMenuToken" @click="$emit('open:search')" :active="activeSearch"><i class="fa-sharp fa-solid fa-magnifying-glass"></i></BarTriggerComponent>
                 <BarTriggerComponent @click="$emit('create:note')"><i class="fa-solid fa-plus"></i></BarTriggerComponent>
                 <BarTriggerComponent v-if="!dark" @click="toggleDark"><i class="fa-solid fa-sun"></i></BarTriggerComponent>
                 <BarTriggerComponent v-else @click="toggleDark"><i class="fa-solid fa-moon"></i></BarTriggerComponent>
+            
             </template>
+
             <template #contents>
+
                 <BarContentComponent :id="notesMenuToken" v-if="activeNotes">
                     <BarNoteComponent v-for="note in notes" :key="note.id" :note="note" @click="$emit('open:note', note)" :active="note.id == this.note?.id" />
                 </BarContentComponent>
+
                 <BarContentComponent :id="searchMenuToken" v-else-if="activeSearch">
                     <div class="p-1">
                         <InputComponent @input="$emit('search', $event.target.value)" @keyup.enter="$emit('search', $event.target.value)" type="text" autofocus class="w-full px-2 py-1 text-sm" placeholder="Search" />
                     </div>
                     <BarNoteComponent v-for="note in found" :key="note.id" :note="note" @click="$emit('open:note', note)" :active="note.id == this.note?.id" />
                 </BarContentComponent>
+
             </template>
+
         </SidebarComponent>
+
     </transition>
 </template>
 
@@ -110,16 +120,15 @@ export default {
             let windowHeight = 0;
 
             if (this.activeFullScreen) {
-                windowHeight = $(window).height();
+                windowHeight = document.documentElement.clientHeight;
             } else {
-                windowHeight = $(window).height() - 4 * this.rem - 1;
+                windowHeight = document.documentElement.clientHeight - 4 * this.rem - 1;
             }
 
             this.$store.commit('windowHeight', windowHeight);
-            $('#' + this.sidebarToken).height(windowHeight);
         }, 
         toggleDark() {
-            this.$store.dispatch('dark', !this.dark);
+            this.$store.dispatch('dark', ! this.dark);
         }, 
         afterEnter() {
             this.resize();

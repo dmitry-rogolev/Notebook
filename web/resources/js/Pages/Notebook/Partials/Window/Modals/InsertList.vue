@@ -14,14 +14,14 @@
                 <ul role="menubar" class="flex flex-nowrap border-b border-gray-300 dark:border-gray-600 mb-3">
                     
                     <li role="menuitem" class="mr-4">
-                        <TabLinkComponent @click="isOpenNumbered = true; isOpenNotNumbered = false;" :active="isOpenNumbered" :aria-controls="numberedToken">
+                        <TabLinkComponent class="pb-2" @click="isOpenNumbered = true; isOpenNotNumbered = false;" :active="isOpenNumbered" :aria-controls="numberedToken">
                             <i class="fa-solid fa-list-ol w-6 text-center mr-2"></i>
                             <span>Numbered</span>
                         </TabLinkComponent>
                     </li>
 
                     <li role="menuitem">
-                        <TabLinkComponent @click="isOpenNotNumbered = true; isOpenNumbered = false;" :active="isOpenNotNumbered" :aria-controls="notNumberedToken">
+                        <TabLinkComponent class="pb-2" @click="isOpenNotNumbered = true; isOpenNumbered = false;" :active="isOpenNotNumbered" :aria-controls="notNumberedToken">
                             <i class="fa-solid fa-list w-6 text-center mr-2"></i>
                             <span>Not numbered</span>
                         </TabLinkComponent>

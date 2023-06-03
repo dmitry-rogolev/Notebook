@@ -5,14 +5,14 @@
             @keyup.right="right" 
             ref="menu" 
             role="menubar" 
-            class="relative bg-gray-100 dark:bg-slate-700 border-b border-gray-300 dark:border-gray-600 shadow flex px-1 sm:px-2 print:hidden"
+            class="relative bg-gray-100 dark:bg-slate-700 border-b border-gray-300 dark:border-gray-600 shadow px-1 sm:px-2 print:hidden"
             >
             <slot name="menu"></slot>
         </div>
         <div class="relative">
             <slot name="header"></slot>
         </div>
-        <div class="flex-auto flex flex-col overflow-y-auto">
+        <div class="flex-auto flex flex-col overflow-y-auto print:absolute print:z-[1000]">
             <slot name="body"></slot>
         </div>
         <div class="relative">

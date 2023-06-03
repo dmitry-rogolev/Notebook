@@ -14,43 +14,43 @@
                 <ul role="menubar" class="flex flex-nowrap border-b border-gray-300 dark:border-gray-600 mb-3">
                     
                     <li role="menuitem" class="mr-2">
-                        <TabLinkComponent @click="closeAll(); isOpenSymbols = true;" :active="isOpenSymbols" :aria-controls="symbolsToken" title="Symbols">
+                        <TabLinkComponent class="pb-2" @click="closeAll(); isOpenSymbols = true;" :active="isOpenSymbols" :aria-controls="symbolsToken" title="Symbols">
                             <i class="fa-solid fa-at text-center px-3"></i>
                         </TabLinkComponent>
                     </li>
 
                     <li role="menuitem" class="mr-2">
-                        <TabLinkComponent @click="closeAll(); isOpenArrows = true;" :active="isOpenArrows" :aria-controls="arrowsToken" title="Arrows">
+                        <TabLinkComponent class="pb-2" @click="closeAll(); isOpenArrows = true;" :active="isOpenArrows" :aria-controls="arrowsToken" title="Arrows">
                             <i class="fa-solid fa-arrows-up-down-left-right text-center px-3"></i>
                         </TabLinkComponent>
                     </li>
 
                     <li role="menuitem" class="mr-2">
-                        <TabLinkComponent @click="closeAll(); isOpenCurrencies = true;" :active="isOpenCurrencies" :aria-controls="currenciesToken" title="Currencies">
+                        <TabLinkComponent class="pb-2" @click="closeAll(); isOpenCurrencies = true;" :active="isOpenCurrencies" :aria-controls="currenciesToken" title="Currencies">
                             <i class="fa-solid fa-wallet text-center px-3"></i>
                         </TabLinkComponent>
                     </li>
 
                     <li role="menuitem" class="mr-2">
-                        <TabLinkComponent @click="closeAll(); isOpenLetters = true;" :active="isOpenLetters" :aria-controls="lettersToken" title="Letters">
+                        <TabLinkComponent class="pb-2" @click="closeAll(); isOpenLetters = true;" :active="isOpenLetters" :aria-controls="lettersToken" title="Letters">
                             <i class="fa-solid fa-font text-center px-3"></i>
                         </TabLinkComponent>
                     </li>
 
                     <li role="menuitem" class="mr-2">
-                        <TabLinkComponent @click="closeAll(); isOpenMath = true;" :active="isOpenMath" :aria-controls="mathToken" title="Math">
+                        <TabLinkComponent class="pb-2" @click="closeAll(); isOpenMath = true;" :active="isOpenMath" :aria-controls="mathToken" title="Math">
                             <i class="fa-solid fa-square-root-variable text-center px-3"></i>
                         </TabLinkComponent>
                     </li>
                     
                     <li role="menuitem" class="mr-2">
-                        <TabLinkComponent @click="closeAll(); isOpenNumbers = true;" :active="isOpenNumbers" :aria-controls="numbersToken" title="Numbers">
+                        <TabLinkComponent class="pb-2" @click="closeAll(); isOpenNumbers = true;" :active="isOpenNumbers" :aria-controls="numbersToken" title="Numbers">
                             <i class="fa-solid fa-5 text-center px-3"></i>
                         </TabLinkComponent>
                     </li>
 
                     <li role="menuitem" class="mr-2">
-                        <TabLinkComponent @click="closeAll(); isOpenPunctuation = true;" :active="isOpenPunctuation" :aria-controls="punctuationToken" title="Punctuation">
+                        <TabLinkComponent class="pb-2" @click="closeAll(); isOpenPunctuation = true;" :active="isOpenPunctuation" :aria-controls="punctuationToken" title="Punctuation">
                             <i class="fa-regular fa-question text-center px-3"></i>
                         </TabLinkComponent>
                     </li>
