@@ -10,6 +10,7 @@ const store = createStore({
                 family: 'sans-serif', 
                 name: 'Figtree',  
             }, 
+            range: null, 
         };
     }, 
 
@@ -42,6 +43,9 @@ const store = createStore({
         font(state, font) {
             state.font = font;
         },
+        range(state, range) {
+            state.range = range;
+        }, 
     }, 
 
     actions: {

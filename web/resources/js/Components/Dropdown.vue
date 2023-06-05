@@ -27,7 +27,6 @@
             <div
                 v-show="active"
                 class="absolute z-50 mt-2 rounded-md shadow-lg"
-                :class="[widthClass, alignmentClass]"
                 style="display: none;"
                 @click="close"
                 @keyup.left.exact="defineTriggerFocus(); close();" 
@@ -35,7 +34,7 @@
                 @keyup.down.exact.stop="down" 
                 @keyup.up.exact.stop="up"
             >
-                <div ref="menu" role="menu" :id="menuToken" class="rounded-md ring-1 ring-black ring-opacity-5 bg-white dark:bg-gray-800 py-1" :class="contentClass">
+                <div ref="menu" role="menu" :id="menuToken" class="overflow-y-auto rounded-md ring-1 ring-black ring-opacity-5 bg-white dark:bg-gray-800 py-1" :class="[contentClass, heightClass, widthClass, alignmentClass]">
                     <slot name="content"></slot>
                 </div>
             </div>
@@ -73,6 +72,9 @@ export default {
         widthClass() {
             return 'w-' + this.width;
         }, 
+        heightClass() {
+            return ! this.height || this.height == 'auto' ? '' : 'h-' + this.height;
+        }, 
         alignmentClass() {
             if (this.align == 'left') {
                 return 'origin-top-left left-0';
@@ -94,6 +96,10 @@ export default {
         width: {
             type: String, 
             default: '48', 
+        }, 
+        height: {
+            type: String, 
+            default: 'auto', 
         }, 
         align: {
             type: String, 

@@ -22,7 +22,7 @@ export default {
             return this.text.replace(/<\/?[^>]+>/igm, '').split(/\s/).filter((v) => v).length;
         }, 
         countСharacters() {
-            return this.text.replace(/<\/?[^>]+>/igm, '').split(/\s/).filter((v) => v).join('').length;
+            return this.text.replace(/<\/?[^>]+>/igm, '').split(/\s|\&nbsp;/).filter((v) => v).join('').length;
         }, 
     },
 

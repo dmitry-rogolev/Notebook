@@ -248,7 +248,7 @@ export default {
 }
 </script>
 
-<style>
+<style scoped>
 .fullscreen-enter-active,
 .fullscreen-leave-active {
   transition: all 0.3s ease;

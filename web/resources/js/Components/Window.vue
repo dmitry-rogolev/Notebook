@@ -5,7 +5,7 @@
             @keyup.right="right" 
             ref="menu" 
             role="menubar" 
-            class="relative bg-gray-100 dark:bg-slate-700 border-b border-gray-300 dark:border-gray-600 shadow px-1 sm:px-2 print:hidden"
+            class="relative bg-gray-100 dark:bg-slate-700 border-b border-gray-300 dark:border-gray-600 shadow print:hidden"
             >
             <slot name="menu"></slot>
         </div>

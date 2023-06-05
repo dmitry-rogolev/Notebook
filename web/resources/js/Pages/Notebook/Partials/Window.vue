@@ -3,6 +3,7 @@
         <template #menu>
 
             <WindowMenuPartial 
+                class="px-1 sm:px-2"
                 @create:note="$emit('create:note', $event)"
                 @update:note="$emit('update:note', this.record)"
                 @create:notification="$emit('create:notification', $event)"
@@ -12,7 +13,7 @@
                 @create:list="insertList"
                 @create:symbol="insertSymbol"
                 @create:emoticon="insertSymbol"
-                @update:font="updateFont"
+                @update:font="font"
                 @toggle:spellchecking="isSpellchecking = ! isSpellchecking"
                 @toggle:statusbar="isShowStatusBar = ! isShowStatusBar"
                 @toggle:fullscreen="$emit('toggle:fullscreen')"
@@ -20,6 +21,14 @@
                 :activeFullScreen="activeFullScreen"
                 :spellchecking="isSpellchecking"
                 :record="record"
+                />
+
+            <WindowToolbarPartial 
+                @update:font="font"
+                @update:size="fontSize"
+                @update:italic="italic"
+                @update:bold="bold"
+                @update:line-height="lineHeight"
                 />
 
         </template>
@@ -66,6 +75,7 @@ import WindowMenuPartial from '@/Pages/Notebook/Partials/Window/Menu.vue';
 import WindowHeaderPartial from '@/Pages/Notebook/Partials/Window/Header.vue';
 import WindowStatusbarPartial from '@/Pages/Notebook/Partials/Window/Statusbar.vue';
 import WindowContentEditablePartial from '@/Pages/Notebook/Partials/Window/ContentEditable.vue';
+import WindowToolbarPartial from '@/Pages/Notebook/Partials/Window/Toolbar.vue';
 
 export default {
     name: 'WindowPartial', 
@@ -77,6 +87,7 @@ export default {
         WindowHeaderPartial, 
         WindowStatusbarPartial, 
         WindowContentEditablePartial, 
+        WindowToolbarPartial, 
     }, 
 
     emits: [
@@ -146,8 +157,20 @@ export default {
         insertSymbol($event) {
             this.$refs.contenteditable.insertSymbol($event);
         }, 
-        updateFont($event) {
-            this.$refs.contenteditable.updateFont($event);
+        font($font) {
+            this.$refs.contenteditable.font($font);
+        }, 
+        fontSize($fontSize) {
+            this.$refs.contenteditable.fontSize($fontSize);
+        }, 
+        italic() {
+            this.$refs.contenteditable.italic();
+        }, 
+        bold() {
+            this.$refs.contenteditable.bold();
+        }, 
+        lineHeight($lineHeight) {
+            this.$refs.contenteditable.lineHeight($lineHeight);
         }, 
     }, 
 
