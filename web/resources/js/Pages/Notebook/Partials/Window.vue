@@ -13,7 +13,7 @@
                 @create:list="insertList"
                 @create:symbol="insertSymbol"
                 @create:emoticon="insertSymbol"
-                @update:font="font"
+                @update:font=""
                 @toggle:spellchecking="isSpellchecking = ! isSpellchecking"
                 @toggle:statusbar="isShowStatusBar = ! isShowStatusBar"
                 @toggle:fullscreen="$emit('toggle:fullscreen')"
@@ -24,11 +24,19 @@
                 />
 
             <WindowToolbarPartial 
-                @update:font="font"
-                @update:size="fontSize"
-                @update:italic="italic"
-                @update:bold="bold"
-                @update:line-height="lineHeight"
+                @bold="bold"
+                @italic="italic"
+                @underline="underline"
+                @strikethrough="strikethrough"
+                @superscript="superscript"
+                @subscript="subscript"
+                @insertUnorderedList="insertUnorderedList"
+                @insertOrderedList="insertOrderedList"
+                @insertHorizontalRule="insertHorizontalRule"
+                @justifyLeft="justifyLeft"
+                @justifyCenter="justifyCenter"
+                @justifyRight="justifyRight"
+                @justifyFull="justifyFull"
                 />
 
         </template>
@@ -52,6 +60,7 @@
             <WindowContentEditablePartial 
                 ref="contenteditable"
                 @update="record.text = $event"
+                @create:notification="$emit('create:notification', $event)"
                 :text="record.text"
                 :spellcheck="isSpellchecking"
                 />
@@ -157,21 +166,45 @@ export default {
         insertSymbol($event) {
             this.$refs.contenteditable.insertSymbol($event);
         }, 
-        font($font) {
-            this.$refs.contenteditable.font($font);
-        }, 
-        fontSize($fontSize) {
-            this.$refs.contenteditable.fontSize($fontSize);
+        bold() {
+            this.$refs.contenteditable.bold();
         }, 
         italic() {
             this.$refs.contenteditable.italic();
         }, 
-        bold() {
-            this.$refs.contenteditable.bold();
+        underline() {
+            this.$refs.contenteditable.underline();
         }, 
-        lineHeight($lineHeight) {
-            this.$refs.contenteditable.lineHeight($lineHeight);
+        strikethrough() {
+            this.$refs.contenteditable.strikethrough();
         }, 
+        superscript() {
+            this.$refs.contenteditable.superscript();
+        }, 
+        subscript() {
+            this.$refs.contenteditable.subscript();
+        }, 
+        insertUnorderedList() {
+            this.$refs.contenteditable.insertUnorderedList();
+        },
+        insertOrderedList() {
+            this.$refs.contenteditable.insertOrderedList();
+        },
+        insertHorizontalRule() {
+            this.$refs.contenteditable.insertHorizontalRule();
+        },
+        justifyLeft() {
+            this.$refs.contenteditable.justifyLeft();
+        },
+        justifyCenter() {
+            this.$refs.contenteditable.justifyCenter();
+        },
+        justifyRight() {
+            this.$refs.contenteditable.justifyRight();
+        },
+        justifyFull() {
+            this.$refs.contenteditable.justifyFull();
+        },
     }, 
 
     mounted() {

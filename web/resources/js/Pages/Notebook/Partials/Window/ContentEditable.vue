@@ -19,6 +19,7 @@ export default {
 
     emits: [
         'update', 
+        'create:notification', 
     ], 
 
     props: {
@@ -90,319 +91,210 @@ export default {
 
             this.$emit('update', this.$refs.contenteditable.innerHTML);
         }, 
-        mark(isContainerCallback, containerCallback, updateContainerCallback = null) {
-            let range = document.getSelection().getRangeAt(0);
-
-            console.log(range);
-
-            if (this.$refs.contenteditable.contains(range.startContainer)) {
-                let nodes = this.getTextNodesFromRange(this.$refs.contenteditable);
-                console.log(nodes);
-
-                nodes.forEach((textNode) => {
-                    this.wrapTextNode(textNode, isContainerCallback, containerCallback, updateContainerCallback);
+        bold() {
+            if (document.queryCommandSupported('bold')) {
+                document.execCommand('bold', false, null);
+            } else {
+                this.$emit('create:notification', {
+                    message: 'This command is not supported in your browser.', 
+                    error: true, 
                 });
-
-                this.$emit('update', this.$refs.contenteditable.innerHTML);
-            }
-        }, 
-        wrapTextNode(node, isContainerCallback, createContainerCallback, updateContainerCallback = null) {
-            if (node && node.nodeType == 3) {
-                let container = null;
-                let parent = node.parentElement;
-                let isContainer = isContainerCallback(parent);
-
-                if (! isContainer) {
-                    container = createContainerCallback(node);
-                    console.log('! isContainer')
-                    node.before(container);
-                    node.remove();
-                } else if(isContainer && parent.childNodes.length == 1) {
-                    let text = '';
-
-                    console.log('isContainer && parent.childNodes.length == 1')
-
-                    if (updateContainerCallback) {
-                        updateContainerCallback(parent);
-                    } else {
-                        if (parent.previousSibling && parent.previousSibling.nodeType == 3) {
-                            text += parent.previousSibling.textContent;
-                            parent.previousSibling.remove();
-                        }
-
-                        text += node.textContent;
-
-                        if (parent.nextSibling && parent.nextSibling.nodeType == 3) {
-                            text += parent.nextSibling.textContent;
-                            parent.nextSibling.remove();
-                        }
-
-                        parent.before(document.createTextNode(text));
-                        parent.remove();
-                    }
-                } else if (isContainer && parent.childNodes.length > 1) {
-                    console.log('isContainer && parent.childNodes.length > 1')
-
-                    let childNodes = Array.from(parent.childNodes);
-                    let index = childNodes.findIndex((v) => v.isSameNode(node));
-
-                    console.log(childNodes);
-                    console.log(index);
-
-                    if (index === 0) {
-                        let text = '';
-
-                        if (parent.previousSibling && parent.previousSibling.nodeType == 3) {
-                            text += parent.previousSibling.textContent;
-                            text += node.textContent;
-                            parent.previousSibling.textContent = text;
-                        } else {
-                            text += node.textContent;
-                            parent.before(document.createTextNode(text))
-                        }
-                        
-                        node.remove();
-                    } else if (index == childNodes.length - 1) {
-                        let text = '';
-
-                        text += node.textContent;
-
-                        if (parent.nextSibling && parent.nextSibling.nodeType == 3) {
-                            text += parent.nextSibling.textContent;
-                            parent.nextSibling.textContent = text;
-                        } else {
-                            parent.after(document.createTextNode(text));
-                        }
-
-                        node.remove();
-                    } else {
-                        let before = parent.cloneNode();
-                        let after = parent.cloneNode();
-                        childNodes.slice(0, index).forEach((v) => before.append(v));
-                        childNodes.slice(index + 1).forEach((v) => after.append(v));
-                        parent.before(before);
-                        parent.before(node);
-                        parent.after(after);
-                        parent.remove();
-                    }
-                } 
-            }
-        }, 
-        getTextNodesFromRange(element) {
-            let from = document.createTextNode(''),
-                to = document.createTextNode(''), 
-                range = document.getSelection().getRangeAt(0);
-                
-            range.insertNode(from);
-            range.collapse();
-            range.insertNode(to);
-
-            let nodes = this.getTextNodes(element);
-
-            nodes = nodes.filter((v) => {
-                if (! v.textContent && ! v.isSameNode(from) && ! v.isSameNode(to)) {
-                    v.remove();
-                    return false;
-                }
-                return true;
-            });
-
-            nodes = nodes.slice(nodes.findIndex((v) => v.isSameNode(from)) + 1, nodes.findIndex((v) => v.isSameNode(to)));
-
-            from.remove();
-            to.remove();
-
-            return nodes;
-        }, 
-        getTextNodes(element) {
-            let nodes = [];
-
-            element.childNodes.forEach((v) => {
-                if (v.nodeType == 3) {
-                    nodes.push(v);
-                } else {
-                    nodes = nodes.concat(this.getTextNodes(v));
-                }
-            });
-
-            return nodes;
-        }, 
-        font($font) {
-            let isContainer = (parent) => {
-                return parent && 
-                        parent.nodeType == 1 && 
-                        ! parent.isSameNode(this.$refs.contenteditable) && 
-                        parent.tagName == 'SPAN' && 
-                        parent.classList.contains('font');
-            };
-
-            let createContainer = (textNode) => {
-                let container = document.createElement('span');
-                container.textContent = textNode.textContent;
-                container.classList.add('font');
-                container.style.fontFamily = `'${$font.name}', ${$font.family}`;
-                return container;
-            };
-
-            let updateContainer = (container) => {
-                container.style.fontFamily = `'${$font.name}', ${$font.family}`;
-            };
-
-            this.mark(isContainer, createContainer, updateContainer);
-        }, 
-        fontSize($fontSize) {
-            let selection = document.getSelection(), 
-                range = selection.getRangeAt(0);
-
-            if (this.$refs.contenteditable.contains(range.startContainer)) {
-                let startAnchor = document.createTextNode('');
-                let endAnchor = document.createTextNode('');
-
-                range.insertNode(startAnchor);
-                range.collapse();
-                range.insertNode(endAnchor);
-
-                let nodes = this.getTextNodes(this.$refs.contenteditable);
-
-                nodes = nodes.slice(nodes.findIndex((v) => v.isSameNode(startAnchor)) + 1);
-                nodes = nodes.slice(0, nodes.findIndex((v) => v.isSameNode(endAnchor)));
-
-                nodes.forEach((v) => {
-                    this.wrap(this.$refs.contenteditable, v, (container) => {
-                        container.classList.add('font-size');
-                        container.style.fontSize = `${$fontSize.size}${$fontSize.unit}`;
-                    });
-                });
-
-                this.$emit('update', this.$refs.contenteditable.innerHTML);
             }
         }, 
         italic() {
-            let selection = document.getSelection(), 
-                range = selection.getRangeAt(0);
-
-            if (this.$refs.contenteditable.contains(range.startContainer)) {
-                let startAnchor = document.createTextNode('');
-                let endAnchor = document.createTextNode('');
-
-                range.insertNode(startAnchor);
-                range.collapse();
-                range.insertNode(endAnchor);
-
-                let nodes = this.getTextNodes(this.$refs.contenteditable);
-
-                nodes = nodes.slice(nodes.findIndex((v) => v.isSameNode(startAnchor)) + 1);
-                nodes = nodes.slice(0, nodes.findIndex((v) => v.isSameNode(endAnchor)));
-
-                let style = '';
-
-                nodes.forEach((v) => {
-                    this.wrap(this.$refs.contenteditable, v, (container) => {
-                        console.log(style)
-                        if (! style) {
-                            if (container.classList.contains('italic')) {
-                                style = 'not-italic';
-                            } else {
-                                style = 'italic';
-                            }
-                        } 
-
-                        container.classList.remove('italic');
-                        container.classList.remove('not-italic');
-                        container.classList.add(style);
-
-                        if (style == 'italic') {
-                            container.style.fontStyle = 'italic';
-                        } else {
-                            container.style.fontStyle = 'normal';
-                        }
-                    });
+            if (document.queryCommandSupported('italic')) {
+                document.execCommand('italic', false, null);
+            } else {
+                this.$emit('create:notification', {
+                    message: 'This command is not supported in your browser.', 
+                    error: true, 
                 });
-
-                this.$emit('update', this.$refs.contenteditable.innerHTML);
             }
         }, 
-        bold() {
-            let selection = document.getSelection(), 
-                range = selection.getRangeAt(0);
-
-            if (this.$refs.contenteditable.contains(range.startContainer)) {
-                let startAnchor = document.createTextNode('');
-                let endAnchor = document.createTextNode('');
-
-                range.insertNode(startAnchor);
-                range.collapse();
-                range.insertNode(endAnchor);
-
-                let nodes = this.getTextNodes(this.$refs.contenteditable);
-
-                nodes = nodes.slice(nodes.findIndex((v) => v.isSameNode(startAnchor)) + 1);
-                nodes = nodes.slice(0, nodes.findIndex((v) => v.isSameNode(endAnchor)));
-
-                nodes.forEach((v) => {
-                    this.wrap(this.$refs.contenteditable, v, (container) => {
-                        if (container.classList.contains('font-bold')) {
-                            container.classList.remove('font-bold');
-                        } else if(container.closest('.font-bold')) {
-                            container.classList.add('font-normal');
-                        } else {
-                            if (container.classList.contains('font-normal')) {
-                                container.classList.remove('font-normal');
-                            }
-
-                            container.classList.add('font-bold');
-                        }
-                    });
+        underline() {
+            if (document.queryCommandSupported('underline')) {
+                document.execCommand('underline', false, null);
+            } else {
+                this.$emit('create:notification', {
+                    message: 'This command is not supported in your browser.', 
+                    error: true, 
                 });
-
-                this.$emit('update', this.$refs.contenteditable.innerHTML);
             }
         }, 
-        lineHeight($lineHeight) {
-            let selection = document.getSelection(), 
-                range = selection.getRangeAt(0);
-
-            if (this.$refs.contenteditable.contains(range.startContainer)) {
-                let startAnchor = document.createTextNode('');
-                let endAnchor = document.createTextNode('');
-
-                range.insertNode(startAnchor);
-                range.collapse();
-                range.insertNode(endAnchor);
-
-                let nodes = this.getTextNodes(this.$refs.contenteditable);
-
-                nodes = nodes.slice(nodes.findIndex((v) => v.isSameNode(startAnchor)) + 1);
-                nodes = nodes.slice(0, nodes.findIndex((v) => v.isSameNode(endAnchor)));
-
-                nodes.forEach((v) => {
-                    this.wrap(this.$refs.contenteditable, v, (container) => {
-                        container.classList.add('line-height');
-                        container.style.lineHeight = $lineHeight;
-                    });
+        strikethrough() {
+            if (document.queryCommandSupported('strikethrough')) {
+                document.execCommand('strikethrough', false, null);
+            } else {
+                this.$emit('create:notification', {
+                    message: 'This command is not supported in your browser.', 
+                    error: true, 
                 });
-
-                this.$emit('update', this.$refs.contenteditable.innerHTML);
             }
         }, 
-        selectionChange() {
-            this.$store.commit('range', window.getSelection().getRangeAt(0));
+        superscript() {
+            if (document.queryCommandSupported('superscript')) {
+                document.execCommand('superscript', false, null);
+            } else {
+                this.$emit('create:notification', {
+                    message: 'This command is not supported in your browser.', 
+                    error: true, 
+                });
+            }
         }, 
-        addSelectionChangeListener() {
-            document.addEventListener('selectionchange', this.selectionChange);
+        subscript() {
+            if (document.queryCommandSupported('subscript')) {
+                document.execCommand('subscript', false, null);
+            } else {
+                this.$emit('create:notification', {
+                    message: 'This command is not supported in your browser.', 
+                    error: true, 
+                });
+            }
         }, 
-        removeSelectionChangeListener() {
-            document.removeEventListener('selectionchange', this.selectionChange);
+        insertUnorderedList() {
+            if (document.queryCommandSupported('insertUnorderedList')) {
+                document.execCommand('insertUnorderedList', false, null);
+            } else {
+                this.$emit('create:notification', {
+                    message: 'This command is not supported in your browser.', 
+                    error: true, 
+                });
+            }
+        }, 
+        insertOrderedList() {
+            if (document.queryCommandSupported('insertOrderedList')) {
+                document.execCommand('insertOrderedList', false, null);
+            } else {
+                this.$emit('create:notification', {
+                    message: 'This command is not supported in your browser.', 
+                    error: true, 
+                });
+            }
+        }, 
+        insertOrderedList() {
+            if (document.queryCommandSupported('insertOrderedList')) {
+                document.execCommand('insertOrderedList', false, null);
+            } else {
+                this.$emit('create:notification', {
+                    message: 'This command is not supported in your browser.', 
+                    error: true, 
+                });
+            }
+        }, 
+        header($h) {
+            if (document.queryCommandSupported('formatBlock')) {
+                document.execCommand('formatBlock', false, $h);
+            } else {
+                this.$emit('create:notification', {
+                    message: 'This command is not supported in your browser.', 
+                    error: true, 
+                });
+            }
+        }, 
+        insertHorizontalRule() {
+            if (document.queryCommandSupported('insertHorizontalRule')) {
+                document.execCommand('insertHorizontalRule', false, null);
+            } else {
+                this.$emit('create:notification', {
+                    message: 'This command is not supported in your browser.', 
+                    error: true, 
+                });
+            }
+        }, 
+        insertImage($url) {
+            if (document.queryCommandSupported('insertImage')) {
+                document.execCommand('insertImage', false, $url);
+            } else {
+                this.$emit('create:notification', {
+                    message: 'This command is not supported in your browser.', 
+                    error: true, 
+                });
+            }
+        }, 
+        createLink($link) {
+            if (document.queryCommandSupported('createLink')) {
+                document.execCommand('createLink', false, $link);
+            } else {
+                this.$emit('create:notification', {
+                    message: 'This command is not supported in your browser.', 
+                    error: true, 
+                });
+            }
+        }, 
+        unlink() {
+            if (document.queryCommandSupported('unlink')) {
+                document.execCommand('unlink', false, null);
+            } else {
+                this.$emit('create:notification', {
+                    message: 'This command is not supported in your browser.', 
+                    error: true, 
+                });
+            }
+        }, 
+        justifyLeft() {
+            if (document.queryCommandSupported('justifyLeft')) {
+                document.execCommand('justifyLeft', false, null);
+            } else {
+                this.$emit('create:notification', {
+                    message: 'This command is not supported in your browser.', 
+                    error: true, 
+                });
+            }
+        }, 
+        justifyCenter() {
+            if (document.queryCommandSupported('justifyCenter')) {
+                document.execCommand('justifyCenter', false, null);
+            } else {
+                this.$emit('create:notification', {
+                    message: 'This command is not supported in your browser.', 
+                    error: true, 
+                });
+            }
+        }, 
+        justifyRight() {
+            if (document.queryCommandSupported('justifyRight')) {
+                document.execCommand('justifyRight', false, null);
+            } else {
+                this.$emit('create:notification', {
+                    message: 'This command is not supported in your browser.', 
+                    error: true, 
+                });
+            }
+        }, 
+        justifyFull() {
+            if (document.queryCommandSupported('justifyFull')) {
+                document.execCommand('justifyFull', false, null);
+            } else {
+                this.$emit('create:notification', {
+                    message: 'This command is not supported in your browser.', 
+                    error: true, 
+                });
+            }
+        }, 
+        font($font) {
+            document.execCommand('styleWithCSS', false, true);
+            document.execCommand('fontName', false, `'${$font.name}', ${$font.family}`);
+            document.execCommand('styleWithCSS', false, false);
+        }, 
+        fontSize($fontSize) {
+            document.execCommand('styleWithCSS', false, true);
+            document.execCommand('fontSize', false, `${$fontSize.size}${$fontSize.unit}`);
+            document.execCommand('styleWithCSS', false, false);
+        }, 
+        foreColor($color) {
+            document.execCommand('styleWithCSS', false, true);
+            document.execCommand('foreColor', false, $color);
+            document.execCommand('styleWithCSS', false, false);
+        }, 
+        hiliteColor($color) {
+            document.execCommand('styleWithCSS', false, true);
+            document.execCommand('hiliteColor', false, $color);
+            document.execCommand('styleWithCSS', false, false);
         }, 
     }, 
 
     mounted () {
         this.$store.dispatch('font');
-        // this.addSelectionChangeListener();
-    }, 
-
-    unmounted() {
-        // this.removeSelectionChangeListener();
     }, 
 }
 </script>
