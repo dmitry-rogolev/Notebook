@@ -181,9 +181,9 @@ export default {
                 });
             }
         }, 
-        header($h) {
+        format($tag) {
             if (document.queryCommandSupported('formatBlock')) {
-                document.execCommand('formatBlock', false, $h);
+                document.execCommand('formatBlock', false, $tag);
             } else {
                 this.$emit('create:notification', {
                     message: 'This command is not supported in your browser.', 
@@ -277,9 +277,11 @@ export default {
             document.execCommand('styleWithCSS', false, false);
         }, 
         fontSize($fontSize) {
-            document.execCommand('styleWithCSS', false, true);
-            document.execCommand('fontSize', false, `${$fontSize.size}${$fontSize.unit}`);
-            document.execCommand('styleWithCSS', false, false);
+            console.log($fontSize);
+            document.execCommand('fontSize', false, '1');
+            var fontElement = window.getSelection().anchorNode.parentElement;
+            fontElement.removeAttribute("size");
+            fontElement.style.fontSize = $fontSize;
         }, 
         foreColor($color) {
             document.execCommand('styleWithCSS', false, true);

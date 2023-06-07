@@ -69,12 +69,6 @@ export default {
     }, 
 
     computed: {
-        widthClass() {
-            return 'w-' + this.width;
-        }, 
-        heightClass() {
-            return ! this.height || this.height == 'auto' ? '' : 'h-' + this.height;
-        }, 
         alignmentClass() {
             if (this.align == 'left') {
                 return 'origin-top-left left-0';
@@ -93,13 +87,13 @@ export default {
             type: [ Array, String ],
             default: () => ['py-1', 'bg-white', 'dark:bg-gray-700'],
         },
-        width: {
-            type: String, 
-            default: '48', 
-        }, 
-        height: {
-            type: String, 
-            default: 'auto', 
+        widthClass: {
+            type: [ Array, String ],
+            default: () => ['w-48'],
+        },
+        heightClass: {
+            type: [ Array, String ],
+            default: () => ['h-auto'],
         }, 
         align: {
             type: String, 

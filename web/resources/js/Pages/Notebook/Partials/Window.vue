@@ -37,6 +37,11 @@
                 @justifyCenter="justifyCenter"
                 @justifyRight="justifyRight"
                 @justifyFull="justifyFull"
+                @font="font"
+                @format="format"
+                @fontSize="fontSize"
+                @foreColor="foreColor"
+                @hiliteColor="hiliteColor"
                 />
 
         </template>
@@ -204,6 +209,21 @@ export default {
         },
         justifyFull() {
             this.$refs.contenteditable.justifyFull();
+        },
+        font($font) {
+            this.$refs.contenteditable.font($font);
+        },
+        format($tag) {
+            this.$refs.contenteditable.format($tag);
+        },
+        fontSize($size) {
+            this.$refs.contenteditable.fontSize($size);
+        },
+        foreColor($color) {
+            this.$refs.contenteditable.foreColor($color);
+        },
+        hiliteColor($color) {
+            this.$refs.contenteditable.hiliteColor($color);
         },
     }, 
 
