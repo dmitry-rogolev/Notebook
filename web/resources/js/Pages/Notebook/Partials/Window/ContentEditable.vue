@@ -201,9 +201,9 @@ export default {
                 });
             }
         }, 
-        insertImage($url) {
+        insertImage($path) {
             if (document.queryCommandSupported('insertImage')) {
-                document.execCommand('insertImage', false, $url);
+                document.execCommand('insertImage', false, $path);
             } else {
                 this.$emit('create:notification', {
                     message: 'This command is not supported in your browser.', 

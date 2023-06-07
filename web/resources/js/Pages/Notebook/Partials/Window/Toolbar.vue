@@ -234,7 +234,12 @@
                 <i class="fa-solid fa-image"></i>
             </ToolbarButtonComponent>
 
-            <UploadImageModalPartial :active="isOpenImageModal" @close="isOpenImageModal = false" />
+            <UploadImageModalPartial 
+                :note="note" 
+                :active="isOpenImageModal" 
+                @created:image="$emit('insertImage', $event)"
+                @close="isOpenImageModal = false" 
+                />
         </div>
         
     </section>
@@ -278,6 +283,7 @@ export default {
         'fontSize', 
         'foreColor', 
         'hiliteColor', 
+        'insertImage', 
     ], 
 
     data () {
@@ -337,6 +343,15 @@ export default {
             return faker.lorem.lines(1);
         }, 
     },
+
+    props: {
+        note: {
+            type: Object, 
+            required: true, 
+        }, 
+    }, 
+
+
 }
 </script>
 

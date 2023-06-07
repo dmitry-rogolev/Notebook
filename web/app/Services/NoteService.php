@@ -3,6 +3,7 @@
 namespace App\Services;
 
 use App\Models\Note;
+use Illuminate\Support\Facades\Storage;
 
 class NoteService extends Service
 {
@@ -43,6 +44,7 @@ class NoteService extends Service
      */
     public function delete(Note $note)
     {
+        Storage::deleteDirectory('public/' . request()->user()->id . '/' . $note->id);
         $note->delete();
     }
 }

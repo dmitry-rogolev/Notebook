@@ -1,5 +1,5 @@
 <template>
-    <ModalComponent :active="active" @close="$emit('close')">
+    <ModalComponent :active="active" @close="$emit('close')" @after-enter="createDropzone">
         <template #header>
             <div class="px-4 py-2 text-base">
                 Add image
@@ -7,20 +7,12 @@
         </template>
         <template #content>
             <div class="px-4 py-3">
-                <div class="px-4 py-2 h-40 bg-white dark:bg-gray-800 border-gray-300 dark:border-gray-600 border-4 border-dashed rounded-lg flex justify-center items-center flex-col">
-                    <div class="text-sm text-center mb-2 text-gray-700 dark:text-gray-300">
-                        Drag an image to this area or select from the list of your files by clicking on the button.
-                    </div>
-                    <label 
-                        :for="uploadImageToken"
-                        tabindex="0"
-                        class="px-8 py-2 bg-gray-100 dark:bg-gray-700 border-gray-300 dark:border-gray-600 border rounded-md focus-visible:outline-none focus:ring-2 focus:ring-indigo-500 dark:focus:ring-indigo-600 text-gray-700 dark:text-indigo-300 shadow-md cursor-pointer"
-                        @drop="drop"
-                        >
-                        Select
-                    </label>
-                    <input type="file" :id="uploadImageToken" class="hidden" />
-                </div>
+                <form 
+                    :id="dropzoneToken"
+                    class="dropzone h-52 px-4 py-2 bg-white dark:bg-gray-800 border-gray-300 dark:border-gray-700 border-2 border-dashed text-gray-600 dark:text-gray-400 rounded-lg shadow-md flex items-center justify-center"
+                    >
+
+                </form>
             </div>
         </template>
     </ModalComponent>
@@ -29,6 +21,7 @@
 <script>
 import ModalComponent from '@/Components/Modal.vue';
 import { token } from '@/helpers';
+import Dropzone from "dropzone";
 
 export default {
     name: 'UploadImageModalPartial', 
@@ -39,12 +32,15 @@ export default {
 
     emits: [
         'close', 
+        'created:image', 
     ], 
 
     data() {
         return {
             isOpenImageModal: false, 
             uploadImageToken: token(), 
+            dropzoneToken: token(), 
+            dropzone: null, 
         };
     },
 
@@ -53,17 +49,46 @@ export default {
             type: Boolean,
             default: false, 
         },
+        note: {
+            type: Object, 
+            required: true, 
+        }, 
     },
 
-    methods: {
-        drop($event) {
-            console.log($event);
-            
-            $event.preventDefault();
-
-            if ($event.dataTransfer.items) {
-                console.log($event.dataTransfer.items);
+    watch: {
+        active() {
+            if (! this.active) {
+                this.dropzone = null;
             }
+        }, 
+    }, 
+
+    methods: {
+        createDropzone() {
+            this.dropzone = new Dropzone('#' + this.dropzoneToken, {
+                maxFilesize: 4194304, 
+                paramName: 'image', 
+                maxFiles: 1, 
+                url: '/', 
+                autoProcessQueue: false, 
+                acceptedFiles: 'image/png,image/jpg,image/jpeg,image/gif', 
+            });
+            this.dropzone.on('addedfile', file => {
+                this.store(file);
+            });
+        }, 
+        store(file) {
+            let data = new FormData();
+            data.append('image', file);
+
+            axios.post('/api/notes/' + this.note.id + '/images', data, {
+                cache: false,
+                contentType: false,
+                processData: false,
+            }).then(response => {
+                this.$emit('created:image', '/api/notes/' + this.note.id + '/images/' + response.data.image.name);
+                this.$emit('close');
+            });
         }, 
     }, 
 }

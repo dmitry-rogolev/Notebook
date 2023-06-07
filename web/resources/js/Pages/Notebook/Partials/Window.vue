@@ -24,6 +24,7 @@
                 />
 
             <WindowToolbarPartial 
+                :note="note"
                 @bold="bold"
                 @italic="italic"
                 @underline="underline"
@@ -42,6 +43,7 @@
                 @fontSize="fontSize"
                 @foreColor="foreColor"
                 @hiliteColor="hiliteColor"
+                @insertImage="insertImage"
                 />
 
         </template>
@@ -224,6 +226,9 @@ export default {
         },
         hiliteColor($color) {
             this.$refs.contenteditable.hiliteColor($color);
+        },
+        insertImage($path) {
+            this.$refs.contenteditable.insertImage($path);
         },
     }, 
 
