@@ -6,11 +6,6 @@ const store = createStore({
             dark: false, 
             autosave: true, 
             windowHeight: 0, 
-            font: {
-                family: 'sans-serif', 
-                name: 'Figtree',  
-            }, 
-            range: null, 
         };
     }, 
 
@@ -20,13 +15,6 @@ const store = createStore({
         }, 
         getAutosave() {
             return localStorage.getItem('autosave') == 'true' ? true : false;
-        }, 
-        getFont() {
-            let font = localStorage.getItem('font');
-            if (font) {
-                font = JSON.parse(font);
-            }
-            return font;
         }, 
     }, 
 
@@ -39,12 +27,6 @@ const store = createStore({
         }, 
         windowHeight(state, windowHeight) {
             state.windowHeight = windowHeight;
-        }, 
-        font(state, font) {
-            state.font = font;
-        },
-        range(state, range) {
-            state.range = range;
         }, 
     }, 
 
@@ -63,17 +45,6 @@ const store = createStore({
                 localStorage.setItem('autosave', autosave);
             } else {
                 context.commit('autosave', context.getters.getAutosave);
-            }
-        }, 
-        font(context, font) {
-            if (font != undefined) {
-                context.commit('font', font);
-                localStorage.setItem('font', JSON.stringify(font));
-            } else {
-                font = context.getters.getFont;
-                if (font) {
-                    context.commit('font', font);
-                }
             }
         }, 
     }, 

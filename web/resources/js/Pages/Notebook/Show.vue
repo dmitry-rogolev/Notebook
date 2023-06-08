@@ -6,7 +6,7 @@
         </transition>
 
         <main class="flex-auto flex flex-col">
-            <div class="flex-auto flex overflow-hidden">
+            <div class="flex-auto flex">
 
                 <SidebarPartial 
                     v-show="isFullScreen ? isShowSidebar : true"

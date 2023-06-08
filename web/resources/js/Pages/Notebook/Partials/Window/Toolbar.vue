@@ -2,7 +2,7 @@
     <section
         role="menubar"
         tabindex="-1"
-        class="list-none flex flex-wrap px-2 sm:px-4 py-1 bg-gray-50 dark:bg-slate-800 border-gray-300 dark:border-gray-600 border-t text-gray-700 dark:text-gray-300"
+        class="flex flex-wrap px-2 sm:px-4 py-1 bg-gray-50 dark:bg-slate-800 border-gray-300 dark:border-gray-600 border-t text-gray-700 dark:text-gray-300"
         >
 
         <div role="menuitem">
@@ -180,12 +180,12 @@
         </div>
 
         <div role="menuitem">
-            <ToolbarButtonComponent @click="$emit('insertHorizontalRsectione')" title="Horizontal rsectione">
+            <ToolbarButtonComponent @click="$emit('insertHorizontalRule')" title="Horizontal rule">
                 <i class="fa-solid fa-window-minimize"></i>
             </ToolbarButtonComponent>
         </div>
 
-        <div  class="flex flex-nowrap">
+        <div class="flex flex-nowrap">
             <div role="menuitem">
                 <ToolbarButtonComponent @click="$emit('justifyLeft')" title="Align left">
                     <i class="fa-solid fa-align-left"></i>
@@ -242,22 +242,24 @@
                 />
         </div>
 
-        <div role="menuitem">
-            <ToolbarButtonComponent @click="isOpenLinkModal = true" title="Insert link">
-                <i class="fa-solid fa-link"></i>
-            </ToolbarButtonComponent>
+        <div class="flex flex-nowrap">
+            <div role="menuitem">
+                <ToolbarButtonComponent @click="isOpenLinkModal = true" title="Insert link">
+                    <i class="fa-solid fa-link"></i>
+                </ToolbarButtonComponent>
+    
+                <ModalCreateLinkPartial 
+                    :active="isOpenLinkModal" 
+                    @added:link="$emit('createLink', $event)"
+                    @close="isOpenLinkModal = false" 
+                    />
+            </div>
 
-            <ModalCreateLinkPartial 
-                :active="isOpenLinkModal" 
-                @added:link="$emit('createLink', $event)"
-                @close="isOpenLinkModal = false" 
-                />
-        </div>
-
-        <div role="menuitem">
-            <ToolbarButtonComponent @click="$emit('unlink')" title="Unlink">
-                <i class="fa-solid fa-unlink"></i>
-            </ToolbarButtonComponent>
+            <div role="menuitem">
+                <ToolbarButtonComponent @click="$emit('unlink')" title="Unlink">
+                    <i class="fa-solid fa-unlink"></i>
+                </ToolbarButtonComponent>
+            </div>
         </div>
         
     </section>
@@ -293,7 +295,7 @@ export default {
         'subscript', 
         'insertUnorderedList', 
         'insertOrderedList', 
-        'insertHorizontalRsectione', 
+        'insertHorizontalRule', 
         'justifyLeft', 
         'justifyCenter', 
         'justifyRight', 

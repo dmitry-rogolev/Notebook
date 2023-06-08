@@ -167,7 +167,7 @@ export default {
             this.$refs.header.closeReplacer();
         }, 
         clearFound() {
-            this.$refs.textarea.innerHTML = this.record.text;
+            this.$refs.contenteditable.innerHTML = this.record.text;
         },  
         insertList($event) {
             this.$refs.contenteditable.insertList($event);

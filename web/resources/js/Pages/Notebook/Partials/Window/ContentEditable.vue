@@ -2,14 +2,16 @@
     <div 
         ref="contenteditable" 
         @input="$emit('update', $event.target.innerHTML)" 
+        @keydown.prevent.stop.tab="tab"
         autofocus 
-        class="h-full px-3 sm:px-4 md:px-5 py-3 bg-gray-50 dark:bg-slate-800 text-gray-800 dark:text-gray-200 text-base focus-visible:outline-none whitespace-pre-line overflow-y-auto overflow-x-hidden " 
+        :style="{tabSize: 4}"
+        class="h-full px-3 sm:px-4 md:px-5 py-3 bg-gray-50 dark:bg-slate-800 text-gray-800 dark:text-gray-200 text-base focus-visible:outline-none whitespace-pre-wrap hyphens-auto break-all overflow-x-auto overflow-y-auto" 
         role="textbox" 
         contenteditable="true" 
         aria-multiline="true"
         :spellcheck="spellcheck"
         >
-
+        
     </div>
 </template>
 
@@ -293,10 +295,20 @@ export default {
                 });
             }
         }, 
+        tab() {
+            let selection = window.getSelection();
+            let range = selection.getRangeAt(0);
+            let tabNode = document.createTextNode("\t");
+            range.insertNode(tabNode);
+            range.setStartAfter(tabNode);
+            range.setEndAfter(tabNode); 
+            selection.removeAllRanges();
+            selection.addRange(range);
+        }, 
     }, 
 
     mounted () {
-        this.$store.dispatch('font');
+        document.execCommand('defaultParagraphSeparator', false, 'p');
     }, 
 }
 </script>
