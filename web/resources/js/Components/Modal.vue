@@ -7,6 +7,7 @@
                 leave-active-class="transition ease-in duration-200"
                 leave-to-class="opacity-0"
                 @after-enter="$emit('after-enter')"
+                @after-leave="$emit('after-leave')"
                 >
                 <div
                     v-if="active"
@@ -48,6 +49,7 @@ export default {
     emits: [
         'close', 
         'after-enter', 
+        'after-leave', 
     ], 
 
     computed: {

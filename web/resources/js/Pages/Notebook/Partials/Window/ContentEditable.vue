@@ -201,36 +201,6 @@ export default {
                 });
             }
         }, 
-        insertImage($path) {
-            if (document.queryCommandSupported('insertImage')) {
-                document.execCommand('insertImage', false, $path);
-            } else {
-                this.$emit('create:notification', {
-                    message: 'This command is not supported in your browser.', 
-                    error: true, 
-                });
-            }
-        }, 
-        createLink($link) {
-            if (document.queryCommandSupported('createLink')) {
-                document.execCommand('createLink', false, $link);
-            } else {
-                this.$emit('create:notification', {
-                    message: 'This command is not supported in your browser.', 
-                    error: true, 
-                });
-            }
-        }, 
-        unlink() {
-            if (document.queryCommandSupported('unlink')) {
-                document.execCommand('unlink', false, null);
-            } else {
-                this.$emit('create:notification', {
-                    message: 'This command is not supported in your browser.', 
-                    error: true, 
-                });
-            }
-        }, 
         justifyLeft() {
             if (document.queryCommandSupported('justifyLeft')) {
                 document.execCommand('justifyLeft', false, null);
@@ -292,6 +262,36 @@ export default {
             document.execCommand('styleWithCSS', false, true);
             document.execCommand('hiliteColor', false, $color);
             document.execCommand('styleWithCSS', false, false);
+        }, 
+        insertImage($path) {
+            if (document.queryCommandSupported('insertImage')) {
+                document.execCommand('insertImage', false, $path);
+            } else {
+                this.$emit('create:notification', {
+                    message: 'This command is not supported in your browser.', 
+                    error: true, 
+                });
+            }
+        }, 
+        createLink($link) {
+            if (document.queryCommandSupported('createLink')) {
+                document.execCommand('createLink', false, $link);
+            } else {
+                this.$emit('create:notification', {
+                    message: 'This command is not supported in your browser.', 
+                    error: true, 
+                });
+            }
+        }, 
+        unlink() {
+            if (document.queryCommandSupported('unlink')) {
+                document.execCommand('unlink', false, null);
+            } else {
+                this.$emit('create:notification', {
+                    message: 'This command is not supported in your browser.', 
+                    error: true, 
+                });
+            }
         }, 
     }, 
 

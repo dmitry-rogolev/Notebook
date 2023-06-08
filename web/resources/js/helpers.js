@@ -25,9 +25,8 @@ function escapeRegex(str) {
 
 function cutTags(str) {
 	return str.replace(/<\/?[^>]+>/igm, (v) => { 
-        return /<\/?(ul|ol|li|p|div|br|span|h|b|i|sub|sup|strong|em|img|table|tr|td|th).*>/igm.test(v) ? v : '';
+        return /<\/?(script|meta|body|iframe|head|html).*>/igm.test(v) ? '' : v;
     });
 }
-
 
 export { token, escapeHtml, escapeRegex, cutTags };

@@ -44,6 +44,8 @@
                 @foreColor="foreColor"
                 @hiliteColor="hiliteColor"
                 @insertImage="insertImage"
+                @createLink="createLink"
+                @unlink="unlink"
                 />
 
         </template>
@@ -229,6 +231,12 @@ export default {
         },
         insertImage($path) {
             this.$refs.contenteditable.insertImage($path);
+        },
+        createLink($link) {
+            this.$refs.contenteditable.createLink($link);
+        },
+        unlink() {
+            this.$refs.contenteditable.unlink();
         },
     }, 
 

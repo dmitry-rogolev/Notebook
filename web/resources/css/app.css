@@ -16,7 +16,7 @@ input[type=number] {
     -moz-appearance:textfield;
 }
 
-ul {
+[contenteditable=true] ul {
     display: block;
     list-style-type: disc;
     margin-top: 1em;
@@ -25,7 +25,7 @@ ul {
     margin-right: 0;
     padding-left: 40px;
 }
-ol {
+[contenteditable=true] ol {
     display: block;
     list-style-type: decimal;
     margin-top: 1em;
@@ -34,7 +34,7 @@ ol {
     margin-right: 0;
     padding-left: 40px;
 }
-hr {
+[contenteditable=true] hr {
     display: block;
     margin-top: 0.5em;
     margin-bottom: 0.5em;
@@ -44,7 +44,7 @@ hr {
     border-width: 1px;
     @apply border-gray-300 dark:border-gray-600;
 }
-h1 {
+[contenteditable=true] h1 {
     display: block;
     font-size: 2em;
     margin-top: 0.67em;
@@ -53,7 +53,7 @@ h1 {
     margin-right: 0;
     font-weight: bold;
 }
-h2 {
+[contenteditable=true] h2 {
     display: block;
     font-size: 1.5em;
     margin-top: 0.83em;
@@ -62,7 +62,7 @@ h2 {
     margin-right: 0;
     font-weight: bold;
 }
-h3 {
+[contenteditable=true] h3 {
     display: block;
     font-size: 1.17em;
     margin-top: 1em;
@@ -71,7 +71,7 @@ h3 {
     margin-right: 0;
     font-weight: bold;
 }
-h4 {
+[contenteditable=true] h4 {
     display: block;
     font-size: 1em;
     margin-top: 1.33em;
@@ -80,7 +80,7 @@ h4 {
     margin-right: 0;
     font-weight: bold;
 }
-h5 {
+[contenteditable=true] h5 {
     display: block;
     font-size: .83em;
     margin-top: 1.67em;
@@ -89,7 +89,7 @@ h5 {
     margin-right: 0;
     font-weight: bold;
 }
-h6 {
+[contenteditable=true] h6 {
     display: block;
     font-size: .67em;
     margin-top: 2.33em;
@@ -98,17 +98,24 @@ h6 {
     margin-right: 0;
     font-weight: bold;
 }
-p {
+[contenteditable=true] p {
     display: block;
     margin-top: 1em;
     margin-bottom: 1em;
     margin-left: 0;
     margin-right: 0;
 }
-blockquote {
+[contenteditable=true] blockquote {
     display: block;
     margin-top: 1em;
     margin-bottom: 1em;
     margin-left: 40px;
     margin-right: 40px;
+}
+[contenteditable=true] a:link, [contenteditable=true] a:visited {
+    @apply text-indigo-500 dark:text-indigo-600 underline cursor-pointer;
+}
+
+[contenteditable=true] a:link:active, [contenteditable=true] a:visited:active {
+    @apply text-indigo-600 dark:text-indigo-700
 }

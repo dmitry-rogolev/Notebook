@@ -230,7 +230,7 @@
         </div>
 
         <div role="menuitem">
-            <ToolbarButtonComponent @click="isOpenImageModal = true" class="relative" title="Background">
+            <ToolbarButtonComponent @click="isOpenImageModal = true" title="Insert image">
                 <i class="fa-solid fa-image"></i>
             </ToolbarButtonComponent>
 
@@ -241,6 +241,24 @@
                 @close="isOpenImageModal = false" 
                 />
         </div>
+
+        <div role="menuitem">
+            <ToolbarButtonComponent @click="isOpenLinkModal = true" title="Insert link">
+                <i class="fa-solid fa-link"></i>
+            </ToolbarButtonComponent>
+
+            <ModalCreateLinkPartial 
+                :active="isOpenLinkModal" 
+                @added:link="$emit('createLink', $event)"
+                @close="isOpenLinkModal = false" 
+                />
+        </div>
+
+        <div role="menuitem">
+            <ToolbarButtonComponent @click="$emit('unlink')" title="Unlink">
+                <i class="fa-solid fa-unlink"></i>
+            </ToolbarButtonComponent>
+        </div>
         
     </section>
 </template>
@@ -250,6 +268,7 @@ import ToolbarButtonComponent from '@/Components/ToolbarButton.vue';
 import DropdownComponent from '@/Components/Dropdown.vue';
 import DropdownLinkComponent from '@/Components/DropdownLink.vue';
 import UploadImageModalPartial from '@/Pages/Notebook/Partials/Window/Modals/UploadImage.vue';
+import ModalCreateLinkPartial from '@/Pages/Notebook/Partials/Window/Modals/CreateLink.vue';
 import fonts from '@/assets/fonts.json';
 import { faker } from '@faker-js/faker';
 import { token } from '@/helpers';
@@ -262,6 +281,7 @@ export default {
         DropdownComponent, 
         DropdownLinkComponent, 
         UploadImageModalPartial, 
+        ModalCreateLinkPartial, 
     }, 
 
     emits: [
@@ -284,6 +304,8 @@ export default {
         'foreColor', 
         'hiliteColor', 
         'insertImage', 
+        'createLink', 
+        'unlink', 
     ], 
 
     data () {
@@ -292,6 +314,7 @@ export default {
             isOpenFormatBlocks: false, 
             isOpenFontSize: false, 
             isOpenImageModal: false, 
+            isOpenLinkModal: false, 
             font: 'Figtree', 
             fonts: fonts, 
             formatBlock: 'Paragraph', 
@@ -350,8 +373,6 @@ export default {
             required: true, 
         }, 
     }, 
-
-
 }
 </script>
 
