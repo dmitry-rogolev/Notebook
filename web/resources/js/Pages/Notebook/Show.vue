@@ -62,7 +62,7 @@ import AppLayout from '@/Layouts/AppLayout.vue';
 import ApplicationHeaderPartial from '@/Layouts/Partials/Header.vue';
 import SidebarPartial from '@/Pages/Notebook/Partials/Sidebar.vue';
 import WindowPartial from '@/Pages/Notebook/Partials/Window.vue';
-import { escapeHtml, cutTags } from '@/helpers';
+import { escapeHtml, cutForbiddenTags } from '@/helpers';
 
 export default {
     name: 'NotebookPage', 
@@ -157,7 +157,7 @@ export default {
         }, 
         create(note = {}) {
             if (note && note.text) {
-                note.text = cutTags(note.text);
+                note.text = cutForbiddenTags(note.text);
             }
             axios.post('/api/notes', note).then((response) => {
                 this.note = response.data.data;
@@ -178,7 +178,7 @@ export default {
 
             if (this.note.title != note.title || this.note.text != note.text) {
                 if (note && note.text) {
-                    note.text = cutTags(note.text);
+                    note.text = cutForbiddenTags(note.text);
                 }
                 axios.patch('/api/notes/' + this.note.id, note).then((response) => {
                     this.note = response.data.data;

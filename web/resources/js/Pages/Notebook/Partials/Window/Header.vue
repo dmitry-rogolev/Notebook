@@ -36,7 +36,7 @@
 
 <script>
 import SelectorComponent from '@/Components/Selector.vue';
-import { escapeHtml, escapeRegex, cutTags } from '@/helpers';
+import { escapeHtml, escapeRegex, cutForbiddenTags } from '@/helpers';
 
 export default {
     name: 'WindowHeaderPartial', 
@@ -156,7 +156,7 @@ export default {
                 this.$parent.$parent.$refs.contenteditable.$el.innerHTML = result;
 
                 if (replace) {
-                    this.$emit('update:recordText', cutTags(this.$parent.$parent.$refs.contenteditable.$el.innerHTML));
+                    this.$emit('update:recordText', cutForbiddenTags(this.$parent.$parent.$refs.contenteditable.$el.innerHTML));
                 }
             }
         }, 

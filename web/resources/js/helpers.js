@@ -24,9 +24,27 @@ function escapeRegex(str) {
 }
 
 function cutTags(str) {
-	return str.replace(/<\/?[^>]+>/igm, (v) => { 
+	return str.replace(/<\/?[^>]+>/igm, '');
+}
+
+function cutForbiddenTags(str) {
+    return str.replace(/<\/?[^>]+>/igm, (v) => { 
         return /<\/?(script|meta|body|iframe|head|html).*>/igm.test(v) ? '' : v;
     });
 }
 
-export { token, escapeHtml, escapeRegex, cutTags };
+function getTextNodes(element) {
+    let textNodes = [];
+
+    element.childNodes.forEach((v) => {
+        if (v.nodeType == 3) {
+            textNodes.push(v);
+        } else {
+            textNodes = textNodes.concat(this.getTextNodes(v));
+        }
+    });
+
+    return textNodes;
+}
+
+export { token, escapeHtml, escapeRegex, cutTags, cutForbiddenTags, getTextNodes };

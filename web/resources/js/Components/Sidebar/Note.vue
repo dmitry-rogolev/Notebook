@@ -6,12 +6,14 @@
         :class="{'bg-gray-50 hover:bg-gray-100 dark:bg-slate-800 cursor-pointer dark:hover:bg-slate-700': !active, 'bg-indigo-200 dark:bg-indigo-900 cursor-default': active}"
         >
         <div class="truncate text-base lg:text-lg font-bold text-gray-700 dark:text-gray-300">{{ note.title ? note.title : 'No name' }}</div>
-        <div v-if="note.text" class="truncate text-sm lg:text-base text-gray-700 dark:text-gray-300">{{ note.text }}</div>
+        <div v-if="note.text" class="truncate text-sm lg:text-base text-gray-700 dark:text-gray-300">{{ cutTags(note.text) }}</div>
         <div class="truncate text-xs lg:text-sm text-gray-600 dark:text-gray-400">{{ note.updated }}</div>
     </button>
 </template>
 
 <script>
+import { cutTags } from '@/helpers';
+
 export default {
     name: 'BarNoteComponent', 
 
@@ -69,6 +71,9 @@ export default {
             }
 
             return Math.round(diff) + ' ' + postfix + ' ago';
+        }, 
+        cutTags(str) {
+            return cutTags(str);
         }, 
     }, 
 
