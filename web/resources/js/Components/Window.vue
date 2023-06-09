@@ -1,5 +1,5 @@
 <template>
-    <section class="bg-gray-100 dark:bg-slate-800 shadow flex flex-col flex-auto" :style="{height: windowHeight + 'px', maxHeight: windowHeight + 'px'}">
+    <section class="bg-gray-100 dark:bg-slate-800 shadow flex flex-col flex-auto w-0" :style="{height: windowHeight + 'px', maxHeight: windowHeight + 'px'}">
         <div 
             @keyup.left="left" 
             @keyup.right="right" 
@@ -12,7 +12,7 @@
         <div class="relative">
             <slot name="header"></slot>
         </div>
-        <div class="flex-auto flex flex-col overflow-y-auto print:absolute print:z-[1000]">
+        <div class="flex-auto flex flex-col overflow-auto print:absolute print:z-[1000]">
             <slot name="body"></slot>
         </div>
         <div class="relative">
@@ -100,5 +100,6 @@ export default {
     mounted() {
         this.defineValues();
     }, 
+
 };
 </script>

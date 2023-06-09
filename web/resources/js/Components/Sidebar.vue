@@ -1,5 +1,5 @@
 <template>
-    <section class="flex print:hidden" role="menubar">
+    <section ref="sidebar" class="flex print:hidden" role="menubar" :style="{height: windowHeight + 'px'}">
         <div class="bg-white dark:bg-gray-800 border-gray-300 dark:border-gray-600 border-r h-full overflow-y-auto z-10">
             <slot name="triggers"></slot>
         </div>
@@ -36,14 +36,28 @@ export default {
         BarContentComponent, 
     },
 
+    data() {
+        return {
+            observer: null, 
+        };
+    },
+
+    computed: {
+        windowHeight() {
+            return this.$store.state.windowHeight;
+        }, 
+        sidebarWidth() {
+            return this.$store.state.sidebarWidth;
+        }, 
+        rem() {
+            return parseFloat(getComputedStyle(document.documentElement).fontSize);
+        }, 
+    },
+
     props: {
         active: {
             type: Boolean, 
             default: false, 
-        }, 
-        resize: {
-            type: Function, 
-            required: true, 
         }, 
     }, 
 
@@ -53,6 +67,17 @@ export default {
         }, 
         removeWindowResizeListener() {
             $(window).off('resize', this.resize);
+        }, 
+        resize() {
+            let windowHeight = 0;
+
+            if (this.activeFullScreen) {
+                windowHeight = document.documentElement.clientHeight;
+            } else {
+                windowHeight = document.documentElement.clientHeight - 4 * this.rem - 1;
+            }
+
+            this.$store.commit('windowHeight', windowHeight);
         }, 
     }, 
 

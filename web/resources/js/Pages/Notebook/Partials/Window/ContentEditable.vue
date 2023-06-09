@@ -7,7 +7,7 @@
         @paste="paste"
         autofocus 
         :style="{tabSize: 4}"
-        class="h-full px-3 sm:px-4 md:px-5 py-3 bg-gray-50 dark:bg-slate-800 text-gray-800 dark:text-gray-200 text-base focus-visible:outline-none whitespace-pre-wrap hyphens-auto break-all overflow-x-auto overflow-y-auto" 
+        class="h-full px-3 sm:px-4 md:px-5 py-3 bg-gray-50 dark:bg-slate-800 text-gray-800 dark:text-gray-200 text-base focus-visible:outline-none whitespace-pre-wrap break-words overflow-x-auto overflow-y-auto" 
         role="textbox" 
         contenteditable="true" 
         aria-multiline="true"

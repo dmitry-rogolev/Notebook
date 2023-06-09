@@ -1,7 +1,7 @@
 <template>
-    <transition name="fullscreen" mode="out-in" @after-enter="afterEnter" @after-leave="afterEnter">
+    <transition name="fullscreen" mode="out-in">
 
-        <SidebarComponent ref="sidebar" v-show="! activeFullScreen" :style="{height: windowHeight + 'px'}" :active="activeNotes || activeSearch" :id="sidebarToken" :resize="resize">
+        <SidebarComponent ref="sidebar" v-show="! activeFullScreen" :active="activeNotes || activeSearch" :id="sidebarToken">
             
             <template #triggers>
 
@@ -69,14 +69,8 @@ export default {
     }, 
 
     computed: {
-        rem() {
-            return parseFloat(getComputedStyle(document.documentElement).fontSize);
-        }, 
         dark() {
             return this.$store.state.dark;
-        }, 
-        windowHeight() {
-            return this.$store.state.windowHeight;
         }, 
     }, 
 
@@ -116,22 +110,8 @@ export default {
     }, 
 
     methods: {
-        resize() {
-            let windowHeight = 0;
-
-            if (this.activeFullScreen) {
-                windowHeight = document.documentElement.clientHeight;
-            } else {
-                windowHeight = document.documentElement.clientHeight - 4 * this.rem - 1;
-            }
-
-            this.$store.commit('windowHeight', windowHeight);
-        }, 
         toggleDark() {
             this.$store.dispatch('dark', ! this.dark);
-        }, 
-        afterEnter() {
-            this.resize();
         }, 
         defineFocus() {
             if (this.activeNotes) {

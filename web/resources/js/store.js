@@ -6,6 +6,8 @@ const store = createStore({
             dark: false, 
             autosave: true, 
             windowHeight: 0, 
+            sidebarWidth: 0, 
+            windowWidth: 0, 
         };
     }, 
 
@@ -27,6 +29,12 @@ const store = createStore({
         }, 
         windowHeight(state, windowHeight) {
             state.windowHeight = windowHeight;
+        }, 
+        sidebarWidth(state, sidebarWidth) {
+            state.sidebarWidth = sidebarWidth;
+        }, 
+        windowWidth(state, windowWidth) {
+            state.windowWidth = windowWidth;
         }, 
     }, 
 
