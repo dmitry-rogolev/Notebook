@@ -376,7 +376,7 @@ import ModalInsertListPartial from '@/Pages/Notebook/Partials/Window/Modals/Inse
 import ModalInsertSymbolsPartial from '@/Pages/Notebook/Partials/Window/Modals/InsertSymbols.vue';
 import ModalInsertEmoticonsPartial from '@/Pages/Notebook/Partials/Window/Modals/InsertEmoticons.vue';
 import ModalFontPartial from '@/Pages/Notebook/Partials/Window/Modals/Font.vue';
-import { escapeHtml, escapeRegex, cutForbiddenTags } from '@/helpers';
+import { cutTags } from '@/helpers';
 
 export default {
     name: 'WindowMenuPartial', 
@@ -467,7 +467,7 @@ export default {
                     input.files[0].arrayBuffer().then((arrayBuffer) => {
                         this.$emit('create:note', {
                             title: input.files[0].name, 
-                            text: cutForbiddenTags(new TextDecoder().decode(arrayBuffer)), 
+                            text: cutTags(new TextDecoder().decode(arrayBuffer)), 
                         });
                     });
                 }
