@@ -29,14 +29,11 @@
                     @create:note="create"
                     @update:note="update"
                     @delete:note="this.delete()" 
-                    @create:notification="newNotification"
                     @exit="close"
                     @toggle:fullscreen="isFullScreen = ! isFullScreen"
                     :note="note"
                     :activeFullScreen="isFullScreen"
                     />
-
-                <NotificationManagerComponent :notifications="notifications" />
 
                 <teleport to="body">
                     <div 
@@ -65,7 +62,6 @@ import AppLayout from '@/Layouts/AppLayout.vue';
 import ApplicationHeaderPartial from '@/Layouts/Partials/Header.vue';
 import SidebarPartial from '@/Pages/Notebook/Partials/Sidebar.vue';
 import WindowPartial from '@/Pages/Notebook/Partials/Window.vue';
-import NotificationManagerComponent from '@/Components/NotificationManager.vue';
 import { escapeHtml, cutTags } from '@/helpers';
 
 export default {
@@ -76,7 +72,6 @@ export default {
         AppLayout, 
         SidebarPartial, 
         WindowPartial, 
-        NotificationManagerComponent, 
     }, 
 
     data() {
@@ -84,7 +79,6 @@ export default {
             record: null, 
             notes: null, 
             found: null, 
-            notifications: [], 
             isFullScreen: false, 
             isShowSidebar: false, 
             isShowHeader: false, 
@@ -168,7 +162,7 @@ export default {
             axios.post('/api/notes', note).then((response) => {
                 this.note = response.data.data;
 
-                this.newNotification({
+                this.$notifier.push({
                     message: 'Created', 
                     success: true, 
                 });
@@ -188,7 +182,7 @@ export default {
                 }
                 axios.patch('/api/notes/' + this.note.id, note).then((response) => {
                     this.note = response.data.data;
-                    this.newNotification({
+                    this.$notifier.push({
                         message: 'Saved', 
                         success: true, 
                     });
@@ -210,14 +204,10 @@ export default {
 
             this.note = this.notes[this.notes.length - 1];
 
-            this.newNotification({
+            this.$notifier.push({
                 message: 'Deleted', 
                 success: true, 
             });
-        }, 
-        newNotification(notification) {
-            this.notifications.push(notification);
-            setTimeout(() => this.notifications.shift(), 2000);
         }, 
         keyupListener(e) {
             e.preventDefault();

@@ -6,17 +6,21 @@
             <slot></slot>
         </div>
 
+        <NotificationManagerComponent />
+
     </div>
 </template>
 
 <script>
 import { Head } from '@inertiajs/vue3';
+import NotificationManagerComponent from '@/Plugins/Notification/Components/Manager.vue';
 
 export default {
     name: 'AppLayout', 
 
     components: {
         Head, 
+        NotificationManagerComponent, 
     }, 
 
     computed: {

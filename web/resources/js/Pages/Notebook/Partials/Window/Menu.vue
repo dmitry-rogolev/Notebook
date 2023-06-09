@@ -398,7 +398,6 @@ export default {
         'create:note', 
         'create:list', 
         'update:note', 
-        'create:notification', 
         'exit', 
         'open:selector', 
         'open:replacer', 
@@ -501,15 +500,15 @@ export default {
             if (this.autosave) {
                 this.$store.dispatch('autosave', false);
                 this.offAutosave();
-                this.$emit('create:notification', {
+                this.$notifier.push({
                     message: 'Auto save mod off',
                     success: true, 
                 });
             } else {
                 this.$store.dispatch('autosave', true);
                 this.onAutosave();
-                this.$emit('create:notification', {
-                    message: 'Auto save mod on', 
+                this.$notifier.push({
+                    message: 'Auto save mod on',
                     success: true, 
                 });
             }

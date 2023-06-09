@@ -21,8 +21,13 @@ export default {
 
     emits: [
         'update', 
-        'create:notification', 
     ], 
+
+    data () {
+        return {
+            commands: ['bold', 'italic', 'underline', 'strikethrough', 'superscript', 'subscript', 'insertUnorderedList', 'insertOrderedList', 'formatBlock', 'insertHorizontalRule', 'insertImage', 'createLink', 'unlink', 'insertText', 'insertHTML', 'justifyLeft', 'justifyCenter', 'justifyRight', 'justifyFull', 'fontName', 'fontSize', 'foreColor', 'hiliteColor', 'undo', 'redo', 'selectAll', 'delete', 'removeFormat', 'cut', 'copy'],
+        };
+    },
 
     props: {
         text: {
@@ -36,265 +41,102 @@ export default {
     },
 
     methods: {
-        insertList($event) {
-            let tag, mark;
-
-            switch($event) {
-                case 'decimal': tag = 'ol'; mark = 'decimal'; break;
-                case 'decimal-leading-zero': tag = 'ol'; mark = 'decimal-leading-zero'; break;
-                case 'upper-roman': tag = 'ol'; mark = 'upper-roman'; break;
-                case 'lower-roman': tag = 'ol'; mark = 'lower-roman'; break;
-                case 'upper-alpha': tag = 'ol'; mark = 'upper-alpha'; break;
-                case 'lower-alpha': tag = 'ol'; mark = 'lower-alpha'; break;
-                case 'lower-greek': tag = 'ol'; mark = 'lower-greek'; break;
-                case 'armenian': tag = 'ol'; mark = 'armenian'; break;
-                case 'georgian': tag = 'ol'; mark = 'georgian'; break;
-                case 'disc': tag = 'ul'; mark = 'disc'; break;
-                case 'circle': tag = 'ul'; mark = 'circle'; break;
-                case 'square': tag = 'ul'; mark = 'square'; break;
-                default: tag = 'ul'; mark = 'disc'; break;
+        parseOptions(options) {
+            let showUI = false;
+            let checkSupport = true;
+            let notify = true;
+            let cssMode = false;
+            let successNotification = null;
+            let errorNotification = {
+                message: 'This command is not supported in your browser.', 
+                error: true, 
             };
 
-            let selection = window.getSelection(), 
-                range = selection.getRangeAt(0), 
-                div = document.createElement('div'), 
-                list = document.createElement(tag), 
-                li = document.createElement('li');
+            if (typeof options == 'object') {
+                if ('showUI' in options && typeof options.showUI == 'boolean') {
+                    showUI = options.showUI;
+                }
 
-            list.classList.add('list-inside');
-            list.style.listStyleType = mark;
-            
-            list.append(li);
-            div.append(list);
-            range.insertNode(div);
+                if ('checkSupport' in options && typeof options.checkSupport == 'boolean') {
+                    checkSupport = options.checkSupport;
+                }
 
-            this.setCursor(li);
+                if ('notify' in options && typeof options.notify == 'boolean') {
+                    notify = options.notify;
+                }
 
-            this.$emit('update', this.$refs.contenteditable.innerHTML);
-        }, 
-        setCursor(el, offset = 0) {
-            let range = new Range(), 
-                selection = window.getSelection();
+                if ('cssMode' in options && typeof options.cssMode == 'boolean') {
+                    cssMode = options.cssMode;
+                }
 
-            range.setStart(el, offset);
-            range.collapse(true);
+                if ('successNotification' in options && typeof options.successNotification == 'object') {
+                    successNotification = options.successNotification;
+                }
 
-            selection.removeAllRanges();
-            selection.addRange(range);
-        }, 
-        insertSymbol($event) {
-            let range = document.getSelection().getRangeAt(0), 
-                span = document.createElement('span');
+                if ('errorNotification' in options && typeof options.errorNotification == 'object') {
+                    errorNotification = options.errorNotification;
+                }
+            }
 
-            span.innerHTML = $event;
+            return {
+                showUI: showUI, 
+                checkSupport: checkSupport, 
+                notify: notify, 
+                cssMode: cssMode, 
+                successNotification: successNotification, 
+                errorNotification: errorNotification, 
+            };
+        }, 
+        execCommand(commandId, value = null, options = {}) {
+            if (this.commands.indexOf(commandId) === -1) {
+                return false;
+            } 
 
-            range.insertNode(span);
-            this.setCursor(span, 1);
+            let parsedOptions = this.parseOptions(options);
+            let done = null;
 
-            this.$emit('update', this.$refs.contenteditable.innerHTML);
-        }, 
-        bold() {
-            if (document.queryCommandSupported('bold')) {
-                document.execCommand('bold', false, null);
-            } else {
-                this.$emit('create:notification', {
-                    message: 'This command is not supported in your browser.', 
-                    error: true, 
-                });
+            if (parsedOptions.cssMode) {
+                document.execCommand('styleWithCSS', false, true);
             }
-        }, 
-        italic() {
-            if (document.queryCommandSupported('italic')) {
-                document.execCommand('italic', false, null);
+
+            if (parsedOptions.checkSupport) {
+                done = this.execCommandIfSupported(commandId, parsedOptions.showUI, commandId == 'fontSize' ? '1' : value);
             } else {
-                this.$emit('create:notification', {
-                    message: 'This command is not supported in your browser.', 
-                    error: true, 
-                });
+                done = document.execCommand(commandId, parsedOptions.showUI, value);
             }
-        }, 
-        underline() {
-            if (document.queryCommandSupported('underline')) {
-                document.execCommand('underline', false, null);
-            } else {
-                this.$emit('create:notification', {
-                    message: 'This command is not supported in your browser.', 
-                    error: true, 
-                });
+
+            if (done && commandId == 'fontSize' && parsedOptions.cssMode) {
+                this.fontSizeFix(value);
             }
-        }, 
-        strikethrough() {
-            if (document.queryCommandSupported('strikethrough')) {
-                document.execCommand('strikethrough', false, null);
-            } else {
-                this.$emit('create:notification', {
-                    message: 'This command is not supported in your browser.', 
-                    error: true, 
-                });
+
+            if (parsedOptions.cssMode) {
+                document.execCommand('styleWithCSS', false, false);
             }
-        }, 
-        superscript() {
-            if (document.queryCommandSupported('superscript')) {
-                document.execCommand('superscript', false, null);
-            } else {
-                this.$emit('create:notification', {
-                    message: 'This command is not supported in your browser.', 
-                    error: true, 
-                });
+
+            if (done === null) {
+                return false;
             }
-        }, 
-        subscript() {
-            if (document.queryCommandSupported('subscript')) {
-                document.execCommand('subscript', false, null);
-            } else {
-                this.$emit('create:notification', {
-                    message: 'This command is not supported in your browser.', 
-                    error: true, 
-                });
+
+            if (done && parsedOptions.notify && parsedOptions.successNotification) {
+                this.$notifier.push(parsedOptions.successNotification);
+            } else if (! done && parsedOptions.notify && parsedOptions.errorNotification) {
+                this.$notifier.push(parsedOptions.errorNotification);
             }
+
+            return done;
         }, 
-        insertUnorderedList() {
-            if (document.queryCommandSupported('insertUnorderedList')) {
-                document.execCommand('insertUnorderedList', false, null);
-            } else {
-                this.$emit('create:notification', {
-                    message: 'This command is not supported in your browser.', 
-                    error: true, 
-                });
+        execCommandIfSupported(commandId, showUI = false, value = null) {
+            if (document.queryCommandSupported(commandId)) {
+                return document.execCommand(commandId, showUI, value);
             }
+
+            return false;
         }, 
-        insertOrderedList() {
-            if (document.queryCommandSupported('insertOrderedList')) {
-                document.execCommand('insertOrderedList', false, null);
-            } else {
-                this.$emit('create:notification', {
-                    message: 'This command is not supported in your browser.', 
-                    error: true, 
-                });
-            }
-        }, 
-        insertOrderedList() {
-            if (document.queryCommandSupported('insertOrderedList')) {
-                document.execCommand('insertOrderedList', false, null);
-            } else {
-                this.$emit('create:notification', {
-                    message: 'This command is not supported in your browser.', 
-                    error: true, 
-                });
-            }
-        }, 
-        format($tag) {
-            if (document.queryCommandSupported('formatBlock')) {
-                document.execCommand('formatBlock', false, $tag);
-            } else {
-                this.$emit('create:notification', {
-                    message: 'This command is not supported in your browser.', 
-                    error: true, 
-                });
-            }
-        }, 
-        insertHorizontalRule() {
-            if (document.queryCommandSupported('insertHorizontalRule')) {
-                document.execCommand('insertHorizontalRule', false, null);
-            } else {
-                this.$emit('create:notification', {
-                    message: 'This command is not supported in your browser.', 
-                    error: true, 
-                });
-            }
-        }, 
-        justifyLeft() {
-            if (document.queryCommandSupported('justifyLeft')) {
-                document.execCommand('justifyLeft', false, null);
-            } else {
-                this.$emit('create:notification', {
-                    message: 'This command is not supported in your browser.', 
-                    error: true, 
-                });
-            }
-        }, 
-        justifyCenter() {
-            if (document.queryCommandSupported('justifyCenter')) {
-                document.execCommand('justifyCenter', false, null);
-            } else {
-                this.$emit('create:notification', {
-                    message: 'This command is not supported in your browser.', 
-                    error: true, 
-                });
-            }
-        }, 
-        justifyRight() {
-            if (document.queryCommandSupported('justifyRight')) {
-                document.execCommand('justifyRight', false, null);
-            } else {
-                this.$emit('create:notification', {
-                    message: 'This command is not supported in your browser.', 
-                    error: true, 
-                });
-            }
-        }, 
-        justifyFull() {
-            if (document.queryCommandSupported('justifyFull')) {
-                document.execCommand('justifyFull', false, null);
-            } else {
-                this.$emit('create:notification', {
-                    message: 'This command is not supported in your browser.', 
-                    error: true, 
-                });
-            }
-        }, 
-        font($font) {
-            document.execCommand('styleWithCSS', false, true);
-            document.execCommand('fontName', false, `'${$font.name}', ${$font.family}`);
-            document.execCommand('styleWithCSS', false, false);
-        }, 
-        fontSize($fontSize) {
-            console.log($fontSize);
-            document.execCommand('fontSize', false, '1');
+        fontSizeFix(fontSize) {
             var fontElement = window.getSelection().anchorNode.parentElement;
             fontElement.removeAttribute("size");
-            fontElement.style.fontSize = $fontSize;
-        }, 
-        foreColor($color) {
-            document.execCommand('styleWithCSS', false, true);
-            document.execCommand('foreColor', false, $color);
-            document.execCommand('styleWithCSS', false, false);
-        }, 
-        hiliteColor($color) {
-            document.execCommand('styleWithCSS', false, true);
-            document.execCommand('hiliteColor', false, $color);
-            document.execCommand('styleWithCSS', false, false);
-        }, 
-        insertImage($path) {
-            if (document.queryCommandSupported('insertImage')) {
-                document.execCommand('insertImage', false, $path);
-            } else {
-                this.$emit('create:notification', {
-                    message: 'This command is not supported in your browser.', 
-                    error: true, 
-                });
-            }
-        }, 
-        createLink($link) {
-            if (document.queryCommandSupported('createLink')) {
-                document.execCommand('createLink', false, $link);
-            } else {
-                this.$emit('create:notification', {
-                    message: 'This command is not supported in your browser.', 
-                    error: true, 
-                });
-            }
-        }, 
-        unlink() {
-            if (document.queryCommandSupported('unlink')) {
-                document.execCommand('unlink', false, null);
-            } else {
-                this.$emit('create:notification', {
-                    message: 'This command is not supported in your browser.', 
-                    error: true, 
-                });
-            }
-        }, 
+            fontElement.style.fontSize = fontSize;
+        },
         tab() {
             let selection = window.getSelection();
             let range = selection.getRangeAt(0);

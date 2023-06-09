@@ -21,7 +21,7 @@
     
                     <DropdownLinkComponent 
                         v-for="(item, key) in formats" 
-                        @click="formatBlock = key; $emit('format', item);" 
+                        @click="formatBlock = key; $emit('execCommand', {name: 'formatBlock', value: item});" 
                         as="button"
                         >
                         <div v-html="`<${item} class='m-0'>${key}</${item}>`"></div>
@@ -45,7 +45,7 @@
                 
                 <template #content>
     
-                    <DropdownLinkComponent v-for="item in fonts.serif" @click="font = item; $emit('font', {name: item, family: 'serif'})" as="button">
+                    <DropdownLinkComponent v-for="item in fonts.serif" @click="font = item; $emit('execCommand', {name: 'fontName', value: `'${item}', serif`, options: {cssMode: true} })" as="button">
                         <div class="flex flex-nowrap items-center justify-between">
                             <div class="text-gray-700 dark:text-gray-300 text-xs">
                                 {{ item }}
@@ -56,7 +56,7 @@
                         </div>
                     </DropdownLinkComponent>
 
-                    <DropdownLinkComponent v-for="item in fonts['sans-serif']" @click="font = item; $emit('font', {name: item, family: 'sans-serif'})" as="button">
+                    <DropdownLinkComponent v-for="item in fonts['sans-serif']" @click="font = item; $emit('execCommand', {name: 'fontName', value: `'${item}', sans-serif`, options: {cssMode: true} })" as="button">
                         <div class="flex flex-nowrap items-center justify-between">
                             <div class="text-gray-700 dark:text-gray-300 text-xs">
                                 {{ item }}
@@ -67,7 +67,7 @@
                         </div>
                     </DropdownLinkComponent>
 
-                    <DropdownLinkComponent v-for="item in fonts.cursive" @click="font = item; $emit('font', {name: item, family: 'cursive'})" as="button">
+                    <DropdownLinkComponent v-for="item in fonts.cursive" @click="font = item; $emit('execCommand', {name: 'fontName', value: `'${item}', cursive`, options: {cssMode: true} })" as="button">
                         <div class="flex flex-nowrap items-center justify-between">
                             <div class="text-gray-700 dark:text-gray-300 text-xs">
                                 {{ item }}
@@ -78,7 +78,7 @@
                         </div>
                     </DropdownLinkComponent>
 
-                    <DropdownLinkComponent v-for="item in fonts.fantasy" @click="font = item; $emit('font', {name: item, family: 'fantasy'})" as="button">
+                    <DropdownLinkComponent v-for="item in fonts.fantasy" @click="font = item; $emit('execCommand', {name: 'fontName', value: `'${item}', fantasy`, options: {cssMode: true} })" as="button">
                         <div class="flex flex-nowrap items-center justify-between">
                             <div class="text-gray-700 dark:text-gray-300 text-xs">
                                 {{ item }}
@@ -89,7 +89,7 @@
                         </div>
                     </DropdownLinkComponent>
 
-                    <DropdownLinkComponent v-for="item in fonts.monospace" @click="font = item; $emit('font', {name: item, family: 'monospace'})" as="button">
+                    <DropdownLinkComponent v-for="item in fonts.monospace" @click="font = item; $emit('execCommand', {name: 'fontName', value: `'${item}', monospace`, options: {cssMode: true} })" as="button">
                         <div class="flex flex-nowrap items-center justify-between">
                             <div class="text-gray-700 dark:text-gray-300 text-xs">
                                 {{ item }}
@@ -120,7 +120,7 @@
     
                     <DropdownLinkComponent 
                         v-for="item in sizes" 
-                        @click="size = item; $emit('fontSize', `${item}${unit}`);" 
+                        @click="size = item; $emit('execCommand', { name: 'fontSize', value: `${item}${unit}`, options: { cssMode: true } });" 
                         as="button"
                         >
                         {{ `${item}${unit}` }}
@@ -131,78 +131,78 @@
         </div>
 
         <div role="menuitem">
-            <ToolbarButtonComponent @click="$emit('bold')" title="Bold">
+            <ToolbarButtonComponent @click="$emit('execCommand', 'bold')" title="Bold">
                 <i class="fa-solid fa-bold"></i>
             </ToolbarButtonComponent>
         </div>
 
         <div role="menuitem">
-            <ToolbarButtonComponent @click="$emit('italic')" title="Italic">
+            <ToolbarButtonComponent @click="$emit('execCommand', 'italic')" title="Italic">
                 <i class="fa-solid fa-italic"></i>
             </ToolbarButtonComponent>
         </div>
 
         <div role="menuitem">
-            <ToolbarButtonComponent @click="$emit('underline')" title="Underline">
+            <ToolbarButtonComponent @click="$emit('execCommand', 'underline')" title="Underline">
                 <i class="fa-solid fa-underline"></i>
             </ToolbarButtonComponent>
         </div>
 
         <div role="menuitem">
-            <ToolbarButtonComponent @click="$emit('strikethrough')" title="Strikethrough">
+            <ToolbarButtonComponent @click="$emit('execCommand', 'strikethrough')" title="Strikethrough">
                 <i class="fa-solid fa-strikethrough"></i>
             </ToolbarButtonComponent>
         </div>
 
         <div role="menuitem">
-            <ToolbarButtonComponent @click="$emit('superscript')" title="Superscript">
+            <ToolbarButtonComponent @click="$emit('execCommand', 'superscript')" title="Superscript">
                 <i class="fa-solid fa-superscript"></i>
             </ToolbarButtonComponent>
         </div>
 
         <div role="menuitem">
-            <ToolbarButtonComponent @click="$emit('subscript')" title="Subscript">
+            <ToolbarButtonComponent @click="$emit('execCommand', 'subscript')" title="Subscript">
                 <i class="fa-solid fa-subscript"></i>
             </ToolbarButtonComponent>
         </div>
 
         <div class="flex flex-nowrap">
             <div role="menuitem">
-                <ToolbarButtonComponent @click="$emit('insertUnorderedList')" title="Unordered list">
+                <ToolbarButtonComponent @click="$emit('execCommand', 'insertUnorderedList')" title="Unordered list">
                     <i class="fa-solid fa-list-ul"></i>
                 </ToolbarButtonComponent>
             </div>
             <div role="menuitem">
-                <ToolbarButtonComponent @click="$emit('insertOrderedList')" title="Ordered list">
+                <ToolbarButtonComponent @click="$emit('execCommand', 'insertOrderedList')" title="Ordered list">
                     <i class="fa-solid fa-list-ol"></i>
                 </ToolbarButtonComponent>
             </div>
         </div>
 
         <div role="menuitem">
-            <ToolbarButtonComponent @click="$emit('insertHorizontalRule')" title="Horizontal rule">
+            <ToolbarButtonComponent @click="$emit('execCommand', 'insertHorizontalRule')" title="Horizontal rule">
                 <i class="fa-solid fa-window-minimize"></i>
             </ToolbarButtonComponent>
         </div>
 
         <div class="flex flex-nowrap">
             <div role="menuitem">
-                <ToolbarButtonComponent @click="$emit('justifyLeft')" title="Align left">
+                <ToolbarButtonComponent @click="$emit('execCommand', 'justifyLeft')" title="Align left">
                     <i class="fa-solid fa-align-left"></i>
                 </ToolbarButtonComponent>
             </div>
             <div role="menuitem">
-                <ToolbarButtonComponent @click="$emit('justifyCenter')" title="Align center">
+                <ToolbarButtonComponent @click="$emit('execCommand', 'justifyCenter')" title="Align center">
                     <i class="fa-solid fa-align-center"></i>
                 </ToolbarButtonComponent>
             </div>
             <div role="menuitem">
-                <ToolbarButtonComponent @click="$emit('justifyRight')" title="Align right">
+                <ToolbarButtonComponent @click="$emit('execCommand', 'justifyRight')" title="Align right">
                     <i class="fa-solid fa-align-right"></i>
                 </ToolbarButtonComponent>
             </div>
             <div role="menuitem">
-                <ToolbarButtonComponent @click="$emit('justifyFsectionl')" title="Align justify">
+                <ToolbarButtonComponent @click="$emit('execCommand', 'justifyFull')" title="Align justify">
                     <i class="fa-solid fa-align-justify"></i>
                 </ToolbarButtonComponent>
             </div>
@@ -237,7 +237,7 @@
             <UploadImageModalPartial 
                 :note="note" 
                 :active="isOpenImageModal" 
-                @created:image="$emit('insertImage', $event)"
+                @added:image="$emit('execCommand', { name: 'insertImage', value: $event })"
                 @close="isOpenImageModal = false" 
                 />
         </div>
@@ -250,13 +250,13 @@
     
                 <ModalCreateLinkPartial 
                     :active="isOpenLinkModal" 
-                    @added:link="$emit('createLink', $event)"
+                    @added:link="$emit('execCommand', { name: 'createLink', value: $event })"
                     @close="isOpenLinkModal = false" 
                     />
             </div>
 
             <div role="menuitem">
-                <ToolbarButtonComponent @click="$emit('unlink')" title="Unlink">
+                <ToolbarButtonComponent @click="$emit('execCommand', 'unlink')" title="Unlink">
                     <i class="fa-solid fa-unlink"></i>
                 </ToolbarButtonComponent>
             </div>
@@ -287,27 +287,7 @@ export default {
     }, 
 
     emits: [
-        'bold', 
-        'italic', 
-        'underline', 
-        'strikethrough', 
-        'superscript', 
-        'subscript', 
-        'insertUnorderedList', 
-        'insertOrderedList', 
-        'insertHorizontalRule', 
-        'justifyLeft', 
-        'justifyCenter', 
-        'justifyRight', 
-        'justifyFsectionl', 
-        'font', 
-        'format', 
-        'fontSize', 
-        'foreColor', 
-        'hiliteColor', 
-        'insertImage', 
-        'createLink', 
-        'unlink', 
+        'execCommand'
     ], 
 
     data () {
@@ -349,7 +329,7 @@ export default {
             }, 
             set(v) {
                 this.color = v;
-                this.$emit('foreColor', v);
+                this.$emit('execCommand', { name: 'foreColor', value: v, options: { cssMode: true } });
             }, 
         }, 
         hiliteColor: {
@@ -358,7 +338,7 @@ export default {
             }, 
             set(v) {
                 this.background = v;
-                this.$emit('hiliteColor', v);
+                this.$emit('execCommand', { name: 'hiliteColor', value: v, options: { cssMode: true } });
             }, 
         }, 
         range() {

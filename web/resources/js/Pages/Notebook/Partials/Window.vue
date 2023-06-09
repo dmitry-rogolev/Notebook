@@ -6,14 +6,9 @@
                 class="px-1 sm:px-2"
                 @create:note="$emit('create:note', $event)"
                 @update:note="$emit('update:note', this.record)"
-                @create:notification="$emit('create:notification', $event)"
                 @exit="$emit('exit')"
                 @open:selector="openSelector"
                 @open:replacer="openReplacer"
-                @create:list="insertList"
-                @create:symbol="insertSymbol"
-                @create:emoticon="insertSymbol"
-                @update:font=""
                 @toggle:spellchecking="isSpellchecking = ! isSpellchecking"
                 @toggle:statusbar="isShowStatusBar = ! isShowStatusBar"
                 @toggle:fullscreen="$emit('toggle:fullscreen')"
@@ -25,27 +20,7 @@
 
             <WindowToolbarPartial 
                 :note="note"
-                @bold="bold"
-                @italic="italic"
-                @underline="underline"
-                @strikethrough="strikethrough"
-                @superscript="superscript"
-                @subscript="subscript"
-                @insertUnorderedList="insertUnorderedList"
-                @insertOrderedList="insertOrderedList"
-                @insertHorizontalRule="insertHorizontalRule"
-                @justifyLeft="justifyLeft"
-                @justifyCenter="justifyCenter"
-                @justifyRight="justifyRight"
-                @justifyFull="justifyFull"
-                @font="font"
-                @format="format"
-                @fontSize="fontSize"
-                @foreColor="foreColor"
-                @hiliteColor="hiliteColor"
-                @insertImage="insertImage"
-                @createLink="createLink"
-                @unlink="unlink"
+                @execCommand="execCommand"
                 />
 
         </template>
@@ -69,7 +44,6 @@
             <WindowContentEditablePartial 
                 ref="contenteditable"
                 @update="record.text = $event"
-                @create:notification="$emit('create:notification', $event)"
                 :text="record.text"
                 :spellcheck="isSpellchecking"
                 />
@@ -110,7 +84,6 @@ export default {
 
     emits: [
         'create:note', 
-        'create:notification', 
         'update:note', 
         'delete:note', 
         'exit', 
@@ -169,53 +142,34 @@ export default {
         clearFound() {
             this.$refs.contenteditable.innerHTML = this.record.text;
         },  
-        insertList($event) {
-            this.$refs.contenteditable.insertList($event);
+        execCommand($command) {
+            if (typeof $command == 'object') {
+                let name = '';
+                let value = null;
+                let options = {};
+
+                if ('name' in $command) {
+                    name = $command.name;
+                }
+
+                if ('value' in $command) {
+                    value = $command.value;
+                }
+
+                if ('options' in $command && typeof $command.options == 'object') {
+                    options = $command.options;
+                }
+
+                if (name) {
+                    this.$refs.contenteditable.execCommand(name, value, options);
+                }
+            } else {
+                this.$refs.contenteditable.execCommand($command);
+            }
         }, 
-        insertSymbol($event) {
-            this.$refs.contenteditable.insertSymbol($event);
-        }, 
-        bold() {
-            this.$refs.contenteditable.bold();
-        }, 
-        italic() {
-            this.$refs.contenteditable.italic();
-        }, 
-        underline() {
-            this.$refs.contenteditable.underline();
-        }, 
-        strikethrough() {
-            this.$refs.contenteditable.strikethrough();
-        }, 
-        superscript() {
-            this.$refs.contenteditable.superscript();
-        }, 
-        subscript() {
-            this.$refs.contenteditable.subscript();
-        }, 
-        insertUnorderedList() {
-            this.$refs.contenteditable.insertUnorderedList();
-        },
-        insertOrderedList() {
-            this.$refs.contenteditable.insertOrderedList();
-        },
-        insertHorizontalRule() {
-            this.$refs.contenteditable.insertHorizontalRule();
-        },
-        justifyLeft() {
-            this.$refs.contenteditable.justifyLeft();
-        },
-        justifyCenter() {
-            this.$refs.contenteditable.justifyCenter();
-        },
-        justifyRight() {
-            this.$refs.contenteditable.justifyRight();
-        },
-        justifyFull() {
-            this.$refs.contenteditable.justifyFull();
-        },
         font($font) {
             this.$refs.contenteditable.font($font);
+            this.$refs.contenteditable.execCommand('justifyFull');
         },
         format($tag) {
             this.$refs.contenteditable.format($tag);
@@ -236,7 +190,7 @@ export default {
             this.$refs.contenteditable.createLink($link);
         },
         unlink() {
-            this.$refs.contenteditable.unlink();
+            this.$refs.contenteditable.execCommand('unlink');
         },
     }, 
 
