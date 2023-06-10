@@ -349,6 +349,8 @@
             </template>
         </DropdownComponent>
 
+        <FormatDropdownPartial />
+
         <div role="menuitem" class="ml-auto">
             <WindowMenuButtonComponent @click="$emit('toggle:fullscreen')">
                 <i v-if="activeFullScreen" class="fa-solid fa-down-left-and-up-right-to-center fa-rotate-90"></i>
@@ -376,6 +378,7 @@ import ModalInsertListPartial from '@/Pages/Notebook/Partials/Window/Modals/Inse
 import ModalInsertSymbolsPartial from '@/Pages/Notebook/Partials/Window/Modals/InsertSymbols.vue';
 import ModalInsertEmoticonsPartial from '@/Pages/Notebook/Partials/Window/Modals/InsertEmoticons.vue';
 import ModalFontPartial from '@/Pages/Notebook/Partials/Window/Modals/Font.vue';
+import FormatDropdownPartial from './Menu/Dropdowns/Format.vue';
 import { cutForbiddenTags } from '@/helpers';
 
 export default {
@@ -392,6 +395,7 @@ export default {
         ModalInsertSymbolsPartial, 
         ModalInsertEmoticonsPartial, 
         ModalFontPartial, 
+        FormatDropdownPartial, 
     },
 
     emits: [
