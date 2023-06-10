@@ -9,6 +9,7 @@ import { ZiggyVue } from '../../vendor/tightenco/ziggy/dist/vue.m';
 
 import store from './store'; 
 import notifier from './Plugins/Notification/plugin';
+import execCommand from './Plugins/ExecCommand/plugin';
 
 const appName = window.document.getElementsByTagName('title')[0]?.innerText || 'Laravel';
 
@@ -21,6 +22,7 @@ createInertiaApp({
             .use(ZiggyVue, Ziggy)
             .use(store)
             .use(notifier, {interval: 3000})
+            .use(execCommand)
             .mount(el);
     },
     progress: {

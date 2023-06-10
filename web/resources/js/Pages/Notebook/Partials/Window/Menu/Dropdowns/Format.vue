@@ -30,70 +30,70 @@
                 </div>
             </DropdownItemComponent>
 
-            <DropdownItemComponent>
+            <DropdownItemComponent @click="$execCommand('bold')">
                 <div class="flex flex-nowrap items-center">
                     <i class="block fa-solid fa-bold mr-2 w-4"></i>
                     <div class="flex-auto">Bold</div>
                 </div>
             </DropdownItemComponent>
 
-            <DropdownItemComponent>
+            <DropdownItemComponent @click="$execCommand('italic')">
                 <div class="flex flex-nowrap items-center">
                     <i class="block fa-solid fa-italic mr-2 w-4"></i>
                     <div class="flex-auto">Italic</div>
                 </div>
             </DropdownItemComponent>
 
-            <DropdownItemComponent>
+            <DropdownItemComponent @click="$execCommand('underline')">
                 <div class="flex flex-nowrap items-center">
                     <i class="block fa-solid fa-underline mr-2 w-4"></i>
                     <div class="flex-auto">Underline</div>
                 </div>
             </DropdownItemComponent>
 
-            <DropdownItemComponent>
+            <DropdownItemComponent @click="$execCommand('strikethrough')">
                 <div class="flex flex-nowrap items-center">
                     <i class="block fa-solid fa-strikethrough mr-2 w-4"></i>
                     <div class="flex-auto">Strikethrough</div>
                 </div>
             </DropdownItemComponent>
 
-            <DropdownItemComponent>
+            <DropdownItemComponent @click="$execCommand('superscript')">
                 <div class="flex flex-nowrap items-center">
                     <i class="block fa-solid fa-superscript mr-2 w-4"></i>
                     <div class="flex-auto">Superscript</div>
                 </div>
             </DropdownItemComponent>
 
-            <DropdownItemComponent>
+            <DropdownItemComponent @click="$execCommand('subscript')">
                 <div class="flex flex-nowrap items-center">
                     <i class="block fa-solid fa-subscript mr-2 w-4"></i>
                     <div class="flex-auto">Subscript</div>
                 </div>
             </DropdownItemComponent>
 
-            <DropdownItemComponent>
+            <DropdownItemComponent @click="$execCommand('justifyLeft')">
                 <div class="flex flex-nowrap items-center">
                     <i class="block fa-solid fa-align-left mr-2 w-4"></i>
                     <div class="flex-auto">Align left</div>
                 </div>
             </DropdownItemComponent>
 
-            <DropdownItemComponent>
+            <DropdownItemComponent @click="$execCommand('justifyCenter')">
                 <div class="flex flex-nowrap items-center">
                     <i class="block fa-solid fa-align-center mr-2 w-4"></i>
                     <div class="flex-auto">Align center</div>
                 </div>
             </DropdownItemComponent>
             
-            <DropdownItemComponent>
+            <DropdownItemComponent @click="$execCommand('justifyRight')">
                 <div class="flex flex-nowrap items-center">
                     <i class="block fa-solid fa-align-right mr-2 w-4"></i>
                     <div class="flex-auto">Align right</div>
                 </div>
             </DropdownItemComponent>
 
-            <DropdownItemComponent>
+            <DropdownItemComponent @click="$execCommand('justifyFull')">
                 <div class="flex flex-nowrap items-center">
                     <i class="block fa-solid fa-align-justify mr-2 w-4"></i>
                     <div class="flex-auto">Align justify</div>
@@ -139,6 +139,7 @@ export default {
             }, 
             set(v) {
                 this.color = v;
+                this.$execCommand('foreColor', v, { cssMode: true });
             }, 
         }, 
         hiliteColor: {
@@ -147,6 +148,7 @@ export default {
             }, 
             set(v) {
                 this.background = v;
+                this.$execCommand('hiliteColor', v, { cssMode: true });
             }, 
         },
     },

@@ -8,7 +8,7 @@
             <span>Block format</span>
         </template>
         <template #content>
-            <DropdownItemComponent v-for="(item, key) in formats">
+            <DropdownItemComponent v-for="(item, key) in formats" @click="$execCommand('formatBlock', item)">
                 <div v-html="`<${item} class='m-0'>${key}</${item}>`"></div>
             </DropdownItemComponent>
         </template>
