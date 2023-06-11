@@ -42,7 +42,7 @@ class Editable
     constructor(options) {
         this._defaultOptions = this._parseOptions(options);
         this._defineDefaultParagraphSeparator(this._defaultOptions.paragraphSeparator);
-        this._spellcheck = this._defaultOptions.spellcheck;
+        this.spellcheck = this._defaultOptions.spellcheck;
     }
 
     init(editableElement) {
@@ -90,7 +90,7 @@ class Editable
         } else {
             done = document.execCommand(commandId, parsedOptions.showUI, value);
         }
-    
+
         if (done && commandId == 'fontSize' && parsedOptions.cssMode) {
             this._fontSizeFix(value);
         }

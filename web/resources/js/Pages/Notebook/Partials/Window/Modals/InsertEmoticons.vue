@@ -52,7 +52,7 @@ import { token } from '@/helpers';
 import emoticons from '@/assets/emoticons.json';
 
 export default {
-    name: 'ModalInsertSymbolsPartial', 
+    name: 'ModalInsertEmoticonsPartial', 
 
     components: {
         ModalComponent, 

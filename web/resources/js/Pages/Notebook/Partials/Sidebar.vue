@@ -1,7 +1,7 @@
 <template>
     <transition name="fullscreen" mode="out-in">
 
-        <SidebarComponent ref="sidebar" v-show="! activeFullScreen" :active="activeNotes || activeSearch" :id="sidebarToken">
+        <SidebarComponent ref="sidebar" v-show="! fullscreen" :active="activeNotes || activeSearch" :id="sidebarToken">
             
             <template #triggers>
 
@@ -72,6 +72,9 @@ export default {
         dark() {
             return this.$store.state.dark;
         }, 
+        fullscreen() {
+            return this.$store.state.fullscreen;
+        }, 
     }, 
 
     props: {
@@ -86,10 +89,6 @@ export default {
         found: {
             type: Array, 
             default: [], 
-        }, 
-        activeFullScreen: {
-            type: Boolean, 
-            default: false, 
         }, 
         activeNotes: {
             type: Boolean, 

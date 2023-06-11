@@ -2,14 +2,14 @@
     <AppLayout title="Notebook">
 
         <transition name="fullscreen" mode="out-in">
-            <ApplicationHeaderPartial v-show="isFullScreen ? isShowHeader : true" @mouseleave="isShowHeader = false" />
+            <ApplicationHeaderPartial v-show="fullscreen ? isShowHeader : true" @mouseleave="isShowHeader = false" />
         </transition>
 
         <main class="flex-auto flex flex-col">
             <div class="flex-auto flex">
 
                 <SidebarPartial 
-                    v-show="isFullScreen ? isShowSidebar : true"
+                    v-show="fullscreen ? isShowSidebar : true"
                     @open:note="open" 
                     @open:notes="isShowSidebarNotes = ! isShowSidebarNotes; isShowSidebarSearch = false"
                     @open:search="isShowSidebarSearch = ! isShowSidebarSearch; isShowSidebarNotes = false"
@@ -18,7 +18,6 @@
                     :note="note"
                     :notes="notes" 
                     :found="found" 
-                    :activeFullScreen="isFullScreen"
                     :activeNotes="isShowSidebarNotes"
                     :activeSearch="isShowSidebarSearch"
                     @mouseleave="isShowSidebar = false"
@@ -30,14 +29,12 @@
                     @update:note="update"
                     @delete:note="this.delete()" 
                     @exit="close"
-                    @toggle:fullscreen="isFullScreen = ! isFullScreen"
                     :note="note"
-                    :activeFullScreen="isFullScreen"
                     />
 
                 <teleport to="body">
                     <div 
-                        v-show="isFullScreen ? ! isShowSidebar : false"
+                        v-show="fullscreen ? ! isShowSidebar : false"
                         class="absolute top-0 left-0 bottom-0 w-2"
                         :class="{dark: dark}"
                         @mouseenter="isShowSidebar = true"
@@ -46,7 +43,7 @@
 
                 <teleport to="body">
                     <div 
-                        v-show="isFullScreen ? ! isShowHeader : false"
+                        v-show="fullscreen ? ! isShowHeader : false"
                         class="absolute top-0 left-0 right-0 h-2"
                         :class="{dark: dark}"
                         @mouseenter="isShowHeader = true"
@@ -79,7 +76,6 @@ export default {
             record: null, 
             notes: null, 
             found: null, 
-            isFullScreen: false, 
             isShowSidebar: false, 
             isShowHeader: false, 
             isShowSidebarNotes: false, 
@@ -88,6 +84,9 @@ export default {
     }, 
 
     computed: {
+        fullscreen() {
+            return this.$store.state.fullscreen;
+        }, 
         note: {
             get() {
                 return this.record;

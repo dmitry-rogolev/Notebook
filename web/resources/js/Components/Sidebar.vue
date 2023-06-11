@@ -3,15 +3,7 @@
         <div class="bg-white dark:bg-gray-800 border-gray-300 dark:border-gray-600 border-r h-full overflow-y-auto z-10">
             <slot name="triggers"></slot>
         </div>
-        <transition 
-            mode="out-in"
-            enter-active-class="transition ease-out duration-100"
-            enter-from-class="transform -translate-x-full"
-            enter-to-class="transform translate-x-0"
-            leave-active-class="transition ease-in duration-75"
-            leave-from-class="transform translate-x-0"
-            leave-to-class="transform -translate-x-full"
-            >
+        <transition name="sidebar" mode="out-in">
             <div 
                 v-if="active" 
                 class="bg-white dark:bg-gray-800 border-gray-300 dark:border-gray-600 border-r h-full min-w-[8rem] w-32 md:w-40 lg:w-52 xl:w-64 overflow-y-auto resize-x focus-visible:outline-none" 
@@ -52,6 +44,10 @@ export default {
         rem() {
             return parseFloat(getComputedStyle(document.documentElement).fontSize);
         }, 
+        fullscreen() {
+            this.resize();
+            return this.$store.state.fullscreen;
+        }, 
     },
 
     props: {
@@ -71,7 +67,7 @@ export default {
         resize() {
             let windowHeight = 0;
 
-            if (this.activeFullScreen) {
+            if (this.$store.state.fullscreen) {
                 windowHeight = document.documentElement.clientHeight;
             } else {
                 windowHeight = document.documentElement.clientHeight - 4 * this.rem - 1;
@@ -91,3 +87,15 @@ export default {
     }, 
 };
 </script>
+
+<style scoped>
+.sidebar-enter-active,
+.sidebar-leave-active {
+  transition: all 0.2s ease;
+}
+.sidebar-enter-from,
+.sidebar-leave-to {
+  opacity: 0;
+  transform: translateX(-100%);
+}
+</style>

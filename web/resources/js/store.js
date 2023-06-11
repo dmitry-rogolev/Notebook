@@ -8,6 +8,8 @@ const store = createStore({
             windowHeight: 0, 
             sidebarWidth: 0, 
             windowWidth: 0, 
+            statusbar: true, 
+            fullscreen: false, 
         };
     }, 
 
@@ -35,6 +37,12 @@ const store = createStore({
         }, 
         windowWidth(state, windowWidth) {
             state.windowWidth = windowWidth;
+        }, 
+        statusbar(state, statusbar) {
+            state.statusbar = statusbar;
+        }, 
+        fullscreen(state, fullscreen) {
+            state.fullscreen = fullscreen;
         }, 
     }, 
 

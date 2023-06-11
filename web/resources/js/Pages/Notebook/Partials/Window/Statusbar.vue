@@ -1,6 +1,6 @@
 <template>
     <transition name="statusbar" mode="out-in">
-        <div class="flex flex-nowrap items-center justify-end px-3 bg-gray-100 dark:bg-slate-700 h-8 border-gray-300 dark:border-gray-600 border-t text-gray-600 dark:text-gray-400 text-sm">
+        <div v-show="statusbar" class="flex flex-nowrap items-center justify-end px-3 bg-gray-100 dark:bg-slate-700 h-8 border-gray-300 dark:border-gray-600 border-t text-gray-600 dark:text-gray-400 text-sm">
             <div class="mr-2">
                 <span>Сharacters: </span>
                 <span class="text-gray-700 dark:text-gray-300">{{ countСharacters }}</span>
@@ -23,6 +23,9 @@ export default {
         }, 
         countСharacters() {
             return this.text.replace(/<\/?[^>]+>/igm, '').split(/\s|\&nbsp;/).filter((v) => v).join('').length;
+        }, 
+        statusbar() {
+            return this.$store.state.statusbar;
         }, 
     },
 

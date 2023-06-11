@@ -217,100 +217,17 @@
             </template>
         </DropdownComponent>
 
-        <DropdownComponent role="menuitem" @open="isOpenInsert = true" @close="isOpenInsert = false" contentClass="-mt-1">
-            <template #trigger>
-                <WindowMenuButtonComponent :active="isOpenInsert">Insert</WindowMenuButtonComponent>
-            </template>
-            <template #content>
-
-                <DropdownLinkComponent @click="isOpenInsertListModal = true" as="button">
-                    <div class="flex flex-nowrap items-center">
-                        <div class="flex-auto">
-                            <i class="fa-solid fa-list w-6 text-center mr-2"></i>
-                            <span>List</span>
-                        </div>
-                        <div class="text-xs font-bold">Alt + L</div>
-                    </div>
-                </DropdownLinkComponent>
-
-                <ModalInsertListPartial 
-                    :active="isOpenInsertListModal" 
-                    @create:list="$emit('create:list', $event)" 
-                    @close="isOpenInsertListModal = false" 
-                    />
-
-                <DropdownLinkComponent @click="isOpenInsertSymbolsModal = true" as="button">
-                    <div class="flex flex-nowrap items-center">
-                        <div class="flex-auto">
-                            <i class="fa-solid fa-at w-6 text-center mr-2"></i>
-                            <span>Symbols</span>
-                        </div>
-                        <div class="text-xs font-bold">Alt + Y</div>
-                    </div>
-                </DropdownLinkComponent>
-
-                <ModalInsertSymbolsPartial 
-                    :active="isOpenInsertSymbolsModal" 
-                    @create:symbol="$emit('create:symbol', $event)" 
-                    @close="isOpenInsertSymbolsModal = false" 
-                    />
-
-                <DropdownLinkComponent @click="isOpenInsertEmoticonsModal = true" as="button">
-                    <div class="flex flex-nowrap items-center">
-                        <div class="flex-auto">
-                            <i class="fa-solid fa-face-grin-wink w-6 text-center mr-2"></i>
-                            <span>Emoticons</span>
-                        </div>
-                        <div class="text-xs font-bold">Alt + E</div>
-                    </div>
-                </DropdownLinkComponent>
-
-                <ModalInsertEmoticonsPartial 
-                    :active="isOpenInsertEmoticonsModal" 
-                    @create:emoticon="$emit('create:emoticon', $event)" 
-                    @close="isOpenInsertEmoticonsModal = false" 
-                    />
-
-            </template>
-        </DropdownComponent>
+        <InsertDropdownPartial :note="note" />
 
         <FormatDropdownPartial />
 
         <ToolsDropdownPartial />
 
-        <DropdownComponent role="menuitem" @open="isOpenView = true" @close="isOpenView = false" contentClass="-mt-1">
-            <template #trigger>
-                <WindowMenuButtonComponent :active="isOpenView">View</WindowMenuButtonComponent>
-            </template>
-            <template #content>
-
-                <DropdownLinkComponent @click="$emit('toggle:statusbar')" as="button">
-                    <div class="flex flex-nowrap items-center">
-                        <div class="flex items-center">
-                            <i v-if="showStatusBar" class="fa-solid fa-check w-6 text-center mr-2"></i>
-                            <div v-else class="w-6 mr-2"></div>
-                        </div>
-                        <div class="flex-auto">Status bar</div>
-                    </div>
-                </DropdownLinkComponent>
-
-                <DropdownLinkComponent @click="$emit('toggle:fullscreen')" as="button">
-                    <div class="flex flex-nowrap items-center">
-                        <div class="flex items-center">
-                            <i v-if="activeFullScreen" class="fa-solid fa-check w-6 text-center mr-2"></i>
-                            <div v-else class="w-6 mr-2"></div>
-                        </div>
-                        <div class="flex-auto">In full screen</div>
-                        <div class="text-xs font-bold">Alt + I</div>
-                    </div>
-                </DropdownLinkComponent>
-
-            </template>
-        </DropdownComponent>
+        <ViewDropdownPartial />
 
         <div role="menuitem" class="ml-auto">
-            <WindowMenuButtonComponent @click="$emit('toggle:fullscreen')">
-                <i v-if="activeFullScreen" class="fa-solid fa-down-left-and-up-right-to-center fa-rotate-90"></i>
+            <WindowMenuButtonComponent @click="$store.commit('fullscreen', ! fullscreen)">
+                <i v-if="fullscreen" class="fa-solid fa-down-left-and-up-right-to-center fa-rotate-90"></i>
                 <i v-else class="fa-solid fa-up-right-and-down-left-from-center fa-rotate-90"></i>
             </WindowMenuButtonComponent>
         </div>
@@ -331,11 +248,10 @@ import DropdownLinkComponent from '@/Components/DropdownLink.vue';
 import ModalComponent from '@/Components/Modal.vue';
 import InputComponent from '@/Components/TextInput.vue';
 import SelectorComponent from '@/Components/Selector.vue';
-import ModalInsertListPartial from '@/Pages/Notebook/Partials/Window/Modals/InsertList.vue';
-import ModalInsertSymbolsPartial from '@/Pages/Notebook/Partials/Window/Modals/InsertSymbols.vue';
-import ModalInsertEmoticonsPartial from '@/Pages/Notebook/Partials/Window/Modals/InsertEmoticons.vue';
+import InsertDropdownPartial from './Menu/Dropdowns/Insert.vue';
 import FormatDropdownPartial from './Menu/Dropdowns/Format.vue';
 import ToolsDropdownPartial from './Menu/Dropdowns/Tools.vue';
+import ViewDropdownPartial from './Menu/Dropdowns/View.vue';
 import { cutForbiddenTags } from '@/helpers';
 
 export default {
@@ -348,11 +264,10 @@ export default {
         ModalComponent, 
         InputComponent, 
         SelectorComponent, 
-        ModalInsertListPartial, 
-        ModalInsertSymbolsPartial, 
-        ModalInsertEmoticonsPartial, 
+        InsertDropdownPartial, 
         FormatDropdownPartial, 
         ToolsDropdownPartial, 
+        ViewDropdownPartial, 
     },
 
     emits: [
@@ -362,25 +277,13 @@ export default {
         'exit', 
         'open:selector', 
         'open:replacer', 
-        'create:list', 
-        'create:symbol',
-        'create:emoticon', 
-        'toggle:spellchecking', 
-        'toggle:statusbar', 
-        'toggle:fullscreen', 
     ], 
 
     data () {
         return {
             isOpenFile: false, 
             isOpenEdit: false, 
-            isOpenInsert: false, 
-            isOpenTools: false, 
-            isOpenView: false, 
             isOpenFileModal: false, 
-            isOpenInsertListModal: false, 
-            isOpenInsertSymbolsModal: false, 
-            isOpenInsertEmoticonsModal: false, 
             fileName: '', 
             timerAutosave: null, 
             autosaveInterval: 60000, 
@@ -391,6 +294,9 @@ export default {
         autosave() {
             return this.$store.state.autosave;
         },
+        fullscreen() {
+            return this.$store.state.fullscreen;
+        }, 
     },
 
     props: {
@@ -398,17 +304,9 @@ export default {
             type: Object,
             required: true,  
         },
-        spellchecking: {
-            type: Boolean, 
-            default: true, 
-        }, 
-        showStatusBar: {
-            type: Boolean, 
-            default: true, 
-        }, 
-        activeFullScreen: {
-            type: Boolean, 
-            default: false, 
+        note: {
+            type: Object,
+            required: true,  
         },
     },
 
