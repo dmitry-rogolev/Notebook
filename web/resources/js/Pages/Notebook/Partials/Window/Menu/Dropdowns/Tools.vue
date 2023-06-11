@@ -25,7 +25,6 @@
 <script>
 import DropdownPartial from '../Dropdown.vue';
 import DropdownItemComponent from '@/Components/Custom/Dropdown/Item.vue';
-import { token } from '@/helpers';
 
 export default {
     name: 'WindowMenuToolsDropdownPartial', 

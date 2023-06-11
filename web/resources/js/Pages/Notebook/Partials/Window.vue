@@ -121,7 +121,6 @@ export default {
                 title: this.note.title, 
                 text: this.note.text, 
             };
-            // this.$refs.contenteditable.$el.innerHTML = this.record.text;
         },
         openSelector() {
             this.isOpenSelector = true;

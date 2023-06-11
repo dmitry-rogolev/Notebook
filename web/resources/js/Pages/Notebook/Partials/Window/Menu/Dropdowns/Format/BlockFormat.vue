@@ -9,7 +9,7 @@
         </template>
         <template #content>
             <DropdownItemComponent v-for="(item, key) in formats" @click="$editable.execCommand('formatBlock', item)">
-                <div v-html="`<${item} class='m-0'>${key}</${item}>`"></div>
+                <div class="editable" v-html="`<${item} style='margin: 0;'>${key}</${item}>`"></div>
             </DropdownItemComponent>
         </template>
     </DropdownPartial>
