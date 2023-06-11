@@ -11,14 +11,11 @@ class Editable
         checkSupport: true, 
         notify: true, 
         cssMode: false, 
-        successNotification: null, 
         paragraphSeparator: 'p', 
         spellcheck: true, 
-        autofocus: false, 
-        errorNotification: {
-            message: 'This command is not supported in your browser.', 
-            error: true, 
-        }, 
+        autofocus: false,
+        successNotification: null,
+        errorNotification: null,
     };
 
     _cssMode = this._defaultOptions.cssMode;
