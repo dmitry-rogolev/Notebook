@@ -21,7 +21,7 @@
                 role="menu"
                 class="overflow-y-auto"
                 :class="[targetClass, widthClass]"
-                :style="{height: maxHeight}"
+                :style="{maxHeight: maxHeight}"
                 @click="dropdown.hide()"
                 >
                 <slot name="content"></slot>

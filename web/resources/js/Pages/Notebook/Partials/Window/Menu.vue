@@ -274,50 +274,9 @@
             </template>
         </DropdownComponent>
 
-        <DropdownComponent role="menuitem" @open="isOpenFormat = true" @close="isOpenFormat = false" contentClass="-mt-1">
-            <template #trigger>
-                <WindowMenuButtonComponent :active="isOpenFormat">Format</WindowMenuButtonComponent>
-            </template>
-            <template #content>
+        <FormatDropdownPartial />
 
-                <DropdownLinkComponent @click="isOpenFontModal = true" as="button">
-                    <div class="flex flex-nowrap items-center">
-                        <div class="flex-auto">
-                            <i class="fa-solid fa-font w-6 text-center mr-2"></i>
-                            <span>Font</span>
-                        </div>
-                        <div class="text-xs font-bold">Alt + T</div>
-                    </div>
-                </DropdownLinkComponent>
-
-                <ModalFontPartial 
-                    :active="isOpenFontModal" 
-                    @update:font="$emit('update:font', $event)"
-                    @close="isOpenFontModal = false"
-                    />
-
-            </template>
-        </DropdownComponent>
-
-        <DropdownComponent role="menuitem" @open="isOpenTools = true" @close="isOpenTools = false" contentClass="-mt-1">
-            <template #trigger>
-                <WindowMenuButtonComponent :active="isOpenTools">Tools</WindowMenuButtonComponent>
-            </template>
-            
-            <template #content>
-
-                <DropdownLinkComponent @click="$emit('toggle:spellchecking')" as="button">
-                    <div class="flex flex-nowrap items-center">
-                        <div class="flex items-center">
-                            <i v-if="spellchecking" class="fa-solid fa-check w-6 text-center mr-2"></i>
-                            <div v-else class="w-6 mr-2"></div>
-                        </div>
-                        <div class="flex-auto">Spellchecking</div>
-                    </div>
-                </DropdownLinkComponent>
-
-            </template>
-        </DropdownComponent>
+        <ToolsDropdownPartial />
 
         <DropdownComponent role="menuitem" @open="isOpenView = true" @close="isOpenView = false" contentClass="-mt-1">
             <template #trigger>
@@ -349,8 +308,6 @@
             </template>
         </DropdownComponent>
 
-        <FormatDropdownPartial />
-
         <div role="menuitem" class="ml-auto">
             <WindowMenuButtonComponent @click="$emit('toggle:fullscreen')">
                 <i v-if="activeFullScreen" class="fa-solid fa-down-left-and-up-right-to-center fa-rotate-90"></i>
@@ -377,8 +334,8 @@ import SelectorComponent from '@/Components/Selector.vue';
 import ModalInsertListPartial from '@/Pages/Notebook/Partials/Window/Modals/InsertList.vue';
 import ModalInsertSymbolsPartial from '@/Pages/Notebook/Partials/Window/Modals/InsertSymbols.vue';
 import ModalInsertEmoticonsPartial from '@/Pages/Notebook/Partials/Window/Modals/InsertEmoticons.vue';
-import ModalFontPartial from '@/Pages/Notebook/Partials/Window/Modals/Font.vue';
 import FormatDropdownPartial from './Menu/Dropdowns/Format.vue';
+import ToolsDropdownPartial from './Menu/Dropdowns/Tools.vue';
 import { cutForbiddenTags } from '@/helpers';
 
 export default {
@@ -394,8 +351,8 @@ export default {
         ModalInsertListPartial, 
         ModalInsertSymbolsPartial, 
         ModalInsertEmoticonsPartial, 
-        ModalFontPartial, 
         FormatDropdownPartial, 
+        ToolsDropdownPartial, 
     },
 
     emits: [
@@ -408,7 +365,6 @@ export default {
         'create:list', 
         'create:symbol',
         'create:emoticon', 
-        'update:font', 
         'toggle:spellchecking', 
         'toggle:statusbar', 
         'toggle:fullscreen', 
@@ -419,14 +375,12 @@ export default {
             isOpenFile: false, 
             isOpenEdit: false, 
             isOpenInsert: false, 
-            isOpenFormat: false, 
             isOpenTools: false, 
             isOpenView: false, 
             isOpenFileModal: false, 
             isOpenInsertListModal: false, 
             isOpenInsertSymbolsModal: false, 
             isOpenInsertEmoticonsModal: false, 
-            isOpenFontModal: false, 
             fileName: '', 
             timerAutosave: null, 
             autosaveInterval: 60000, 

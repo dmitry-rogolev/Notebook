@@ -8,8 +8,9 @@ import { resolvePageComponent } from 'laravel-vite-plugin/inertia-helpers';
 import { ZiggyVue } from '../../vendor/tightenco/ziggy/dist/vue.m';
 
 import store from './store'; 
+import VueApp from './Plugins/App/plugin';
 import notifier from './Plugins/Notification/plugin';
-import execCommand from './Plugins/ExecCommand/plugin';
+import Editable from './Plugins/Editable/plugin';
 
 const appName = window.document.getElementsByTagName('title')[0]?.innerText || 'Laravel';
 
@@ -21,8 +22,9 @@ createInertiaApp({
             .use(plugin)
             .use(ZiggyVue, Ziggy)
             .use(store)
+            .use(VueApp)
             .use(notifier, {interval: 3000})
-            .use(execCommand)
+            .use(Editable, {autofocus: true})
             .mount(el);
     },
     progress: {

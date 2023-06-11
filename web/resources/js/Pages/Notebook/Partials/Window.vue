@@ -41,11 +41,11 @@
         </template>
         <template #body>
 
-            <WindowContentEditablePartial 
-                ref="contenteditable"
-                @update="record.text = $event"
-                :text="record.text"
-                :spellcheck="isSpellchecking"
+            <EditableComponent 
+                class="h-full px-3 sm:px-4 md:px-5 py-3 bg-gray-50 dark:bg-slate-800 text-gray-800 dark:text-gray-200 text-base focus-visible:outline-none whitespace-pre-wrap overflow-auto" 
+                :style="{tabSize: 4}"
+                autofocus
+                v-model="record.text"
                 />
 
         </template>
@@ -66,8 +66,8 @@ import WindowMenuButtonComponent from '@/Components/Window/MenuButton.vue';
 import WindowMenuPartial from '@/Pages/Notebook/Partials/Window/Menu.vue';
 import WindowHeaderPartial from '@/Pages/Notebook/Partials/Window/Header.vue';
 import WindowStatusbarPartial from '@/Pages/Notebook/Partials/Window/Statusbar.vue';
-import WindowContentEditablePartial from '@/Pages/Notebook/Partials/Window/ContentEditable.vue';
 import WindowToolbarPartial from '@/Pages/Notebook/Partials/Window/Toolbar.vue';
+import EditableComponent from '@/Plugins/Editable/Components/Editable.vue';
 
 export default {
     name: 'WindowPartial', 
@@ -78,8 +78,8 @@ export default {
         WindowMenuPartial, 
         WindowHeaderPartial, 
         WindowStatusbarPartial, 
-        WindowContentEditablePartial, 
         WindowToolbarPartial, 
+        EditableComponent, 
     }, 
 
     emits: [
@@ -121,7 +121,7 @@ export default {
                 title: this.note.title, 
                 text: this.note.text, 
             };
-            this.$refs.contenteditable.$el.innerHTML = this.record.text;
+            // this.$refs.contenteditable.$el.innerHTML = this.record.text;
         },
         openSelector() {
             this.isOpenSelector = true;

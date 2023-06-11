@@ -30,70 +30,70 @@
                 </div>
             </DropdownItemComponent>
 
-            <DropdownItemComponent @click="$execCommand('bold')">
+            <DropdownItemComponent @click="$editable.execCommand('bold')">
                 <div class="flex flex-nowrap items-center">
                     <i class="block fa-solid fa-bold mr-2 w-4"></i>
                     <div class="flex-auto">Bold</div>
                 </div>
             </DropdownItemComponent>
 
-            <DropdownItemComponent @click="$execCommand('italic')">
+            <DropdownItemComponent @click="$editable.execCommand('italic')">
                 <div class="flex flex-nowrap items-center">
                     <i class="block fa-solid fa-italic mr-2 w-4"></i>
                     <div class="flex-auto">Italic</div>
                 </div>
             </DropdownItemComponent>
 
-            <DropdownItemComponent @click="$execCommand('underline')">
+            <DropdownItemComponent @click="$editable.execCommand('underline')">
                 <div class="flex flex-nowrap items-center">
                     <i class="block fa-solid fa-underline mr-2 w-4"></i>
                     <div class="flex-auto">Underline</div>
                 </div>
             </DropdownItemComponent>
 
-            <DropdownItemComponent @click="$execCommand('strikethrough')">
+            <DropdownItemComponent @click="$editable.execCommand('strikethrough')">
                 <div class="flex flex-nowrap items-center">
                     <i class="block fa-solid fa-strikethrough mr-2 w-4"></i>
                     <div class="flex-auto">Strikethrough</div>
                 </div>
             </DropdownItemComponent>
 
-            <DropdownItemComponent @click="$execCommand('superscript')">
+            <DropdownItemComponent @click="$editable.execCommand('superscript')">
                 <div class="flex flex-nowrap items-center">
                     <i class="block fa-solid fa-superscript mr-2 w-4"></i>
                     <div class="flex-auto">Superscript</div>
                 </div>
             </DropdownItemComponent>
 
-            <DropdownItemComponent @click="$execCommand('subscript')">
+            <DropdownItemComponent @click="$editable.execCommand('subscript')">
                 <div class="flex flex-nowrap items-center">
                     <i class="block fa-solid fa-subscript mr-2 w-4"></i>
                     <div class="flex-auto">Subscript</div>
                 </div>
             </DropdownItemComponent>
 
-            <DropdownItemComponent @click="$execCommand('justifyLeft')">
+            <DropdownItemComponent @click="$editable.execCommand('justifyLeft')">
                 <div class="flex flex-nowrap items-center">
                     <i class="block fa-solid fa-align-left mr-2 w-4"></i>
                     <div class="flex-auto">Align left</div>
                 </div>
             </DropdownItemComponent>
 
-            <DropdownItemComponent @click="$execCommand('justifyCenter')">
+            <DropdownItemComponent @click="$editable.execCommand('justifyCenter')">
                 <div class="flex flex-nowrap items-center">
                     <i class="block fa-solid fa-align-center mr-2 w-4"></i>
                     <div class="flex-auto">Align center</div>
                 </div>
             </DropdownItemComponent>
             
-            <DropdownItemComponent @click="$execCommand('justifyRight')">
+            <DropdownItemComponent @click="$editable.execCommand('justifyRight')">
                 <div class="flex flex-nowrap items-center">
                     <i class="block fa-solid fa-align-right mr-2 w-4"></i>
                     <div class="flex-auto">Align right</div>
                 </div>
             </DropdownItemComponent>
 
-            <DropdownItemComponent @click="$execCommand('justifyFull')">
+            <DropdownItemComponent @click="$editable.execCommand('justifyFull')">
                 <div class="flex flex-nowrap items-center">
                     <i class="block fa-solid fa-align-justify mr-2 w-4"></i>
                     <div class="flex-auto">Align justify</div>
@@ -139,7 +139,7 @@ export default {
             }, 
             set(v) {
                 this.color = v;
-                this.$execCommand('foreColor', v, { cssMode: true });
+                this.$editable.execCommand('foreColor', v, { cssMode: true });
             }, 
         }, 
         hiliteColor: {
@@ -148,7 +148,7 @@ export default {
             }, 
             set(v) {
                 this.background = v;
-                this.$execCommand('hiliteColor', v, { cssMode: true });
+                this.$editable.execCommand('hiliteColor', v, { cssMode: true });
             }, 
         },
     },

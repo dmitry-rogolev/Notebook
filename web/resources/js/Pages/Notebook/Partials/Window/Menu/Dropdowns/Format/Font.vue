@@ -9,7 +9,7 @@
             <span>Font</span>
         </template>
         <template #content>
-            <DropdownItemComponent v-for="item in fonts.serif" @click="$execCommand('fontName', `'${item}', serif`, {cssMode: true})">
+            <DropdownItemComponent v-for="item in fonts.serif" @click="$editable.execCommand('fontName', `'${item}', serif`, {cssMode: true})">
                 <div class="flex flex-nowrap items-center justify-between">
                     <div class="text-gray-700 dark:text-gray-300 text-xs">
                         {{ item }}
@@ -19,7 +19,7 @@
                     </div>
                 </div>
             </DropdownItemComponent>
-            <DropdownItemComponent v-for="item in fonts['sans-serif']" @click="$execCommand('fontName', `'${item}', sans-serif`, {cssMode: true})">
+            <DropdownItemComponent v-for="item in fonts['sans-serif']" @click="$editable.execCommand('fontName', `'${item}', sans-serif`, {cssMode: true})">
                 <div class="flex flex-nowrap items-center justify-between">
                     <div class="text-gray-700 dark:text-gray-300 text-xs">
                         {{ item }}
@@ -29,7 +29,7 @@
                     </div>
                 </div>
             </DropdownItemComponent>
-            <DropdownItemComponent v-for="item in fonts.cursive" @click="$execCommand('fontName', `'${item}', cursive`, {cssMode: true})">
+            <DropdownItemComponent v-for="item in fonts.cursive" @click="$editable.execCommand('fontName', `'${item}', cursive`, {cssMode: true})">
                 <div class="flex flex-nowrap items-center justify-between">
                     <div class="text-gray-700 dark:text-gray-300 text-xs">
                         {{ item }}
@@ -39,7 +39,7 @@
                     </div>
                 </div>
             </DropdownItemComponent>
-            <DropdownItemComponent v-for="item in fonts.fantasy" @click="$execCommand('fontName', `'${item}', fantasy`, {cssMode: true})">
+            <DropdownItemComponent v-for="item in fonts.fantasy" @click="$editable.execCommand('fontName', `'${item}', fantasy`, {cssMode: true})">
                 <div class="flex flex-nowrap items-center justify-between">
                     <div class="text-gray-700 dark:text-gray-300 text-xs">
                         {{ item }}
@@ -49,7 +49,7 @@
                     </div>
                 </div>
             </DropdownItemComponent>
-            <DropdownItemComponent v-for="item in fonts.monospace" @click="$execCommand('fontName', `'${item}', monospace`, {cssMode: true})">
+            <DropdownItemComponent v-for="item in fonts.monospace" @click="$editable.execCommand('fontName', `'${item}', monospace`, {cssMode: true})">
                 <div class="flex flex-nowrap items-center justify-between">
                     <div class="text-gray-700 dark:text-gray-300 text-xs">
                         {{ item }}

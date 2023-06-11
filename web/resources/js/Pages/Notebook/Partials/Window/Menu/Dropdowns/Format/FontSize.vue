@@ -9,7 +9,7 @@
             <span>Font size</span>
         </template>
         <template #content>
-            <DropdownItemComponent v-for="item in sizes" @click="$execCommand('fontSize', `${item}pt`, { cssMode: true })">
+            <DropdownItemComponent v-for="item in sizes" @click="$editable.execCommand('fontSize', `${item}pt`, { cssMode: true })">
                 {{ `${item}pt` }}
             </DropdownItemComponent>
         </template>
