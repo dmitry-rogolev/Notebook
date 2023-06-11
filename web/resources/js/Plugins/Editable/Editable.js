@@ -81,6 +81,8 @@ class Editable
         if (parsedOptions.cssMode) {
             this._onCssMode();
         }
+
+        console.log(commandId);
     
         if (parsedOptions.checkSupport) {
             done = this._execCommandIfSupported(commandId, parsedOptions.showUI, commandId == 'fontSize' ? '1' : value);
@@ -93,6 +95,7 @@ class Editable
         }
     
         if (parsedOptions.cssMode) {
+            console.log(parsedOptions.cssMode);
             this._offCssMode();
         }
 
@@ -281,9 +284,11 @@ class Editable
     }
 
     _fontSizeFix(fontSize) {
-        let fontElement = window.getSelection().anchorNode.parentElement;
+        let fontElement = this._selection.anchorNode.parentElement;
+        console.log(fontSize);
         fontElement.removeAttribute("size");
         fontElement.style.fontSize = fontSize;
+        console.log(fontElement);
     }
 
     _cutTags(str) {

@@ -86,6 +86,7 @@ export default {
                 contentType: false,
                 processData: false,
             }).then(response => {
+                this.$editable.editableElement.focus();
                 this.$emit('added:image', '/api/notes/' + this.note.id + '/images/' + response.data.image.name);
                 this.$emit('close');
             });
