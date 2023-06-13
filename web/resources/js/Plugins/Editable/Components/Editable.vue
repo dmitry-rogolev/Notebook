@@ -1,7 +1,7 @@
 <template>
     <div 
         ref="editable" 
-        @input="$emit('update:modelValue', $event.target.innerHTML)" 
+        @input="emited = $event.target.innerHTML; $emit('update:modelValue', $event.target.innerHTML);" 
         contenteditable="true" 
         aria-multiline="true"
         role="textbox"
@@ -22,6 +22,7 @@ export default {
     data() {
         return {
             value: this.modelValue, 
+            emited: null,
         };
     },
 
@@ -40,7 +41,7 @@ export default {
 
     watch: {
         modelValue() {
-            if (this.$refs.editable.innerHTML != this.modelValue) {
+            if (this.emited != this.modelValue) {
                 this.value = this.modelValue;
             }
         }, 

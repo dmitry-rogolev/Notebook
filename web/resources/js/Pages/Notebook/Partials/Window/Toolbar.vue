@@ -120,7 +120,7 @@
     
                     <DropdownLinkComponent 
                         v-for="item in sizes" 
-                        @click="size = item; $editable.execCommand('fontSize', `${item}pt`, { cssMode: true })" 
+                        @click="size = item; $editable.execCommand('fontSize', `${item}pt`, { cssMode: true });" 
                         as="button"
                         >
                         {{ `${item}${unit}` }}
