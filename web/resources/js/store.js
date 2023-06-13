@@ -51,8 +51,20 @@ const store = createStore({
             if (dark != undefined) {
                 context.commit('dark', dark);
                 localStorage.setItem('dark', dark);
+
+                if (dark) {
+                    document.body.classList.add('dark');
+                } else {
+                    document.body.classList.remove('dark');
+                }
             } else {
                 context.commit('dark', context.getters.getDark);
+
+                if (context.getters.getDark) {
+                    document.body.classList.add('dark');
+                } else {
+                    document.body.classList.remove('dark');
+                }
             }
         }, 
         autosave(context, autosave) {

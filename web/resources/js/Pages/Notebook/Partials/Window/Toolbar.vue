@@ -230,36 +230,25 @@
         </div>
 
         <div role="menuitem">
-            <ToolbarButtonComponent @click="isOpenImageModal = true" title="Insert image">
-                <i class="fa-solid fa-image"></i>
-            </ToolbarButtonComponent>
-
-            <UploadImageModalPartial 
-                :note="note" 
-                :active="isOpenImageModal" 
-                @added:image="$editable.execCommand('insertImage', $event)"
-                @close="isOpenImageModal = false" 
-                />
+            <UploadImageWindowToolbarModalPartial :note="note" />
         </div>
 
         <div class="flex flex-nowrap">
-            <div role="menuitem">
-                <ToolbarButtonComponent @click="isOpenLinkModal = true" title="Insert link">
-                    <i class="fa-solid fa-link"></i>
-                </ToolbarButtonComponent>
-    
-                <ModalCreateLinkPartial 
-                    :active="isOpenLinkModal" 
-                    @added:link="$editable.execCommand('createLink', $event)"
-                    @close="isOpenLinkModal = false" 
-                    />
-            </div>
+            <CreateLinkWindowToolbarModalPartial />
 
             <div role="menuitem">
                 <ToolbarButtonComponent @click="$editable.execCommand('unlink')" title="Unlink">
                     <i class="fa-solid fa-unlink"></i>
                 </ToolbarButtonComponent>
             </div>
+        </div>
+
+        <div role="menuitem">
+            <InsertSymbolsWindowToolbarModalPartial />
+        </div>
+
+        <div role="menuitem">
+            <InsertEmoticonsWindowToolbarModalPartial />
         </div>
         
     </section>
@@ -269,8 +258,10 @@
 import ToolbarButtonComponent from '@/Components/ToolbarButton.vue';
 import DropdownComponent from '@/Components/Dropdown.vue';
 import DropdownLinkComponent from '@/Components/DropdownLink.vue';
-import UploadImageModalPartial from '@/Pages/Notebook/Partials/Window/Modals/UploadImage.vue';
-import ModalCreateLinkPartial from '@/Pages/Notebook/Partials/Window/Modals/CreateLink.vue';
+import CreateLinkWindowToolbarModalPartial from '@/Pages/Notebook/Partials/Window/Modals/Toolbar/CreateLink.vue';
+import UploadImageWindowToolbarModalPartial from '@/Pages/Notebook/Partials/Window/Modals/Toolbar/UploadImage.vue';
+import InsertSymbolsWindowToolbarModalPartial from '@/Pages/Notebook/Partials/Window/Modals/Toolbar/InsertSymbols.vue';
+import InsertEmoticonsWindowToolbarModalPartial from '@/Pages/Notebook/Partials/Window/Modals/Toolbar/InsertEmoticons.vue';
 import fonts from '@/assets/fonts.json';
 import { faker } from '@faker-js/faker';
 import { token } from '@/helpers';
@@ -282,13 +273,11 @@ export default {
         ToolbarButtonComponent, 
         DropdownComponent, 
         DropdownLinkComponent, 
-        UploadImageModalPartial, 
-        ModalCreateLinkPartial, 
+        CreateLinkWindowToolbarModalPartial, 
+        UploadImageWindowToolbarModalPartial, 
+        InsertSymbolsWindowToolbarModalPartial, 
+        InsertEmoticonsWindowToolbarModalPartial, 
     }, 
-
-    emits: [
-        'execCommand'
-    ], 
 
     data () {
         return {

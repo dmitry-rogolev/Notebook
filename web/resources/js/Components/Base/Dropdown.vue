@@ -22,7 +22,6 @@
                 class="overflow-y-auto"
                 :class="[targetClass, widthClass]"
                 :style="{maxHeight: maxHeight}"
-                @click="dropdown.hide()"
                 >
                 <slot name="content"></slot>
             </div>

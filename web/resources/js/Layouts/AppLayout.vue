@@ -1,5 +1,5 @@
 <template>
-    <div :class="{dark: dark}">
+    <div>
         <Head :title="title" />
         
         <div class="min-h-screen bg-gray-100 dark:bg-gray-900 flex flex-col">
@@ -23,21 +23,11 @@ export default {
         NotificationManagerComponent, 
     }, 
 
-    computed: {
-        dark() {
-            return this.$store.state.dark;
-        }, 
-    }, 
-
     props: {
         title: {
             type: String, 
             default: '', 
         }, 
-    }, 
-
-    created() {
-        this.$store.dispatch('dark');
     }, 
 };
 </script>

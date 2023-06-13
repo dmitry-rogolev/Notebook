@@ -18,75 +18,18 @@
                 <span>Ordered list</span>
             </DropdownItemComponent>
 
-            <DropdownItemComponent @click="isOpenImageModal = true">
-                <div class="flex flex-nowrap items-center">
-                    <div class="flex-auto">
-                        <i class="fa-solid fa-image w-6 text-center mr-2"></i>
-                        <span>Image</span>
-                    </div>
-                    <div class="text-xs font-bold">Alt + I</div>
-                </div>
-            </DropdownItemComponent>
+            <UploadImageWindowMenuModalPartial :note="note" />
 
-            <UploadImageModalPartial 
-                :note="note" 
-                :active="isOpenImageModal" 
-                @added:image="$editable.execCommand('insertImage', $event)"
-                @close="isOpenImageModal = false" 
-                />
-
-            <DropdownItemComponent @click="isOpenLinkModal = true">
-                <div class="flex flex-nowrap items-center">
-                    <div class="flex-auto">
-                        <i class="fa-solid fa-link w-6 text-center mr-2"></i>
-                        <span>Link</span>
-                    </div>
-                    <div class="text-xs font-bold">Alt + L</div>
-                </div>
-            </DropdownItemComponent>
-
-            <ModalCreateLinkPartial 
-                :active="isOpenLinkModal" 
-                @added:link="$editable.execCommand('createLink', $event)"
-                @close="isOpenLinkModal = false" 
-                />
+            <CreateLinkWindowMenuModalPartial />
 
             <DropdownItemComponent @click="$editable.execCommand('unlink')">
                 <i class="fa-solid fa-unlink w-6 text-center mr-2"></i>
                 <span>Unlink</span>
             </DropdownItemComponent>
 
-            <DropdownItemComponent @click="isOpenInsertSymbolsModal = true">
-                <div class="flex flex-nowrap items-center">
-                    <div class="flex-auto">
-                        <i class="fa-solid fa-at w-6 text-center mr-2"></i>
-                        <span>Symbols</span>
-                    </div>
-                    <div class="text-xs font-bold">Alt + Y</div>
-                </div>
-            </DropdownItemComponent>
+            <InsertSymbolsWindowMenuModalPartial />
 
-            <ModalInsertSymbolsPartial 
-                :active="isOpenInsertSymbolsModal" 
-                @create:symbol="$editable.execCommand('insertHTML', $event)" 
-                @close="isOpenInsertSymbolsModal = false" 
-                />
-
-            <DropdownItemComponent @click="isOpenInsertEmoticonsModal = true">
-                <div class="flex flex-nowrap items-center">
-                    <div class="flex-auto">
-                        <i class="fa-solid fa-face-grin-wink w-6 text-center mr-2"></i>
-                        <span>Emoticons</span>
-                    </div>
-                    <div class="text-xs font-bold">Alt + E</div>
-                </div>
-            </DropdownItemComponent>
-
-            <ModalInsertEmoticonsPartial 
-                :active="isOpenInsertEmoticonsModal" 
-                @create:emoticon="$editable.execCommand('insertHTML', $event)" 
-                @close="isOpenInsertEmoticonsModal = false" 
-                />
+            <InsertEmoticonsWindowMenuModalPartial />
 
         </template>
     </DropdownPartial>
@@ -95,10 +38,10 @@
 <script>
 import DropdownPartial from '../Dropdown.vue';
 import DropdownItemComponent from '@/Components/Custom/Dropdown/Item.vue';
-import UploadImageModalPartial from '@/Pages/Notebook/Partials/Window/Modals/UploadImage.vue';
-import ModalInsertSymbolsPartial from '../../Modals/InsertSymbols.vue';
-import ModalInsertEmoticonsPartial from '../../Modals/InsertEmoticons.vue';
-import ModalCreateLinkPartial from '@/Pages/Notebook/Partials/Window/Modals/CreateLink.vue';
+import CreateLinkWindowMenuModalPartial from '@/Pages/Notebook/Partials/Window/Modals/Menu/CreateLink.vue';
+import UploadImageWindowMenuModalPartial from '@/Pages/Notebook/Partials/Window/Modals/Menu/UploadImage.vue';
+import InsertSymbolsWindowMenuModalPartial from '@/Pages/Notebook/Partials/Window/Modals/Menu/InsertSymbols.vue';
+import InsertEmoticonsWindowMenuModalPartial from '@/Pages/Notebook/Partials/Window/Modals/Menu/InsertEmoticons.vue';
 
 export default {
     name: 'WindowMenuInsertDropdownPartial', 
@@ -106,10 +49,10 @@ export default {
     components: {
         DropdownPartial, 
         DropdownItemComponent, 
-        UploadImageModalPartial, 
-        ModalInsertSymbolsPartial, 
-        ModalInsertEmoticonsPartial, 
-        ModalCreateLinkPartial, 
+        CreateLinkWindowMenuModalPartial, 
+        UploadImageWindowMenuModalPartial, 
+        InsertSymbolsWindowMenuModalPartial, 
+        InsertEmoticonsWindowMenuModalPartial,
     }, 
 
     data() {
@@ -117,7 +60,6 @@ export default {
             isOpenInsertSymbolsModal: false, 
             isOpenInsertEmoticonsModal: false, 
             isOpenImageModal: false, 
-            isOpenLinkModal: false, 
         }
     },
 

@@ -1,69 +1,76 @@
 <template>
-    <ModalComponent :active="active" @close="$emit('close')" @after-enter="createDropzone">
-        <template #header>
-            <div class="px-4 py-2 text-base">
-                Add image
-            </div>
-        </template>
-        <template #content>
-            <div class="px-4 py-3">
-                <form 
-                    :id="dropzoneToken"
-                    class="dropzone h-52 px-4 py-2 bg-white dark:bg-gray-800 border-gray-300 dark:border-gray-700 border-2 border-dashed text-gray-600 dark:text-gray-400 rounded-lg shadow-md flex items-center justify-center"
-                    >
-
-                </form>
-            </div>
-        </template>
-    </ModalComponent>
+    <div>
+        <TriggerComponent v-bind="$attrs" @click="modal.show()" :class="[triggerClass]">
+            <slot></slot>
+        </TriggerComponent>
+        <teleport to="body">
+            <ModalComponent ref="modal" @close="modal.hide()">
+                <template #header>
+                    <div class="px-4 py-2">
+                        Add image
+                    </div>
+                </template>
+                <template #content>
+                    <div class="px-4 py-4 flex">
+                        <form 
+                            :id="dropzoneToken"
+                            class="dropzone w-full h-52 px-4 py-2 bg-white dark:bg-gray-800 border-gray-300 dark:border-gray-700 border-2 border-dashed text-gray-600 dark:text-gray-400 rounded-lg shadow-md flex items-center justify-center"
+                            ></form>
+                    </div>
+                </template>
+            </ModalComponent>
+        </teleport>
+    </div>
 </template>
 
 <script>
-import ModalComponent from '@/Components/Modal.vue';
+import ModalComponent from '@/Components/Modal/Modal.vue';
+import TriggerComponent from '@/Components/Modal/Trigger.vue';
+import { Modal } from 'flowbite';
 import { token } from '@/helpers';
 import Dropzone from "dropzone";
 
 export default {
-    name: 'UploadImageModalPartial', 
+    name: 'UploadImageWindowModalPartial', 
 
     components: {
         ModalComponent, 
+        TriggerComponent, 
     }, 
-
-    emits: [
-        'close', 
-        'added:image', 
-    ], 
 
     data() {
         return {
-            isOpenImageModal: false, 
-            uploadImageToken: token(), 
             dropzoneToken: token(), 
             dropzone: null, 
+            modal: null, 
         };
     },
 
     props: {
-        active: {
-            type: Boolean,
-            default: false, 
-        },
         note: {
             type: Object, 
             required: true, 
         }, 
+        triggerClass: {
+            type: [ Array, String ],
+            default: '', 
+        },
     },
 
-    watch: {
-        active() {
-            if (! this.active) {
-                this.dropzone = null;
-            }
-        }, 
-    }, 
-
     methods: {
+        initModal() {
+            this.modal = new Modal(this.$refs.modal.$el, {
+                placement: 'center-center', 
+                backdrop: 'dynamic', 
+                closable: true, 
+                onShow: () => {
+                    this.createDropzone();
+                }, 
+                onHide: () => {
+                    this.dropzone = null;
+                }, 
+            });
+        }, 
         createDropzone() {
             this.dropzone = new Dropzone('#' + this.dropzoneToken, {
                 maxFilesize: 4194304, 
@@ -87,10 +94,14 @@ export default {
                 processData: false,
             }).then(response => {
                 this.$editable.editableElement.focus();
-                this.$emit('added:image', '/api/notes/' + this.note.id + '/images/' + response.data.image.name);
-                this.$emit('close');
+                this.$editable.execCommand('insertImage', '/api/notes/' + this.note.id + '/images/' + response.data.image.name);
+                this.modal.hide();
             });
         }, 
+    }, 
+
+    mounted() {
+        this.initModal();
     }, 
 }
 </script>

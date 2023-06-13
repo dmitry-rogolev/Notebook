@@ -1,0 +1,21 @@
+<template>
+    <CreateLinkModalComponent title="Link" triggerClass="z-10 px-3 py-1.5 rounded-lg bg-gray-50 dark:bg-slate-800 hover:bg-gray-100 dark:hover:bg-slate-700 focus:text-indigo-500 dark:focus:text-indigo-500 text-gray-600 dark:text-gray-400 hover:border-gray-300 dark:hover:border-gray-600 border-transparent border hover:shadow-md">
+        <i class="fa-solid fa-link"></i>
+    </CreateLinkModalComponent>
+</template>
+
+<script>
+import CreateLinkModalComponent from '../CreateLink.vue';
+
+export default {
+    name: 'CreateLinkWindowToolbarModalPartial', 
+
+    components: {
+        CreateLinkModalComponent, 
+    }, 
+}
+</script>
+
+<style scoped>
+
+</style>

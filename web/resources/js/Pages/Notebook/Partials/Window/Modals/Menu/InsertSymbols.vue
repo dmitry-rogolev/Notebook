@@ -1,0 +1,27 @@
+<template>
+    <InsertSymbolsModalComponent triggerClass="w-full px-3 py-2 bg-white dark:bg-gray-800 hover:bg-gray-100 dark:hover:bg-gray-700 text-gray-700 dark:text-gray-300 text-left text-sm">
+        <div class="flex flex-nowrap items-center">
+            <div class="flex-auto">
+                <i class="fa-solid fa-icons w-6 text-center mr-2"></i>
+                <span>Symbols</span>
+            </div>
+            <div class="text-xs font-bold">Alt + Y</div>
+        </div>
+    </InsertSymbolsModalComponent>
+</template>
+
+<script>
+import InsertSymbolsModalComponent from '../InsertSymbols.vue';
+
+export default {
+    name: 'InsertSymbolsWindowMenuModalPartial', 
+
+    components: {
+        InsertSymbolsModalComponent, 
+    }, 
+}
+</script>
+
+<style scoped>
+
+</style>
