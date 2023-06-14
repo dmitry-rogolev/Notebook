@@ -6,128 +6,15 @@
         >
 
         <div role="menuitem">
-            <DropdownComponent @open="isOpenFormatBlocks = true" @close="isOpenFormatBlocks = false" contentClass="-mt-1">
-                <template #trigger>
-                    <ToolbarButtonComponent class="flex flex-nowrap justify-between max-w-[10rem]" :active="isOpenFormatBlocks">
-                        <div class="mr-2 truncate">{{ formatBlock }}</div>
-                        <div>
-                            <i v-if="isOpenFormatBlocks" class="fa-solid fa-caret-up"></i>
-                            <i v-else class="fa-solid fa-caret-down"></i>
-                        </div>
-                    </ToolbarButtonComponent>
-                </template>
-                
-                <template #content>
-    
-                    <DropdownLinkComponent 
-                        v-for="(item, key) in formats" 
-                        @click="formatBlock = key; $editable.execCommand('formatBlock', item);" 
-                        as="button"
-                        >
-                        <div v-html="`<${item} class='m-0'>${key}</${item}>`"></div>
-                    </DropdownLinkComponent>
-    
-                </template>
-            </DropdownComponent>
+            <BlockFormatPartial />
         </div>
 
         <div role="menuitem">
-            <DropdownComponent widthClass="w-72" heightClass="h-72" @open="isOpenFont = true" @close="isOpenFont = false" contentClass="-mt-1">
-                <template #trigger>
-                    <ToolbarButtonComponent class="flex flex-nowrap justify-between max-w-[10rem]" :active="isOpenFont">
-                        <div class="mr-2 truncate">{{ font }}</div>
-                        <div>
-                            <i v-if="isOpenFont" class="fa-solid fa-caret-up"></i>
-                            <i v-else class="fa-solid fa-caret-down"></i>
-                        </div>
-                    </ToolbarButtonComponent>
-                </template>
-                
-                <template #content>
-    
-                    <DropdownLinkComponent v-for="item in fonts.serif" @click="font = item; $editable.execCommand('fontName', `'${item}', serif`, {cssMode: true})" as="button">
-                        <div class="flex flex-nowrap items-center justify-between">
-                            <div class="text-gray-700 dark:text-gray-300 text-xs">
-                                {{ item }}
-                            </div>
-                            <div class="pl-3 flex-auto text-right truncate text-gray-600 dark:text-gray-400 text-lg" :style="{fontFamily: `${item}, serif`}">
-                                {{ exampleText }}
-                            </div>
-                        </div>
-                    </DropdownLinkComponent>
-
-                    <DropdownLinkComponent v-for="item in fonts['sans-serif']" @click="font = item; $editable.execCommand('fontName', `'${item}', sans-serif`, {cssMode: true})" as="button">
-                        <div class="flex flex-nowrap items-center justify-between">
-                            <div class="text-gray-700 dark:text-gray-300 text-xs">
-                                {{ item }}
-                            </div>
-                            <div class="pl-3 flex-auto text-right truncate text-gray-600 dark:text-gray-400 text-lg" :style="{fontFamily: `${item}, sans-serif`}">
-                                {{ exampleText }}
-                            </div>
-                        </div>
-                    </DropdownLinkComponent>
-
-                    <DropdownLinkComponent v-for="item in fonts.cursive" @click="font = item; $editable.execCommand('fontName', `'${item}', cursive`, {cssMode: true})" as="button">
-                        <div class="flex flex-nowrap items-center justify-between">
-                            <div class="text-gray-700 dark:text-gray-300 text-xs">
-                                {{ item }}
-                            </div>
-                            <div class="pl-3 flex-auto text-right truncate text-gray-600 dark:text-gray-400 text-lg" :style="{fontFamily: `${item}, cursive`}">
-                                {{ exampleText }}
-                            </div>
-                        </div>
-                    </DropdownLinkComponent>
-
-                    <DropdownLinkComponent v-for="item in fonts.fantasy" @click="font = item; $editable.execCommand('fontName', `'${item}', fantasy`, {cssMode: true})" as="button">
-                        <div class="flex flex-nowrap items-center justify-between">
-                            <div class="text-gray-700 dark:text-gray-300 text-xs">
-                                {{ item }}
-                            </div>
-                            <div class="pl-3 flex-auto text-right truncate text-gray-600 dark:text-gray-400 text-lg" :style="{fontFamily: `${item}, fantasy`}">
-                                {{ exampleText }}
-                            </div>
-                        </div>
-                    </DropdownLinkComponent>
-
-                    <DropdownLinkComponent v-for="item in fonts.monospace" @click="font = item; $editable.execCommand('fontName', `'${item}', monospace`, {cssMode: true})" as="button">
-                        <div class="flex flex-nowrap items-center justify-between">
-                            <div class="text-gray-700 dark:text-gray-300 text-xs">
-                                {{ item }}
-                            </div>
-                            <div class="pl-3 flex-auto text-right truncate text-gray-600 dark:text-gray-400 text-lg" :style="{fontFamily: `${item}, monospace`}">
-                                {{ exampleText }}
-                            </div>
-                        </div>
-                    </DropdownLinkComponent>
-    
-                </template>
-            </DropdownComponent>
+            <FontPartial />
         </div>
 
         <div role="menuitem">
-            <DropdownComponent widthClass="w-20" heightClass="h-72" @open="isOpenFontSize = true" @close="isOpenFontSize = false" contentClass="-mt-1">
-                <template #trigger>
-                    <ToolbarButtonComponent class="flex flex-nowrap justify-between max-w-[10rem]" :active="isOpenFontSize">
-                        <div class="mr-2 truncate">{{ `${size}${unit}` }}</div>
-                        <div>
-                            <i v-if="isOpenFontSize" class="fa-solid fa-caret-up"></i>
-                            <i v-else class="fa-solid fa-caret-down"></i>
-                        </div>
-                    </ToolbarButtonComponent>
-                </template>
-                
-                <template #content>
-    
-                    <DropdownLinkComponent 
-                        v-for="item in sizes" 
-                        @click="size = item; $editable.execCommand('fontSize', `${item}pt`, { cssMode: true });" 
-                        as="button"
-                        >
-                        {{ `${item}${unit}` }}
-                    </DropdownLinkComponent>
-    
-                </template>
-            </DropdownComponent>
+            <FontSizePartial />
         </div>
 
         <div role="menuitem">
@@ -262,6 +149,9 @@ import CreateLinkWindowToolbarModalPartial from '@/Pages/Notebook/Partials/Windo
 import UploadImageWindowToolbarModalPartial from '@/Pages/Notebook/Partials/Window/Modals/Toolbar/UploadImage.vue';
 import InsertSymbolsWindowToolbarModalPartial from '@/Pages/Notebook/Partials/Window/Modals/Toolbar/InsertSymbols.vue';
 import InsertEmoticonsWindowToolbarModalPartial from '@/Pages/Notebook/Partials/Window/Modals/Toolbar/InsertEmoticons.vue';
+import BlockFormatPartial from './Dropdowns/Sub/Toolbar/BlockFormat.vue';
+import FontPartial from './Dropdowns/Sub/Toolbar/Font.vue';
+import FontSizePartial from './Dropdowns/Sub/Toolbar/FontSize.vue';
 import fonts from '@/assets/fonts.json';
 import { faker } from '@faker-js/faker';
 import { token } from '@/helpers';
@@ -277,6 +167,9 @@ export default {
         UploadImageWindowToolbarModalPartial, 
         InsertSymbolsWindowToolbarModalPartial, 
         InsertEmoticonsWindowToolbarModalPartial, 
+        BlockFormatPartial, 
+        FontPartial, 
+        FontSizePartial, 
     }, 
 
     data () {

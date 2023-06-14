@@ -41,12 +41,12 @@
 import WindowMenuButtonComponent from '@/Components/Window/MenuButton.vue';
 import DropdownComponent from '@/Components/Dropdown.vue';
 import DropdownLinkComponent from '@/Components/DropdownLink.vue';
-import FileDropdownPartial from './Menu/Dropdowns/File.vue';
-import EditDropdownPartial from './Menu/Dropdowns/Edit.vue';
-import InsertDropdownPartial from './Menu/Dropdowns/Insert.vue';
-import FormatDropdownPartial from './Menu/Dropdowns/Format.vue';
-import ToolsDropdownPartial from './Menu/Dropdowns/Tools.vue';
-import ViewDropdownPartial from './Menu/Dropdowns/View.vue';
+import FileDropdownPartial from './Dropdowns/File.vue';
+import EditDropdownPartial from './Dropdowns/Edit.vue';
+import InsertDropdownPartial from './Dropdowns/Insert.vue';
+import FormatDropdownPartial from './Dropdowns/Format.vue';
+import ToolsDropdownPartial from './Dropdowns/Tools.vue';
+import ViewDropdownPartial from './Dropdowns/View.vue';
 
 export default {
     name: 'WindowMenuPartial', 
