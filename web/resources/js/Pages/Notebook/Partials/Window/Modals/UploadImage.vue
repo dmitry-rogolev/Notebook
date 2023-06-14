@@ -14,7 +14,7 @@
                     <div class="px-4 py-4 flex">
                         <form 
                             :id="dropzoneToken"
-                            class="dropzone w-full h-52 px-4 py-2 bg-white dark:bg-gray-800 border-gray-300 dark:border-gray-700 border-2 border-dashed text-gray-600 dark:text-gray-400 rounded-lg shadow-md flex items-center justify-center"
+                            class="dropzone w-full h-52 px-4 py-2 bg-white dark:bg-gray-800 border-gray-300 dark:border-gray-700 border-2 border-dashed text-gray-600 dark:text-gray-400 rounded-lg flex items-center justify-center"
                             ></form>
                     </div>
                 </template>

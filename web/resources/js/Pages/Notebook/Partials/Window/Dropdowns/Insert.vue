@@ -15,18 +15,18 @@
                 <span>Ordered list</span>
             </DropdownItemComponent>
 
-            <UploadImageWindowMenuModalPartial :note="note" />
+            <UploadImageWindowMenuModalPartial :note="note" @click="dropdown.hide()" />
 
-            <CreateLinkWindowMenuModalPartial />
+            <CreateLinkWindowMenuModalPartial @click="dropdown.hide()" />
 
             <DropdownItemComponent @click="$editable.execCommand('unlink'); dropdown.hide();">
                 <i class="fa-solid fa-unlink w-6 text-center mr-2"></i>
                 <span>Unlink</span>
             </DropdownItemComponent>
 
-            <InsertSymbolsWindowMenuModalPartial />
+            <InsertSymbolsWindowMenuModalPartial @click="dropdown.hide()" />
 
-            <InsertEmoticonsWindowMenuModalPartial />
+            <InsertEmoticonsWindowMenuModalPartial @click="dropdown.hide()" />
 
         </template>
     </DropdownComponent>

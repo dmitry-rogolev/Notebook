@@ -14,7 +14,7 @@
         <teleport to="body">
             <div 
                 ref="target"
-                class="z-40 hidden shadow-lg"
+                class="z-40 hidden shadow-lg rounded-lg"
                 >
                 <div 
                     ref="menu"
@@ -120,7 +120,6 @@ export default {
     }, 
 
     mounted() {
-        console.log(this.hasHeightClass);
         this.initDropdown();
         if (! this.hasHeightClass) {
             this.defineWindowResizeListener();

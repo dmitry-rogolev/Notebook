@@ -36,44 +36,7 @@
                 </div>
             </DropdownItemComponent>
 
-            <DropdownItemComponent @click="isOpenFileModal = true; dropdown.hide();">
-                <div class="flex flex-nowrap items-center">
-                    <div class="flex-auto">
-                        <i class="fa-solid fa-floppy-disk w-6 text-center mr-2"></i>
-                        <span>Save as</span>
-                    </div>
-                    <div class="text-xs font-bold">Alt + A</div>
-                </div>
-            </DropdownItemComponent>
-
-            <ModalComponent :active="isOpenFileModal" @close="isOpenFileModal = false">
-                <template #header>
-                    <div class="px-4 py-2">
-                        <h5 class="text-base">Save as</h5>
-                    </div>
-                </template>
-                <template #content>
-                    <div class="px-4 pb-4 pt-2">
-                        <div class="flex flex-nowrap">
-                            <InputComponent 
-                                @keyup.enter="saveAs(); isOpenFileModal = false;" 
-                                v-model="fileName" 
-                                type="text" 
-                                class="rounded-r-none" 
-                                placeholder="File name" 
-                                autofocus />
-
-                            <button 
-                                @click="saveAs(); isOpenFileModal = false;" 
-                                type="button" 
-                                class="bg-indigo-600 hover:bg-indigo-600 dark:bg-indigo-800 dark:hover:bg-indigo-700 text-gray-100 dark:text-gray-300 border-0 rounded-r-lg px-4 transition duration-300 ease-in-out"
-                                >
-                                Download
-                            </button>
-                        </div>
-                    </div>
-                </template>
-            </ModalComponent>
+            <SaveAsPartial @click="dropdown.hide()" :record="record" />
 
             <DropdownItemComponent @click="toggleAutosave(); dropdown.hide();">
                 <div class="flex flex-nowrap items-center">
@@ -115,8 +78,7 @@
 <script>
 import DropdownComponent from '@/Components/Dropdown/Dropdown.vue';
 import DropdownItemComponent from '@/Components/Dropdown/Item.vue';
-import ModalComponent from '@/Components/Modal.vue';
-import InputComponent from '@/Components/TextInput.vue';
+import SaveAsPartial from '../Modals/Menu/SaveAs.vue';
 import { cutForbiddenTags } from '@/helpers';
 
 export default {
@@ -125,8 +87,7 @@ export default {
     components: {
         DropdownComponent, 
         DropdownItemComponent, 
-        ModalComponent, 
-        InputComponent, 
+        SaveAsPartial, 
     }, 
 
     emits: [
@@ -182,19 +143,6 @@ export default {
                 }
             }
             input.click();
-        }, 
-        openFileModal() {
-            this.fileName = (this.record.title ? this.record.title : 'No name') + '.txt';
-            this.isOpenFileModal = true;
-        }, 
-        closeFileModal() {
-            this.isOpenFileModal = false;
-        }, 
-        saveAs() {
-            let a = document.createElement('a');
-            a.href = 'data:text/plain;charset=utf-8,%EF%BB%BF' + encodeURIComponent(this.record.text);
-            a.download = this.fileName;
-            a.click();
         }, 
         onAutosave() {
             this.timerAutosave = setInterval(() => this.$emit('update:note'), this.autosaveInterval);
