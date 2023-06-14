@@ -7,6 +7,7 @@
         role="textbox"
         :spellcheck="spellcheck"
         v-html="value"
+        class="overflow-y-auto max-h-full"
         >
     </div>
 </template>

@@ -1,57 +1,46 @@
 <template>
     <WindowComponent>
-        <template #menu>
 
-            <WindowMenuPartial 
-                class="px-1 sm:px-2"
-                @create:note="$emit('create:note', $event)"
-                @update:note="$emit('update:note', this.record)"
-                @exit="$emit('exit')"
-                @open:selector="openSelector"
-                @open:replacer="openReplacer"
-                :record="record"
-                :note="note"
-                />
+        <WindowMenuPartial 
+            class="px-1 sm:px-2"
+            @create:note="$emit('create:note', $event)"
+            @update:note="$emit('update:note', this.record)"
+            @exit="$emit('exit')"
+            @open:selector="openSelector"
+            @open:replacer="openReplacer"
+            :record="record"
+            :note="note"
+            />
 
-            <WindowToolbarPartial :note="note" />
+        <WindowToolbarPartial :note="note" />
 
-        </template>
-        <template #header>
+        <WindowHeaderPartial
+            ref="header"
+            v-model="record.title"
+            @delete:note="$emit('delete:note')"
+            @close:selector="closeSelector"
+            @clear:found="clearFound"
+            @update:recordText="record.text = $event"
+            :activeSelector="isOpenSelector"
+            :activeReplacer="isOpenReplacer"
+            :record="record"
+            />
 
-            <WindowHeaderPartial
-                ref="header"
-                v-model="record.title"
-                @delete:note="$emit('delete:note')"
-                @close:selector="closeSelector"
-                @clear:found="clearFound"
-                @update:recordText="record.text = $event"
-                :activeSelector="isOpenSelector"
-                :activeReplacer="isOpenReplacer"
-                :record="record"
-                />
+        <EditableComponent 
+            ref="contenteditable"
+            class="h-full px-3 sm:px-4 md:px-5 py-3 bg-gray-50 dark:bg-slate-800 text-gray-800 dark:text-gray-200 text-base focus-visible:outline-none whitespace-pre-wrap overflow-auto" 
+            :style="{tabSize: 4}"
+            autofocus
+            v-model="record.text"
+            />
 
-        </template>
-        <template #body>
+        <WindowStatusbarPartial :text="record.text" />
 
-            <EditableComponent 
-                ref="contenteditable"
-                class="h-full px-3 sm:px-4 md:px-5 py-3 bg-gray-50 dark:bg-slate-800 text-gray-800 dark:text-gray-200 text-base focus-visible:outline-none whitespace-pre-wrap overflow-auto" 
-                :style="{tabSize: 4}"
-                autofocus
-                v-model="record.text"
-                />
-
-        </template>
-        <template #footer>
-
-            <WindowStatusbarPartial :text="record.text" />
-
-        </template>
     </WindowComponent>
 </template>
 
 <script>
-import WindowComponent from '@/Components/Window.vue';
+import WindowComponent from '@/Plugins/Window/Components/Window.vue';
 import WindowMenuButtonComponent from '@/Components/Window/MenuButton.vue';
 import WindowMenuPartial from '@/Pages/Notebook/Partials/Window/Menu.vue';
 import WindowHeaderPartial from '@/Pages/Notebook/Partials/Window/Header.vue';
