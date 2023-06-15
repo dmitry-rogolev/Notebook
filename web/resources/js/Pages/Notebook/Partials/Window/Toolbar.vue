@@ -1,9 +1,5 @@
 <template>
-    <section
-        role="menubar"
-        tabindex="-1"
-        class="flex flex-wrap px-2 sm:px-4 py-1 bg-gray-50 dark:bg-slate-800 border-gray-300 dark:border-gray-600 border-t border-b text-gray-700 dark:text-gray-300"
-        >
+    <WindowToolbarComponent class="flex flex-wrap px-2 sm:px-4 py-1 bg-gray-50 dark:bg-slate-800 border-gray-300 dark:border-gray-600 border-t border-b text-gray-700 dark:text-gray-300">
 
         <div role="menuitem">
             <BlockFormatPartial />
@@ -138,10 +134,11 @@
             <InsertEmoticonsWindowToolbarModalPartial />
         </div>
         
-    </section>
+    </WindowToolbarComponent>
 </template>
 
 <script>
+import WindowToolbarComponent from '@/Plugins/Window/Components/WindowToolbar.vue';
 import ToolbarButtonComponent from '@/Components/ToolbarButton.vue';
 import DropdownComponent from '@/Components/Dropdown.vue';
 import DropdownLinkComponent from '@/Components/DropdownLink.vue';
@@ -160,6 +157,7 @@ export default {
     name: 'WindowToolbarPartial', 
 
     components: {
+        WindowToolbarComponent, 
         ToolbarButtonComponent, 
         DropdownComponent, 
         DropdownLinkComponent, 
@@ -174,14 +172,7 @@ export default {
 
     data () {
         return {
-            isOpenFont: false, 
-            isOpenFormatBlocks: false, 
-            isOpenFontSize: false, 
-            isOpenImageModal: false, 
-            isOpenLinkModal: false, 
-            font: 'Figtree', 
             fonts: fonts, 
-            formatBlock: 'Paragraph', 
             formats: {
                 'Header 1': 'h1', 
                 'Header 2': 'h2', 
@@ -189,18 +180,14 @@ export default {
                 'Header 4': 'h4', 
                 'Header 5': 'h5', 
                 'Header 6': 'h6', 
-                Paragraph: 'p', 
+                'Paragraph': 'p', 
                 'Block quote': 'blockquote', 
             }, 
-            size: 12, 
             sizes: [ 8, 9, 10, 11, 12, 14, 16, 18, 20, 22, 24, 30, 36, 48, 62, 72 ], 
-            unit: 'pt', 
             foreColorToken: token(), 
             hiliteColorToken: token(), 
             color: '', 
             background: '', 
-            lineHeight: 1.15, 
-            lineHeights: [ 1, 1.125, 1.25, 1.375, 1.5, 1.625, 1.75, 1.875, 2 ], 
         };
     },
 
@@ -222,9 +209,6 @@ export default {
                 this.background = v;
                 this.$editable.execCommand('hiliteColor', v, { cssMode: true });
             }, 
-        }, 
-        range() {
-            return this.$store.state.range;
         }, 
         exampleText() {
             return faker.lorem.lines(1);

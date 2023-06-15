@@ -1,5 +1,5 @@
 <template>
-    <div class="flex">
+    <WindowMenu>
 
         <FileDropdownPartial
             @create:note="$emit('create:note', $event)"
@@ -22,7 +22,7 @@
         <ViewDropdownPartial />
 
         <div role="menuitem" class="ml-auto">
-            <WindowMenuButtonComponent @click="$store.commit('fullscreen', ! fullscreen)">
+            <WindowMenuButtonComponent @click="$window.toggleFullscreen()">
                 <i v-if="fullscreen" class="fa-solid fa-down-left-and-up-right-to-center fa-rotate-90"></i>
                 <i v-else class="fa-solid fa-up-right-and-down-left-from-center fa-rotate-90"></i>
             </WindowMenuButtonComponent>
@@ -34,10 +34,11 @@
             </button>
         </div>
 
-    </div>
+    </WindowMenu>
 </template>
 
 <script>
+import WindowMenu from '@/Plugins/Window/Components/WindowMenu.vue';
 import WindowMenuButtonComponent from '@/Components/Window/MenuButton.vue';
 import DropdownComponent from '@/Components/Dropdown.vue';
 import DropdownLinkComponent from '@/Components/DropdownLink.vue';
@@ -52,6 +53,7 @@ export default {
     name: 'WindowMenuPartial', 
 
     components: {
+        WindowMenu, 
         WindowMenuButtonComponent, 
         DropdownComponent, 
         DropdownLinkComponent, 
@@ -74,7 +76,7 @@ export default {
 
     computed: {
         fullscreen() {
-            return this.$store.state.fullscreen;
+            return this.$window.fullscreen;
         }, 
     },
 
@@ -86,7 +88,7 @@ export default {
         note: {
             type: Object,
             required: true,  
-        },
+        }, 
     },
 
     methods: {
@@ -159,21 +161,7 @@ export default {
                 this.$emit('toggle:fullscreen');
             }
         }, 
-        defineListeners() {
-            document.addEventListener('keyup', this.keyupListener);
-        }, 
-        removeListeners() {
-            document.removeEventListener('keyup', this.keyupListener);
-        }, 
     }, 
-
-    mounted() {
-        this.defineListeners();
-    }, 
-
-    unmounted() {
-        this.removeListeners();
-    }
 }
 </script>
 

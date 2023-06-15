@@ -1,5 +1,5 @@
 <template>
-    <div class="flex">
+    <WindowHeaderComponent>
 
         <input 
             @input="$emit('update:modelValue', $event.target.value)" 
@@ -31,10 +31,11 @@
             :case="isCase"
             />
 
-    </div>
+    </WindowHeaderComponent>
 </template>
 
 <script>
+import WindowHeaderComponent from '@/Plugins/Window/Components/WindowHeader.vue';
 import SelectorComponent from '@/Components/Selector.vue';
 import { escapeHtml, escapeRegex, cutForbiddenTags } from '@/helpers';
 
@@ -42,6 +43,7 @@ export default {
     name: 'WindowHeaderPartial', 
 
     components: {
+        WindowHeaderComponent, 
         SelectorComponent
     }, 
 

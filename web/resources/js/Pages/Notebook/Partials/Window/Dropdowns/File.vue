@@ -125,9 +125,6 @@ export default {
     },
 
     methods: {
-        reset() {
-            this.fileName = '';
-        },
         openFile() {
             let input = document.createElement('input');
             input.type = 'file';
@@ -181,10 +178,6 @@ export default {
         if (this.autosave) {
             this.onAutosave();
         }
-    }, 
-
-    updated() {
-        this.reset();
     }, 
 
     unmounted() {

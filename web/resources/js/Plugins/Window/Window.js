@@ -4,6 +4,10 @@ class Window
     _height = 0;
     _width = 0;
     _windowResizeObserver = null;
+    _originalNote = null;
+    _fullscreen = false;
+    _statusbar = true;
+    note = null;
 
     get windowElement() {
         return this._element;
@@ -17,13 +21,27 @@ class Window
         return this._width;
     }
 
+    get originalNote() {
+        return this._originalNote;
+    }
+
+    get fullscreen() {
+        return this._fullscreen;
+    }
+
+    get statusbar() {
+        return this._statusbar;
+    }
+
     constructor(options = {}) {
 
     }
 
-    init(element) {
+    init(element, note) {
         if (element && typeof element == 'object' && element instanceof HTMLElement) {
             this._element = element;
+            this._originalNote = note;
+            this.note = Object.assign({}, note);
 
             this._height = this._calcHeight();
             this._width = this._calcWidth();
@@ -44,6 +62,14 @@ class Window
 
     isInit() {
         return !! this._element;
+    }
+
+    toggleFullscreen() {
+        this._fullscreen = ! this._fullscreen;
+    }
+
+    toggleStatusbar() {
+        this._statusbar = ! this._statusbar;
     }
 
     _calcHeight() {

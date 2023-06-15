@@ -5,7 +5,7 @@
         </template>
         <template #content>
 
-            <DropdownItemComponent @click="$store.commit('statusbar', ! statusbar); dropdown.hide();">
+            <DropdownItemComponent @click="$window.toggleStatusbar(); dropdown.hide();">
                 <div class="flex flex-nowrap items-center">
                     <div class="flex items-center">
                         <i v-if="statusbar" class="fa-solid fa-check w-6 text-center mr-2"></i>
@@ -15,7 +15,7 @@
                 </div>
             </DropdownItemComponent>
 
-            <DropdownItemComponent @click="$store.commit('fullscreen', ! fullscreen); dropdown.hide();">
+            <DropdownItemComponent @click="$window.toggleFullscreen(); dropdown.hide();">
                 <div class="flex flex-nowrap items-center">
                     <div class="flex items-center">
                         <i v-if="fullscreen" class="fa-solid fa-check w-6 text-center mr-2"></i>
@@ -44,10 +44,10 @@ export default {
 
     computed: {
         statusbar() {
-            return this.$store.state.statusbar;
+            return this.$window.statusbar;
         }, 
         fullscreen() {
-            return this.$store.state.fullscreen;
+            return this.$window.fullscreen;
         }, 
         dropdown() {
             return this.$refs.dropdown?.dropdown;

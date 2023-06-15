@@ -1,5 +1,5 @@
 <template>
-    <section ref="window" class="flex flex-col w-full h-full" :style="{maxHeight: height}">
+    <section ref="window" class="flex flex-col w-full h-full" :style="{maxHeight: height, height: height}">
         <slot></slot>
     </section>
 </template>
@@ -17,8 +17,15 @@ export default {
         }, 
     },
 
+    props: {
+        note: {
+            type: Object, 
+            required: true, 
+        }, 
+    }, 
+
     mounted() {
-        this.$window.init(this.$refs.window);
+        this.$window.init(this.$refs.window, this.note);
     }, 
 
     unmounted() {
