@@ -17,15 +17,8 @@ export default {
         }, 
     },
 
-    props: {
-        note: {
-            type: Object, 
-            required: true, 
-        }, 
-    }, 
-
     mounted() {
-        this.$window.init(this.$refs.window, this.note);
+        this.$window.init(this.$refs.window);
     }, 
 
     unmounted() {

@@ -1,5 +1,5 @@
 <template>
-    <WindowComponent :note="note">
+    <WindowComponent>
 
         <WindowMenuPartial 
             class="px-1 sm:px-2"

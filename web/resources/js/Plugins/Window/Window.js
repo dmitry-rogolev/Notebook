@@ -4,10 +4,8 @@ class Window
     _height = 0;
     _width = 0;
     _windowResizeObserver = null;
-    _originalNote = null;
     _fullscreen = false;
     _statusbar = true;
-    note = null;
 
     get windowElement() {
         return this._element;
@@ -37,11 +35,9 @@ class Window
 
     }
 
-    init(element, note) {
+    init(element) {
         if (element && typeof element == 'object' && element instanceof HTMLElement) {
             this._element = element;
-            this._originalNote = note;
-            this.note = Object.assign({}, note);
 
             this._height = this._calcHeight();
             this._width = this._calcWidth();
