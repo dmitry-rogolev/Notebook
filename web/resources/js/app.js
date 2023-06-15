@@ -12,6 +12,7 @@ import VueApp from './Plugins/App/plugin';
 import notifier from './Plugins/Notification/plugin';
 import Editable from './Plugins/Editable/plugin';
 import Window from './Plugins/Window/plugin';
+import Sidebar from './Plugins/Sidebar/plugin';
 
 const appName = window.document.getElementsByTagName('title')[0]?.innerText || 'Laravel';
 
@@ -27,6 +28,7 @@ createInertiaApp({
             .use(notifier, {interval: 3000})
             .use(Editable, {autofocus: true})
             .use(Window)
+            .use(Sidebar)
             .mount(el);
     },
     progress: {
