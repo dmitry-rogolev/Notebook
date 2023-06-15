@@ -2,14 +2,13 @@
     <AppLayout title="Notebook">
 
         <transition name="fullscreen" mode="out-in">
-            <ApplicationHeaderPartial v-show="fullscreen ? isShowHeader : true" @mouseleave="isShowHeader = false" />
+            <ApplicationHeaderPartial />
         </transition>
 
         <main class="flex-auto flex flex-col">
             <div class="flex-auto flex">
 
                 <SidebarPartial 
-                    v-show="fullscreen ? isShowSidebar : true"
                     @open:note="open" 
                     @open:notes="isShowSidebarNotes = ! isShowSidebarNotes; isShowSidebarSearch = false"
                     @open:search="isShowSidebarSearch = ! isShowSidebarSearch; isShowSidebarNotes = false"
@@ -20,7 +19,6 @@
                     :found="found" 
                     :activeNotes="isShowSidebarNotes"
                     :activeSearch="isShowSidebarSearch"
-                    @mouseleave="isShowSidebar = false"
                     />
 
                 <WindowPartial 
@@ -32,23 +30,14 @@
                     :note="note"
                     />
 
-                <teleport to="body">
-                    <div 
-                        v-show="fullscreen ? ! isShowSidebar : false"
-                        class="absolute top-0 left-0 bottom-0 w-2"
-                        :class="{dark: dark}"
-                        @mouseenter="isShowSidebar = true"
-                        ></div>
-                </teleport>
-
-                <teleport to="body">
+                <!-- <teleport to="body">
                     <div 
                         v-show="fullscreen ? ! isShowHeader : false"
                         class="absolute top-0 left-0 right-0 h-2"
                         :class="{dark: dark}"
                         @mouseenter="isShowHeader = true"
                         ></div>
-                </teleport>
+                </teleport> -->
             </div>
         </main>
     </AppLayout>
@@ -59,7 +48,7 @@ import AppLayout from '@/Layouts/AppLayout.vue';
 import ApplicationHeaderPartial from '@/Layouts/Partials/Header.vue';
 import SidebarPartial from '@/Pages/Notebook/Partials/Sidebar.vue';
 import WindowPartial from '@/Pages/Notebook/Partials/Window.vue';
-import { escapeHtml, cutForbiddenTags } from '@/helpers';
+import { cutForbiddenTags } from '@/helpers';
 
 export default {
     name: 'NotebookPage', 
@@ -76,17 +65,12 @@ export default {
             record: null, 
             notes: null, 
             found: null, 
-            isShowSidebar: false, 
-            isShowHeader: false, 
             isShowSidebarNotes: false, 
             isShowSidebarSearch: false, 
         };
     }, 
 
     computed: {
-        fullscreen() {
-            return this.$store.state.fullscreen;
-        }, 
         note: {
             get() {
                 return this.record;

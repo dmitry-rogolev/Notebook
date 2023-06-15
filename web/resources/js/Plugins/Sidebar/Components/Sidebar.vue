@@ -1,6 +1,14 @@
 <template>
     <transition name="slide">
-        <section v-show="! fullscreen" ref="sidebar" class="flex print:hidden" role="menubar" :style="{height: height, maxHeight: height}">
+        <section 
+            v-show="! fullscreen || show" 
+            ref="sidebar" 
+            class="flex print:hidden" 
+            role="menubar" 
+            :style="{height: height, maxHeight: height}"
+            @mouseleave="show = false"
+            v-bind="$attrs"
+            >
             <div :class="[triggerContainerClass]">
                 <slot name="triggers"></slot>
             </div>
@@ -16,12 +24,25 @@
             </transition>
         </section>
     </transition>
+    <teleport to="body">
+        <div 
+            v-show="fullscreen && ! show"
+            class="absolute top-0 left-0 bottom-0 w-2"
+            @mouseenter="show = true"
+            ></div>
+    </teleport>
 </template>
 
 <script>
 
 export default {
     name: 'SidebarComponent', 
+
+    data() {
+        return {
+            show: false, 
+        };
+    },
 
     computed: {
         height() {
