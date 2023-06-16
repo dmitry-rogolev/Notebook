@@ -84,13 +84,13 @@ export default {
             let data = new FormData();
             data.append('image', file);
 
-            axios.post('/api/notes/' + this.$window.note.id + '/images', data, {
+            axios.post('/api/notes/' + this.$notebook.record.id + '/images', data, {
                 cache: false,
                 contentType: false,
                 processData: false,
             }).then(response => {
                 this.$editable.editableElement.focus();
-                this.$editable.execCommand('insertImage', '/api/notes/' + this.$window.note.id + '/images/' + response.data.image.name);
+                this.$editable.execCommand('insertImage', '/api/notes/' + this.$notebook.record.id + '/images/' + response.data.image.name);
                 this.modal.hide();
             });
         }, 

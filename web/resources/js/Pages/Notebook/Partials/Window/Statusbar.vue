@@ -25,21 +25,14 @@ export default {
 
     computed: {
         countWords() {
-            return this.text.replace(/<\/?[^>]+>/igm, '').split(/\s/).filter((v) => v).length;
+            return this.$notebook.record.text.replace(/<\/?[^>]+>/igm, '').split(/\s/).filter((v) => v).length;
         }, 
         countСharacters() {
-            return this.text.replace(/<\/?[^>]+>/igm, '').split(/\s|\&nbsp;/).filter((v) => v).join('').length;
+            return this.$notebook.record.text.replace(/<\/?[^>]+>/igm, '').split(/\s|\&nbsp;/).filter((v) => v).join('').length;
         }, 
         statusbar() {
             return this.$window.statusbar;
         }, 
-    },
-
-    props: {
-        text: {
-            type: String,
-            default: '', 
-        },
     },
 }
 </script>

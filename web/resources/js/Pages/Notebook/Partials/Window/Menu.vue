@@ -1,19 +1,11 @@
 <template>
-    <WindowMenu>
+    <WindowMenu class="px-1 sm:px-2">
 
-        <FileDropdownPartial
-            @create:note="$emit('create:note', $event)"
-            @update:note="$emit('update:note')"
-            @exit="$emit('exit')"
-            :record="record"
-            />
+        <FileDropdownPartial />
 
-        <EditDropdownPartial 
-            @open:selector="$emit('open:selector')"
-            @open:replacer="$emit('open:replacer')"
-            />
+        <EditDropdownPartial />
 
-        <InsertDropdownPartial :note="note" />
+        <InsertDropdownPartial />
 
         <FormatDropdownPartial />
 
@@ -29,7 +21,7 @@
         </div>
 
         <div role="menuitem">
-            <button role="button" @click="$emit('exit')" type="button" class="trigger px-2 sm:px-3 md:px-4 py-1 text-base lg:text-lg text-gray-700 dark:text-gray-300 hover:bg-gray-200 dark:hover:bg-slate-600 focus:bg-gray-200 dark:focus:bg-slate-600 focus-visible:outline-none transition duration-200 ease-in-out select-none">
+            <button role="button" @click="$notebook.closeWindow()" type="button" class="trigger px-2 sm:px-3 md:px-4 py-1 text-base lg:text-lg text-gray-700 dark:text-gray-300 hover:bg-gray-200 dark:hover:bg-slate-600 focus:bg-gray-200 dark:focus:bg-slate-600 focus-visible:outline-none transition duration-200 ease-in-out select-none">
                 <i class="fa-solid fa-xmark"></i>
             </button>
         </div>
@@ -61,29 +53,9 @@ export default {
         ViewDropdownPartial, 
     },
 
-    emits: [
-        'create:note', 
-        'create:list', 
-        'update:note', 
-        'exit', 
-        'open:selector', 
-        'open:replacer', 
-    ], 
-
     computed: {
         fullscreen() {
             return this.$window.fullscreen;
-        }, 
-    },
-
-    props: {
-        record: {
-            type: Object,
-            required: true,  
-        },
-        note: {
-            type: Object,
-            required: true,  
         }, 
     },
 

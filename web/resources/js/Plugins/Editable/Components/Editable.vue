@@ -43,6 +43,7 @@ export default {
     watch: {
         modelValue() {
             if (this.emited != this.modelValue) {
+                this.emited = this.modelValue;
                 this.value = this.modelValue;
             }
         }, 

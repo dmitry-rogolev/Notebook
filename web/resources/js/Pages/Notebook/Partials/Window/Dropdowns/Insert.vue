@@ -15,7 +15,7 @@
                 <span>Ordered list</span>
             </DropdownItemComponent>
 
-            <UploadImageWindowMenuModalPartial :note="note" @click="dropdown.hide()" />
+            <UploadImageWindowMenuModalPartial @click="dropdown.hide()" />
 
             <CreateLinkWindowMenuModalPartial @click="dropdown.hide()" />
 
@@ -64,13 +64,6 @@ export default {
         dropdown() {
             return this.$refs.dropdown?.dropdown;
         }, 
-    },
-
-    props: {
-        note: {
-            type: Object,
-            required: true, 
-        },
     },
 }
 </script>

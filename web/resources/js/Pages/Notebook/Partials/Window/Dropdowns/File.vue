@@ -4,7 +4,7 @@
             File
         </template>
         <template #content>
-            <DropdownItemComponent @click="$emit('create:note'); dropdown.hide();">
+            <DropdownItemComponent @click="$notebook.create(); dropdown.hide();">
                 <div class="flex flex-nowrap items-center">
                     <div class="flex-auto">
                         <i class="fa-solid fa-file block mr-2 w-6 text-center"></i>
@@ -26,7 +26,7 @@
 
             <div class="border-t border-gray-300 dark:border-gray-600" tabindex="-1"></div>
 
-            <DropdownItemComponent @click="$emit('update:note'); dropdown.hide();">
+            <DropdownItemComponent @click="$notebook.update(); dropdown.hide();">
                 <div class="flex flex-nowrap items-center">
                     <div class="flex-auto">
                         <i class="fa-solid fa-floppy-disk w-6 text-center mr-2"></i>
@@ -36,9 +36,9 @@
                 </div>
             </DropdownItemComponent>
 
-            <SaveAsPartial @click="dropdown.hide()" :record="record" />
+            <SaveAsPartial @click="dropdown.hide()" />
 
-            <DropdownItemComponent @click="toggleAutosave(); dropdown.hide();">
+            <DropdownItemComponent @click="$notebook.toggleAutosave(); dropdown.hide();">
                 <div class="flex flex-nowrap items-center">
                     <div class="flex items-center">
                         <i v-if="autosave" class="fa-solid fa-check w-6 text-center mr-2"></i>
@@ -62,7 +62,7 @@
 
             <div class="border-t border-gray-300 dark:border-gray-600" tabindex="-1"></div>
 
-            <DropdownItemComponent @click="$emit('exit'); dropdown.hide();">
+            <DropdownItemComponent @click="$notebook.closeWindow(); dropdown.hide();">
                 <div class="flex flex-nowrap items-center">
                     <div class="flex-auto">
                         <i class="fa-solid fa-door-open w-6 text-center mr-2"></i>
@@ -79,7 +79,6 @@
 import DropdownComponent from '@/Components/Dropdown/Dropdown.vue';
 import DropdownItemComponent from '@/Components/Dropdown/Item.vue';
 import SaveAsPartial from '../Modals/Menu/SaveAs.vue';
-import { cutForbiddenTags } from '@/helpers';
 
 export default {
     name: 'FileWindowDropdownPartial', 
@@ -89,39 +88,17 @@ export default {
         DropdownItemComponent, 
         SaveAsPartial, 
     }, 
-
-    emits: [
-        'create:note', 
-        'update:note', 
-        'exit', 
-    ], 
-
-    data() {
-        return {
-            isOpenFileModal: false, 
-            fileName: '', 
-            timerAutosave: null, 
-            autosaveInterval: 60000, 
-        };
-    },
-
+    
     computed: {
         spellcheck() {
             return this.$editable.spellcheck;
         }, 
         autosave() {
-            return this.$store.state.autosave;
+            return this.$notebook.autosave;
         },
         dropdown() {
             return this.$refs.dropdown?.dropdown;
         }, 
-    },
-
-    props: {
-        record: {
-            type: Object,
-            required: true,  
-        },
     },
 
     methods: {
@@ -132,56 +109,18 @@ export default {
             input.onchange = () => {
                 if (input.files[0]) {
                     input.files[0].arrayBuffer().then((arrayBuffer) => {
-                        this.$emit('create:note', {
+                        this.$notebook.create({
                             title: input.files[0].name, 
-                            text: cutForbiddenTags(new TextDecoder().decode(arrayBuffer)), 
+                            text: new TextDecoder().decode(arrayBuffer), 
                         });
                     });
                 }
             }
             input.click();
         }, 
-        onAutosave() {
-            this.timerAutosave = setInterval(() => this.$emit('update:note'), this.autosaveInterval);
-        }, 
-        offAutosave() {
-            if (this.timerAutosave) {
-                clearInterval(this.timerAutosave);
-                this.timerAutosave = null;
-            }
-        }, 
-        toggleAutosave() {
-            if (this.autosave) {
-                this.$store.dispatch('autosave', false);
-                this.offAutosave();
-                this.$notifier.push({
-                    message: 'Auto save mod off',
-                    success: true, 
-                });
-            } else {
-                this.$store.dispatch('autosave', true);
-                this.onAutosave();
-                this.$notifier.push({
-                    message: 'Auto save mod on',
-                    success: true, 
-                });
-            }
-        }, 
         print() {
             window.print();
         },
-    }, 
-    
-    mounted() {
-        this.$store.dispatch('autosave');
-
-        if (this.autosave) {
-            this.onAutosave();
-        }
-    }, 
-
-    unmounted() {
-        this.offAutosave();
     }, 
 }
 </script>

@@ -113,7 +113,7 @@
         </div>
 
         <div role="menuitem">
-            <UploadImageWindowToolbarModalPartial :note="note" />
+            <UploadImageWindowToolbarModalPartial />
         </div>
 
         <div class="flex flex-nowrap">
@@ -210,13 +210,6 @@ export default {
             return faker.lorem.lines(1);
         }, 
     },
-
-    props: {
-        note: {
-            type: Object, 
-            required: true, 
-        }, 
-    }, 
 }
 </script>
 

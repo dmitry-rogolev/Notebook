@@ -5,6 +5,7 @@ class Notebook
     _defaultOptions = {
         path: '/api/notes',
         current: 'last', 
+        autosaveInterval: 60000, 
     };
 
     _notes = [];
@@ -16,9 +17,18 @@ class Notebook
         text: '', 
     };
 
+    _record = {
+        title: '', 
+        text: '', 
+    };
+
     _search = '';
 
     _isOpenWindow = false;
+
+    _autosave = false;
+
+    _timerAutosave = null;
 
     get isInit() {
         return this._isInit;
@@ -40,25 +50,34 @@ class Notebook
         return this._isOpenWindow;
     }
 
+    get autosave() {
+        return this._autosave;
+    }
+
     set note(v) {
         if (v) {
+            if (! v.title) {
+                v.title = '';
+            }
+
+            if (! v.text) {
+                v.text = '';
+            }
+
             this._note = v;
+            this._record = Object.assign({}, v);
         } else {
             this._note = {
+                title: '', 
+                text: '', 
+            };
+            this._record = {
                 title: '', 
                 text: '', 
             };
         }
 
         if (v) {
-            if (! v.title) {
-                this._note.title = '';
-            }
-
-            if (! v.text) {
-                this._note.text = '';
-            }
-
             if (this._notes) {
                 let i = this._notes.findIndex((item) => {
                     return item.id == v.id;
@@ -83,6 +102,10 @@ class Notebook
         }
     }
 
+    get record() {
+        return this._record;
+    }
+
     constructor(options = {}) {
 
     }
@@ -90,6 +113,12 @@ class Notebook
     init() {
         if (! this._isInit) {
             this._fetchNotes();
+
+            this._autosave = this._getAutosaveFromLocalStorage();
+
+            if (this._autosave) {
+                this._onAutosave();
+            }
 
             this._isInit = true;
 
@@ -100,11 +129,9 @@ class Notebook
 
     dispose() {
         this._notes = [];
-        this._note = {
-            title: '', 
-            text: '', 
-        };
+        this.note = null;
         this._isOpenWindow = false;
+        this._offAutosave();
         this._isInit = false;
     }
 
@@ -122,19 +149,12 @@ class Notebook
         });
     }
 
-    update(note) {
-        if (! note) {
-            note = {
-                title: '', 
-                text: '', 
-            };
-        }
-
-        if (this._note.title != note.title || this._note.text != note.text) {
-            if (note && note.text) {
-                note.text = this._cutForbiddenTags(note.text);
+    update() {
+        if (this._note.title != this._record.title || this._note.text != this._record.text) {
+            if (this._record.text) {
+                this._record.text = this._cutForbiddenTags(this._record.text);
             }
-            axios.patch(this._defaultOptions.path + '/' + this._note.id, note).then((response) => {
+            axios.patch(this._defaultOptions.path + '/' + this._note.id, this._record).then((response) => {
                 this.note = response.data.data;
 
                 window.app.config.globalProperties.$notifier.push({
@@ -187,6 +207,40 @@ class Notebook
         this._isOpenWindow = false;
     }
 
+    toggleAutosave() {
+        this._autosave = ! this._autosave;
+        this._setAutosaveInLocalStorage(this._autosave);
+
+        if (this._autosave) {
+            this._onAutosave();
+        } else {
+            this._offAutosave();
+        }
+    }
+
+    _onAutosave() {
+        if (! this._timerAutosave) {
+            this._timerAutosave = setInterval(() => this.update(), this._defaultOptions.autosaveInterval);
+
+            window.app.config.globalProperties.$notifier.push({
+                message: 'Auto save mod on', 
+                success: true, 
+            });
+        }
+    }
+
+    _offAutosave() {
+        if (this._timerAutosave) {
+            clearInterval(this._timerAutosave);
+            this._timerAutosave = null;
+
+            window.app.config.globalProperties.$notifier.push({
+                message: 'Auto save mod off', 
+                success: true, 
+            });
+        }
+    }
+
     _fetchNotes() {
         axios.get(this._defaultOptions.path).then((response) => {
             this._notes = response.data.data;
@@ -213,6 +267,14 @@ class Notebook
         return str.replace(/<\/?[^>]+>/igm, (v) => { 
             return /<\/?(script|meta|body|iframe|head|html).*>/igm.test(v) ? '' : v;
         });
+    }
+
+    _getAutosaveFromLocalStorage() {
+        return localStorage.getItem('autosave') == 'true' ? true : false;
+    }
+
+    _setAutosaveInLocalStorage(autosave) {
+        localStorage.setItem('autosave', autosave);
     }
 }
 

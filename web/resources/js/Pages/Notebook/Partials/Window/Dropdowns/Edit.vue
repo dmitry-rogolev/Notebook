@@ -68,7 +68,7 @@
 
             <div class="border-t border-gray-300 dark:border-gray-600" tabindex="-1"></div>
 
-            <DropdownItemComponent @click="$emit('open:selector'); dropdown.hide();">
+            <DropdownItemComponent @click="dropdown.hide();">
                 <div class="flex flex-nowrap items-center">
                     <div class="flex-auto">
                         <i class="fa-solid fa-magnifying-glass w-6 text-center mr-2"></i>
@@ -78,7 +78,7 @@
                 </div>
             </DropdownItemComponent>
 
-            <DropdownItemComponent @click="$emit('open:replacer'); dropdown.hide();">
+            <DropdownItemComponent @click="dropdown.hide();">
                 <div class="flex flex-nowrap items-center">
                     <div class="flex-auto">
                         <i class="fa-solid fa-right-left w-6 text-center mr-2"></i>
@@ -103,11 +103,6 @@ export default {
         DropdownComponent, 
         DropdownItemComponent, 
     }, 
-
-    emits: [
-        'open:selector', 
-        'open:replacer', 
-    ], 
 
     computed: {
         dropdown() {

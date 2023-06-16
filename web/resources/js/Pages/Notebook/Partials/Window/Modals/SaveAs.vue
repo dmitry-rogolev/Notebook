@@ -66,10 +66,6 @@ export default {
             type: [ Array, String ],
             default: '', 
         },
-        record: {
-            type: Object, 
-            required: true, 
-        }, 
     },
 
     methods: {
@@ -81,10 +77,10 @@ export default {
                 onShow: () => {
                     let name = 'no-name.txt';
                     
-                    if (this.record.title && ! this.record.title.endsWith('.txt')) {
-                        name = this.record.title + '.txt';
-                    } else if (this.record.title) {
-                        name = this.record.title;
+                    if (this.$notebook.record.title && ! this.$notebook.record.title.endsWith('.txt')) {
+                        name = this.$notebook.record.title + '.txt';
+                    } else if (this.$notebook.record.title) {
+                        name = this.$notebook.record.title;
                     }
 
                     this.fileName = name;
@@ -93,7 +89,7 @@ export default {
         }, 
         saveAs() {
             let a = document.createElement('a');
-            a.href = 'data:text/plain;charset=utf-8,%EF%BB%BF' + encodeURIComponent(this.record.text);
+            a.href = 'data:text/plain;charset=utf-8,%EF%BB%BF' + encodeURIComponent(this.$notebook.record.text);
             a.download = this.fileName;
             a.click();
         }, 

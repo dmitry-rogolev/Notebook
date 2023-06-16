@@ -16,27 +16,9 @@
         <main class="flex-auto flex flex-col">
             <div class="flex-auto flex">
 
-                <SidebarPartial 
-                    @open:note="$notebook.openWindow($event)" 
-                    @open:notes="isShowSidebarNotes = ! isShowSidebarNotes; isShowSidebarSearch = false"
-                    @open:search="isShowSidebarSearch = ! isShowSidebarSearch; isShowSidebarNotes = false"
-                    @create:note="$notebook.create($event)"
-                    @search="$notebook.find($event);"
-                    :note="note"
-                    :notes="notes" 
-                    :found="found" 
-                    :activeNotes="isShowSidebarNotes"
-                    :activeSearch="isShowSidebarSearch"
-                    />
+                <SidebarPartial />
 
-                <WindowPartial 
-                    v-show="$notebook.isOpenWindow" 
-                    @create:note="$notebook.create($event)"
-                    @update:note="$notebook.update($event)"
-                    @delete:note="$notebook.delete()" 
-                    @exit="$notebook.closeWindow()"
-                    :note="note"
-                    />
+                <WindowPartial v-show="$notebook.isOpenWindow" />
 
             </div>
         </main>
@@ -62,26 +44,10 @@ export default {
     data() {
         return {
             showHeader: false, 
-            isShowSidebarNotes: false, 
-            isShowSidebarSearch: false, 
         };
     }, 
 
     computed: {
-        note: {
-            get() {
-                return this.$notebook.note;
-            }, 
-            set(v) {
-                this.$notebook.note = v;
-            }, 
-        }, 
-        notes() {
-            return this.$notebook.notes;
-        }, 
-        found() {
-            return this.$notebook.found;
-        }, 
         dark() {
             return this.$store.state.dark;
         }, 
