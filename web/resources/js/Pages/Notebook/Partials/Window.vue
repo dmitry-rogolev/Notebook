@@ -17,6 +17,8 @@
 
         <WindowStatusbarPartial />
 
+        <MarkPartial />
+
     </WindowComponent>
 </template>
 
@@ -28,6 +30,7 @@ import WindowHeaderPartial from '@/Pages/Notebook/Partials/Window/Header.vue';
 import WindowStatusbarPartial from '@/Pages/Notebook/Partials/Window/Statusbar.vue';
 import WindowToolbarPartial from '@/Pages/Notebook/Partials/Window/Toolbar.vue';
 import EditableComponent from '@/Plugins/Editable/Components/Editable.vue';
+import MarkPartial from './Window/Mark.vue';
 
 export default {
     name: 'WindowPartial', 
@@ -40,6 +43,7 @@ export default {
         WindowStatusbarPartial, 
         WindowToolbarPartial, 
         EditableComponent, 
+        MarkPartial, 
     }, 
 
     computed: {

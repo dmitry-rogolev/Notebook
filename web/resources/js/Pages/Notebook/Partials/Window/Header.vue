@@ -16,20 +16,6 @@
             <i class="fa-solid fa-trash"></i>
         </button>
 
-        <!-- <SelectorComponent 
-            @toggle:case="isCase = ! isCase" 
-            @close="$emit('close:selector')" 
-            @update:replaceModelValue="replaceValue = $event" 
-            @update:selectModelValue="foundValue = $event" 
-            @replace="replaceFound"
-            @undo="undoReplace"
-            :selectModelValue="foundValue"
-            :replaceModelValue="replaceValue"
-            :active="activeSelector" 
-            :replacerActive="activeReplacer" 
-            :case="isCase"
-            /> -->
-
     </WindowHeaderComponent>
 </template>
 
@@ -42,112 +28,6 @@ export default {
     components: {
         WindowHeaderComponent, 
     },  
-
-    data () {
-        return {
-            case: true, 
-            found: '',
-            replaceValue: '',
-        };
-    },
-
-    computed: {
-        foundValue: {
-            get() {
-                return this.found;
-            }, 
-            set(v) {
-                this.found = v;
-                if (this.found) {
-                    this.selectFound();
-                } else {
-                    this.clearFound();
-                }
-            }, 
-        }, 
-        isCase: {
-            get() {
-                return this.case;
-            }, 
-            set(v) {
-                this.case = v;
-                if (this.found) {
-                    this.selectFound();
-                }
-            }, 
-        }, 
-    }, 
-
-    methods: {
-        // closeSelector() {
-        //     this.foundValue = '';
-        // }, 
-        // closeReplacer() {
-        //     this.replaceValue = '';
-        // },  
-        // select(search = '', replace = null, isCase = true) {
-        //     if (search) {
-        //         if (typeof replace == 'boolean') {
-        //             isCase = replace;
-        //             replace = null;
-        //         }
-
-        //         let text = this.record.text, 
-        //             tagRegexp = new RegExp('<\/?[^>]+>', 'igm'), 
-        //             searchRegexp = new RegExp('(' + escapeHtml(escapeRegex(search)) + ')', isCase ? 'igm' : 'gm'), 
-        //             result = '', from = 0, to = 0, found = '', sub = '';
-
-        //         while (found = tagRegexp.exec(text)) {
-        //             to = tagRegexp.lastIndex - found[0].length;
-
-        //             if (to < 0) {
-        //                 to = 0;
-        //             }
-
-        //             sub = text.slice(from, to);
-
-        //             if (sub) {
-        //                 sub = sub.replace(searchRegexp, '<a class="bg-indigo-200 dark:bg-indigo-900">' + (replace ?? '$1') + '</a>');
-        //             }
-
-        //             result = result.concat(sub, found[0]);
-
-        //             from = tagRegexp.lastIndex;
-        //         }
-
-        //         if (from < text.length) {
-        //             sub = text.slice(from);
-
-        //             if (sub) {
-        //                 sub = sub.replace(searchRegexp, '<a class="bg-indigo-200 dark:bg-indigo-900">' + (replace ?? '$1') + '</a>');
-        //                 result = result.concat(sub);
-        //             }
-        //         }
-
-        //         this.$parent.$parent.$refs.contenteditable.$el.innerHTML = result;
-
-        //         if (replace) {
-        //             this.$emit('update:recordText', cutForbiddenTags(this.$parent.$parent.$refs.contenteditable.$el.innerHTML));
-        //         }
-        //     }
-        // }, 
-        // selectFound() {
-        //     this.select(this.foundValue, this.isCase);
-        // }, 
-        // replaceFound() {
-        //     if (this.replaceValue) {
-        //         this.select(this.foundValue, this.replaceValue, this.isCase);
-        //     }
-        // }, 
-        // undoReplace() {
-        //     if (this.foundValue) {
-        //         this.select(this.replaceValue, this.foundValue, this.isCase);
-        //     }
-        // }, 
-        // clearFound() {
-        //     this.$emit('clear:found');
-        // }, 
-    }, 
 }
 </script>
 

@@ -14,6 +14,7 @@ import Editable from './Plugins/Editable/plugin';
 import Window from './Plugins/Window/plugin';
 import Sidebar from './Plugins/Sidebar/plugin';
 import Notebook from './Plugins/Notebook/plugin';
+import Mark from './Plugins/Mark/plugin';
 
 const appName = window.document.getElementsByTagName('title')[0]?.innerText || 'Laravel';
 
@@ -31,6 +32,7 @@ createInertiaApp({
             .use(Window)
             .use(Sidebar)
             .use(Notebook)
+            .use(Mark)
             .mount(el);
     },
     progress: {

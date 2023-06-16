@@ -1,7 +1,6 @@
 <template>
     <div 
         ref="editable" 
-        @input="emited = $event.target.innerHTML; $emit('update:modelValue', $event.target.innerHTML);" 
         contenteditable="true" 
         aria-multiline="true"
         role="textbox"
@@ -24,6 +23,17 @@ export default {
         return {
             value: this.modelValue, 
             emited: null,
+            mutationObserver: new MutationObserver(() => {
+                let content = '';
+                if (this.$refs.editable.querySelector('[data-markjs=true]')) {
+                    content = this.$mark.getUnmarkHTML(this.$refs.editable);
+                } else {
+                    content = this.$refs.editable.innerHTML;
+                }
+
+                this.emited = content; 
+                this.$emit('update:modelValue', content);
+            }), 
         };
     },
 
@@ -51,10 +61,19 @@ export default {
 
     mounted() {
         this.$editable.init(this.$refs.editable);
+        this.$mark.init(this.$refs.editable);
+        this.mutationObserver.observe(this.$refs.editable, {
+            childList: true, 
+            subtree: true, 
+            attributes: true, 
+            characterData: true, 
+        });
     }, 
 
     unmounted() {
         this.$editable.dispose();
+        this.$mark.dispose();
+        this.mutationObserver.disconnect();
     }
 }
 </script>
