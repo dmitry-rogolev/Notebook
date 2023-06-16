@@ -3,9 +3,10 @@ class Window
     _element = null;
     _height = 0;
     _width = 0;
-    _windowResizeObserver = null;
     _fullscreen = false;
     _statusbar = true;
+    _resizeTimer = null;
+    _timerInterval = 100;
 
     get windowElement() {
         return this._element;
@@ -76,32 +77,12 @@ class Window
         return document.documentElement.clientWidth - this._element.getBoundingClientRect().left;
     }
 
-    _windowResizeEventHandler() {
-        let self = window.app.config.globalProperties.$window;
-        self._height = self._calcHeight();
-        self._width = self._calcWidth();
-    }
-
-    _addWindowResizeEventListeners() {
-        window.addEventListener('resize', this._windowResizeEventHandler);
-    }
-
-    _removeWindowResizeEventListeners() {
-        window.removeEventListener('resize', this._windowResizeEventHandler);
-    }
-
     _observe() {
         if (this.isInit()) {
-            if (! this._windowResizeObserver) {
-                this._windowResizeObserver = new ResizeObserver(() => {
-                    this._height = this._calcHeight();
-                    this._width = this._calcWidth();
-                });
-            }
-
-            this._windowResizeObserver.observe(this._element);
-
-            this._addWindowResizeEventListeners();
+            this._resizeTimer = setInterval(() => {
+                this._height = this._calcHeight();
+                this._width = this._calcWidth();
+            }, this._timerInterval);
 
             return true;
         }
@@ -110,10 +91,8 @@ class Window
     }
 
     _disconnect() {
-        if (this.isInit() && this._windowResizeObserver) {
-            this._windowResizeObserver.disconnect();
-            this._windowResizeObserver = null;
-            this._removeWindowResizeEventListeners();
+        if (this.isInit() && this._resizeTimer) {
+            clearInterval(this._resizeTimer);
 
             return true;
         }
