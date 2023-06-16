@@ -53,7 +53,6 @@ Route::middleware(['auth:sanctum', config('jetstream.auth_session')])->group(fun
         Route::name('images.')->prefix('notes/{note}')->group(function () {
 
             Route::get('images/{name}', ImageShowController::class)
-                ->can('view', 'note')
                 ->name('show');
 
             Route::post('images', ImageStoreController::class)
@@ -62,5 +61,12 @@ Route::middleware(['auth:sanctum', config('jetstream.auth_session')])->group(fun
     
         });
     });
+
+});
+
+Route::name('notes.images.')->prefix('notes/{note}')->group(function () {
+
+    Route::get('images/{name}', ImageShowController::class)
+        ->name('show');
 
 });

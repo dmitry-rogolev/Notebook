@@ -46,6 +46,12 @@ export default {
         };
     },
 
+    computed: {
+        basePath() {
+            return window.location.protocol + '//' + window.location.host;
+        }, 
+    },
+
     props: {
         triggerClass: {
             type: [ Array, String ],
@@ -90,7 +96,7 @@ export default {
                 processData: false,
             }).then(response => {
                 this.$editable.editableElement.focus();
-                this.$editable.execCommand('insertImage', '/api/notes/' + this.$notebook.record.id + '/images/' + response.data.image.name);
+                this.$editable.execCommand('insertImage', this.basePath + '/api/notes/' + this.$notebook.record.id + '/images/' + response.data.image.name);
                 this.modal.hide();
             });
         }, 

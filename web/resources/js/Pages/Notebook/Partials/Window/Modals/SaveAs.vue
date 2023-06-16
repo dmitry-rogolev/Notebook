@@ -14,6 +14,7 @@
                     <div class="px-4 pb-4 pt-2">
                         <div class="flex flex-nowrap">
                             <InputComponent 
+                                ref="input"
                                 @keyup.enter="saveAs(); modal.hide();" 
                                 v-model="fileName" 
                                 type="text" 
@@ -21,6 +22,14 @@
                                 placeholder="File name" 
                                 autofocus 
                                 />
+
+                            <button 
+                                @click="toggleAs"
+                                type="button"
+                                class="px-3 bg-white dark:bg-gray-800 border-gray-300 dark:border-gray-600 border-y focus-visible:outline-none text-gray-700 dark:text-gray-300 focus:bg-gray-200 dark:focus:bg-gray-700 transition duration-300 ease-in-out"
+                                >
+                                {{ this.as }}
+                            </button>
 
                             <button 
                                 @click="saveAs(); modal.hide();" 
@@ -42,6 +51,7 @@ import ModalComponent from '@/Components/Modal/Modal.vue';
 import TriggerComponent from '@/Components/Modal/Trigger.vue';
 import InputComponent from '@/Components/TextInput.vue';
 import { Modal } from 'flowbite';
+import { cutTags } from '@/helpers';
 
 export default {
     name: 'SaveAsModalWindowPartial', 
@@ -58,6 +68,7 @@ export default {
             link: '', 
             range: null, 
             fileName: '', 
+            as: 'txt', 
         };
     },
 
@@ -75,24 +86,75 @@ export default {
                 backdrop: 'dynamic', 
                 closable: true, 
                 onShow: () => {
-                    let name = 'no-name.txt';
-                    
-                    if (this.$notebook.record.title && ! this.$notebook.record.title.endsWith('.txt')) {
-                        name = this.$notebook.record.title + '.txt';
-                    } else if (this.$notebook.record.title) {
-                        name = this.$notebook.record.title;
-                    }
+                    this.fileName = this.getFileName();
 
-                    this.fileName = name;
+                    this.defineFocus();
+                }, 
+                onHide: () => {
+                    this.fileName = '';
                 }, 
             });
         }, 
         saveAs() {
             let a = document.createElement('a');
-            a.href = 'data:text/plain;charset=utf-8,%EF%BB%BF' + encodeURIComponent(this.$notebook.record.text);
+            if (this.as == 'html') {
+                a.href = 'data:text/plain;charset=utf-8,%EF%BB%BF' + encodeURIComponent(this.$notebook.record.text);
+            } else {
+                a.href = 'data:text/plain;charset=utf-8,%EF%BB%BF' + encodeURIComponent(cutTags(this.$notebook.record.text));
+            }
             a.download = this.fileName;
             a.click();
         }, 
+        defineFocus() {
+            this.$refs.input.$el.focus();
+        }, 
+        toggleAs() {
+            if (this.as == 'txt') {
+                this.as = 'html';
+            } else {
+                this.as = 'txt';
+            }
+
+            this.fileName = this.getFileName();
+        }, 
+        getFileName() {
+            let name = '';
+
+            if (this.fileName) {
+                if (this.fileName.endsWith('.txt') && this.as == 'html') {
+                    name = this.fileName.slice(0, this.fileName.lastIndexOf('.txt')) + '.html';
+                } else if (this.fileName.endsWith('.html') && this.as == 'txt') {
+                    name = this.fileName.slice(0, this.fileName.lastIndexOf('.html')) + '.txt';
+                } else if (this.fileName.endsWith('.txt')) {
+                    name = this.fileName;
+                    this.as = 'txt';
+                } else if (this.fileName.endsWith('.html')) {
+                    name = tthis.fileName;
+                    this.as = 'html';
+                } else {
+                    name = this.fileName + '.txt';
+                    this.as = 'txt';
+                }
+            } else {
+                if (this.$notebook.record.title) {
+                    if (this.$notebook.record.title.endsWith('.txt')) {
+                        name = this.$notebook.record.title;
+                        this.as = 'txt';
+                    } else if (this.$notebook.record.title.endsWith('.html')) {
+                        name = this.$notebook.record.title;
+                        this.as = 'html';
+                    } else {
+                        name = this.$notebook.record.title + '.txt';
+                        this.as = 'txt';
+                    }
+                } else {
+                    name = 'no-name.txt';
+                    this.as = 'txt';
+                }
+            }
+
+            return name;
+        }
     }, 
 
     mounted() {
