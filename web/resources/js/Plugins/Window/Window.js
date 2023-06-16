@@ -5,6 +5,7 @@ class Window
     _width = 0;
     _fullscreen = false;
     _statusbar = true;
+    _toolbar = true;
     _resizeTimer = null;
     _timerInterval = 100;
 
@@ -30,6 +31,10 @@ class Window
 
     get statusbar() {
         return this._statusbar;
+    }
+
+    get toolbar() {
+        return this._toolbar;
     }
 
     constructor(options = {}) {
@@ -67,6 +72,10 @@ class Window
 
     toggleStatusbar() {
         this._statusbar = ! this._statusbar;
+    }
+
+    toggleToolbar() {
+        this._toolbar = ! this._toolbar;
     }
 
     _calcHeight() {

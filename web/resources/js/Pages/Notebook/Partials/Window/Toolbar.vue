@@ -1,5 +1,5 @@
 <template>
-    <WindowToolbarComponent class="flex flex-wrap px-2 sm:px-4 py-1 bg-gray-50 dark:bg-slate-800 border-gray-300 dark:border-gray-600 border-t border-b text-gray-700 dark:text-gray-300">
+    <WindowToolbarComponent class="flex flex-wrap px-2 sm:px-4 py-1 bg-gray-50 dark:bg-slate-800 border-gray-300 dark:border-gray-600 border-b text-gray-700 dark:text-gray-300">
 
         <div role="menuitem">
             <BlockFormatPartial />
