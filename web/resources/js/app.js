@@ -13,6 +13,7 @@ import notifier from './Plugins/Notification/plugin';
 import Editable from './Plugins/Editable/plugin';
 import Window from './Plugins/Window/plugin';
 import Sidebar from './Plugins/Sidebar/plugin';
+import Notebook from './Plugins/Notebook/plugin';
 
 const appName = window.document.getElementsByTagName('title')[0]?.innerText || 'Laravel';
 
@@ -29,6 +30,7 @@ createInertiaApp({
             .use(Editable, {autofocus: true})
             .use(Window)
             .use(Sidebar)
+            .use(Notebook)
             .mount(el);
     },
     progress: {
