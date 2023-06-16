@@ -50,7 +50,7 @@
 
             <div class="border-t border-gray-300 dark:border-gray-600" tabindex="-1"></div>
 
-            <DropdownItemComponent @click="print(); dropdown.hide();">
+            <DropdownItemComponent @click="dropdown.hide(); print();">
                 <div class="flex flex-nowrap items-center">
                     <div class="flex-auto">
                         <i class="fa-solid fa-print w-6 text-center mr-2"></i>

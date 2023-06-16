@@ -1,5 +1,5 @@
 <template>
-    <div class="flex z-[2]">
+    <div class="flex z-[2] print:hidden">
         <slot></slot>
     </div>
 </template>

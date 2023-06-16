@@ -1,5 +1,5 @@
 <template>
-    <section ref="window" class="flex flex-col w-full h-full" :style="{maxHeight: height, height: height}">
+    <section ref="window" class="flex flex-col w-full print:max-h-none print:h-auto" :style="{maxHeight: height, height: height}">
         <slot></slot>
     </section>
 </template>
@@ -28,5 +28,12 @@ export default {
 </script>
 
 <style scoped>
-
+@media print {
+    .print\:max-h-none {
+        max-height: none !important;
+    }
+    .print\:h-auto {
+        height: auto !important;
+    }
+}
 </style>

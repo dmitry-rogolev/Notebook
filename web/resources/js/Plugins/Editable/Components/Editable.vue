@@ -7,7 +7,7 @@
         role="textbox"
         :spellcheck="spellcheck"
         v-html="value"
-        class="overflow-y-auto max-h-full"
+        class="overflow-y-auto print:z-[1000]"
         >
     </div>
 </template>

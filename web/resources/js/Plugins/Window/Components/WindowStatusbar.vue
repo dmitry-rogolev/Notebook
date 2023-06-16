@@ -1,5 +1,5 @@
 <template>
-    <section>
+    <section class="print:hidden">
         <slot></slot>
     </section>
 </template>
