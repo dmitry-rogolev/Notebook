@@ -48,6 +48,11 @@ export default {
             active: false, 
             maxHeight: '', 
             defaultOptions: {
+                placement: 'bottom-start', 
+                triggerType: 'click', 
+                offsetDistance: 4, 
+                offsetSkidding: 0, 
+                delay: 300, 
                 onShow: () => {
                     this.active = true;
                     if (! this.hasHeightClass) {
@@ -91,13 +96,7 @@ export default {
         },
         options: {
             type: Object, 
-            default: {
-                placement: 'bottom', 
-                triggerType: 'click', 
-                offsetDistance: 0, 
-                offsetSkidding: 4, 
-                delay: 300, 
-            }, 
+            default: {}, 
         }, 
     },
 
@@ -106,7 +105,7 @@ export default {
             this.dropdown = new Dropdown(this.$refs.target, this.$refs.trigger, this.getOptions());
         }, 
         getOptions() {
-            return Object.assign({}, this.options, this.defaultOptions);
+            return Object.assign({}, this.defaultOptions, this.options);
         }, 
         defineMaxHeight() {
             this.maxHeight = document.documentElement.clientHeight - this.$refs.trigger.getBoundingClientRect().bottom - this.rem + 'px';

@@ -1,9 +1,17 @@
 <template>
     <AppLayout title="Notebook">
 
-        <transition name="fullscreen" mode="out-in">
-            <ApplicationHeaderPartial />
+        <transition name="header" mode="out-in">
+            <ApplicationHeaderPartial v-show="! fullscreen || showHeader" @mouseleave="showHeader = false" />
         </transition>
+
+        <teleport to="body">
+            <div 
+                v-show="fullscreen && ! showHeader"
+                class="absolute top-0 left-0 right-0 h-2"
+                @mouseenter="showHeader = true"
+                ></div>
+        </teleport>
 
         <main class="flex-auto flex flex-col">
             <div class="flex-auto flex">
@@ -30,14 +38,6 @@
                     :note="note"
                     />
 
-                <!-- <teleport to="body">
-                    <div 
-                        v-show="fullscreen ? ! isShowHeader : false"
-                        class="absolute top-0 left-0 right-0 h-2"
-                        :class="{dark: dark}"
-                        @mouseenter="isShowHeader = true"
-                        ></div>
-                </teleport> -->
             </div>
         </main>
     </AppLayout>
@@ -65,6 +65,7 @@ export default {
             record: null, 
             notes: null, 
             found: null, 
+            showHeader: false, 
             isShowSidebarNotes: false, 
             isShowSidebarSearch: false, 
         };
@@ -113,6 +114,9 @@ export default {
         }, 
         dark() {
             return this.$store.state.dark;
+        }, 
+        fullscreen() {
+            return this.$window.fullscreen;
         }, 
     }, 
 
@@ -222,12 +226,12 @@ export default {
 </script>
 
 <style scoped>
-.fullscreen-enter-active,
-.fullscreen-leave-active {
+.header-enter-active,
+.header-leave-active {
   transition: all 0.3s ease;
 }
-.fullscreen-enter-from,
-.fullscreen-leave-to {
+.header-enter-from,
+.header-leave-to {
   opacity: 0;
   transform: translateY(-100%);
 }

@@ -40,8 +40,6 @@
 <script>
 import WindowMenu from '@/Plugins/Window/Components/WindowMenu.vue';
 import WindowMenuButtonComponent from '@/Components/Window/MenuButton.vue';
-import DropdownComponent from '@/Components/Dropdown.vue';
-import DropdownLinkComponent from '@/Components/DropdownLink.vue';
 import FileDropdownPartial from './Dropdowns/File.vue';
 import EditDropdownPartial from './Dropdowns/Edit.vue';
 import InsertDropdownPartial from './Dropdowns/Insert.vue';
@@ -55,8 +53,6 @@ export default {
     components: {
         WindowMenu, 
         WindowMenuButtonComponent, 
-        DropdownComponent, 
-        DropdownLinkComponent, 
         FileDropdownPartial, 
         EditDropdownPartial, 
         InsertDropdownPartial, 

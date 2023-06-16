@@ -140,8 +140,6 @@
 <script>
 import WindowToolbarComponent from '@/Plugins/Window/Components/WindowToolbar.vue';
 import ToolbarButtonComponent from '@/Components/ToolbarButton.vue';
-import DropdownComponent from '@/Components/Dropdown.vue';
-import DropdownLinkComponent from '@/Components/DropdownLink.vue';
 import CreateLinkWindowToolbarModalPartial from '@/Pages/Notebook/Partials/Window/Modals/Toolbar/CreateLink.vue';
 import UploadImageWindowToolbarModalPartial from '@/Pages/Notebook/Partials/Window/Modals/Toolbar/UploadImage.vue';
 import InsertSymbolsWindowToolbarModalPartial from '@/Pages/Notebook/Partials/Window/Modals/Toolbar/InsertSymbols.vue';
@@ -159,8 +157,6 @@ export default {
     components: {
         WindowToolbarComponent, 
         ToolbarButtonComponent, 
-        DropdownComponent, 
-        DropdownLinkComponent, 
         CreateLinkWindowToolbarModalPartial, 
         UploadImageWindowToolbarModalPartial, 
         InsertSymbolsWindowToolbarModalPartial, 
