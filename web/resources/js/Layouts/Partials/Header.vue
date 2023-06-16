@@ -1,5 +1,5 @@
 <template>
-    <ApplicationHeaderComponent class="z-10">
+    <ApplicationHeaderComponent class="z-[5]">
         <template #logo>
             <ApplicationLogoComponent />
         </template>

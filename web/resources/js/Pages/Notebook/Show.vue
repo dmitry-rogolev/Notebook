@@ -8,7 +8,7 @@
         <teleport to="body">
             <div 
                 v-show="fullscreen && ! showHeader"
-                class="absolute top-0 left-0 right-0 h-2"
+                class="absolute top-0 left-0 right-0 h-2 z-10"
                 @mouseenter="showHeader = true"
                 ></div>
         </teleport>

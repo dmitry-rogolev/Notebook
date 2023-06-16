@@ -27,7 +27,7 @@
     <teleport to="body">
         <div 
             v-show="fullscreen && ! show"
-            class="absolute top-0 left-0 bottom-0 w-2"
+            class="absolute top-0 left-0 bottom-0 w-2 z-10"
             @mouseenter="show = true"
             ></div>
     </teleport>
