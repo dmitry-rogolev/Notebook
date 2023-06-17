@@ -2,6 +2,82 @@
     <WindowToolbarComponent class="flex flex-wrap px-2 sm:px-4 py-1 bg-gray-50 dark:bg-slate-800 border-gray-300 dark:border-gray-600 border-b text-gray-700 dark:text-gray-300">
 
         <div role="menuitem">
+            <ToolbarButtonComponent @click="$notebook.create();" title="New note">
+                <i class="fa-solid fa-file"></i>
+            </ToolbarButtonComponent>
+        </div>
+
+        <div role="menuitem">
+            <ToolbarButtonComponent @click="openFile" title="Open file">
+                <i class="fa-solid fa-folder-open"></i>
+            </ToolbarButtonComponent>
+        </div>
+
+        <div role="menuitem">
+            <ToolbarButtonComponent @click="$notebook.update();" title="Save">
+                <i class="fa-solid fa-floppy-disk"></i>
+            </ToolbarButtonComponent>
+        </div>
+
+        <div role="menuitem">
+            <SaveAsPartial />
+        </div>
+
+        <div role="menuitem">
+            <ToolbarButtonComponent @click="print" title="Print">
+                <i class="fa-solid fa-print"></i>
+            </ToolbarButtonComponent>
+        </div>
+
+        <div role="menuitem">
+            <ToolbarButtonComponent @click="$editable.execCommand('undo');" title="Undo">
+                <i class="fa-solid fa-rotate-left"></i>
+            </ToolbarButtonComponent>
+        </div>
+
+        <div role="menuitem">
+            <ToolbarButtonComponent @click="$editable.execCommand('redo');" title="Redo">
+                <i class="fa-solid fa-rotate-right"></i>
+            </ToolbarButtonComponent>
+        </div>
+
+        <div role="menuitem">
+            <ToolbarButtonComponent @click="$editable.execCommand('cut');" title="Cut">
+                <i class="fa-solid fa-scissors"></i>
+            </ToolbarButtonComponent>
+        </div>
+
+        <div role="menuitem">
+            <ToolbarButtonComponent @click="$editable.execCommand('copy');" title="Copy">
+                <i class="fa-solid fa-copy"></i>
+            </ToolbarButtonComponent>
+        </div>
+
+        <div role="menuitem">
+            <ToolbarButtonComponent @click="$editable.execCommand('delete');" title="Delete">
+                <i class="fa-solid fa-trash"></i>
+            </ToolbarButtonComponent>
+        </div>
+
+        <div role="menuitem">
+            <ToolbarButtonComponent @click="$editable.execCommand('selectAll');" title="Select all">
+                <i class="fa-solid fa-object-group"></i>
+            </ToolbarButtonComponent>
+        </div>
+
+        <div role="menuitem">
+            <ToolbarButtonComponent @click="$mark.show();" title="Find">
+                <i class="fa-solid fa-magnifying-glass"></i>
+            </ToolbarButtonComponent>
+        </div>
+
+        <div role="menuitem">
+            <ToolbarButtonComponent @click="$mark.showReplace();" title="Replace">
+                <i class="fa-solid fa-right-left"></i>
+            </ToolbarButtonComponent>
+        </div>
+
+        <div role="menuitem">
             <BlockFormatPartial />
         </div>
 
@@ -147,6 +223,7 @@ import InsertEmoticonsWindowToolbarModalPartial from '@/Pages/Notebook/Partials/
 import BlockFormatPartial from './Dropdowns/Sub/Toolbar/BlockFormat.vue';
 import FontPartial from './Dropdowns/Sub/Toolbar/Font.vue';
 import FontSizePartial from './Dropdowns/Sub/Toolbar/FontSize.vue';
+import SaveAsPartial from './Modals/Toolbar/SaveAs.vue';
 import fonts from '@/assets/fonts.json';
 import { faker } from '@faker-js/faker';
 import { token } from '@/helpers';
@@ -164,6 +241,7 @@ export default {
         BlockFormatPartial, 
         FontPartial, 
         FontSizePartial, 
+        SaveAsPartial, 
     }, 
 
     data () {
@@ -210,6 +288,28 @@ export default {
             return faker.lorem.lines(1);
         }, 
     },
+
+    methods: {
+        openFile() {
+            let input = document.createElement('input');
+            input.type = 'file';
+            input.accept = 'text/*';
+            input.onchange = () => {
+                if (input.files[0]) {
+                    input.files[0].arrayBuffer().then((arrayBuffer) => {
+                        this.$notebook.create({
+                            title: input.files[0].name, 
+                            text: new TextDecoder().decode(arrayBuffer), 
+                        });
+                    });
+                }
+            }
+            input.click();
+        }, 
+        print() {
+            window.print();
+        },
+    }, 
 }
 </script>
 

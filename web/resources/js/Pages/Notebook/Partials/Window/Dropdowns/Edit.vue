@@ -60,6 +60,7 @@
             <DropdownItemComponent @click="$editable.execCommand('selectAll'); dropdown.hide();">
                 <div class="flex flex-nowrap items-center">
                     <div class="flex-auto">
+                        <i class="fa-solid fa-object-group w-6 text-center mr-2"></i>
                         <span>Select all</span>
                     </div>
                     <div class="text-xs font-bold">Ctrl + A</div>
