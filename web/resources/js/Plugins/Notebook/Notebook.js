@@ -120,6 +120,8 @@ class Notebook
                 this._onAutosave();
             }
 
+            this._addKeyUpEventListener();
+
             this._isInit = true;
 
             return true;
@@ -132,6 +134,7 @@ class Notebook
         this.note = null;
         this._isOpenWindow = false;
         this._offAutosave();
+        this._removeKeyUpEventListener();
         this._isInit = false;
     }
 
@@ -218,6 +221,23 @@ class Notebook
         }
     }
 
+    openFile() {
+        let input = document.createElement('input');
+        input.type = 'file';
+        input.accept = 'text/*';
+        input.onchange = () => {
+            if (input.files[0]) {
+                input.files[0].arrayBuffer().then((arrayBuffer) => {
+                    this.create({
+                        title: input.files[0].name, 
+                        text: new TextDecoder().decode(arrayBuffer), 
+                    });
+                });
+            }
+        }
+        input.click();
+    }
+
     _onAutosave() {
         if (! this._timerAutosave) {
             this._timerAutosave = setInterval(() => this.update(), this._defaultOptions.autosaveInterval);
@@ -275,6 +295,41 @@ class Notebook
 
     _setAutosaveInLocalStorage(autosave) {
         localStorage.setItem('autosave', autosave);
+    }
+
+    _addKeyUpEventListener() {
+        document.addEventListener('keyup', this._keyup);
+    }
+
+    _removeKeyUpEventListener() {
+        document.removeEventListener('keyup', this._keyup);
+    }
+
+    _keyup(e) {
+        e.preventDefault();
+        e.stopPropagation();
+
+        let $notebook = window.app.config.globalProperties.$notebook;
+
+        // New
+        if (e.altKey && e.code == 'KeyN') {
+            $notebook.create();
+        } 
+
+        // Open
+        else if (e.altKey && e.code == 'KeyO') {
+            $notebook.openFile();
+        } 
+
+        // Save
+        if (e.altKey && e.code == 'KeyS') {
+            $notebook.update();
+        } 
+
+        // Exit
+        else if (e.altKey && e.code == 'KeyQ') {
+            $notebook.closeWindow();
+        }
     }
 }
 

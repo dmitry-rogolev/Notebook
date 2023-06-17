@@ -14,7 +14,7 @@
                 </div>
             </DropdownItemComponent>
 
-            <DropdownItemComponent @click="openFile(); dropdown.hide();">
+            <DropdownItemComponent @click="$notebook.openFile(); dropdown.hide();">
                 <div class="flex flex-nowrap items-center">
                     <div class="flex-auto">
                         <i class="fa-solid fa-folder-open w-6 text-center mr-2"></i>
@@ -50,13 +50,13 @@
 
             <div class="border-t border-gray-300 dark:border-gray-600" tabindex="-1"></div>
 
-            <DropdownItemComponent @click="dropdown.hide(); print();">
+            <DropdownItemComponent @click="dropdown.hide(); $window.print();">
                 <div class="flex flex-nowrap items-center">
                     <div class="flex-auto">
                         <i class="fa-solid fa-print w-6 text-center mr-2"></i>
                         <span>Print</span>
                     </div>
-                    <div class="text-xs font-bold">Alt + P</div>
+                    <div class="text-xs font-bold">Ctrl + P</div>
                 </div>
             </DropdownItemComponent>
 
@@ -100,28 +100,6 @@ export default {
             return this.$refs.dropdown?.dropdown;
         }, 
     },
-
-    methods: {
-        openFile() {
-            let input = document.createElement('input');
-            input.type = 'file';
-            input.accept = 'text/*';
-            input.onchange = () => {
-                if (input.files[0]) {
-                    input.files[0].arrayBuffer().then((arrayBuffer) => {
-                        this.$notebook.create({
-                            title: input.files[0].name, 
-                            text: new TextDecoder().decode(arrayBuffer), 
-                        });
-                    });
-                }
-            }
-            input.click();
-        }, 
-        print() {
-            window.print();
-        },
-    }, 
 }
 </script>
 

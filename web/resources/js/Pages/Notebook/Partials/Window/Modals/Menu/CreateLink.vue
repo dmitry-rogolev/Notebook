@@ -1,5 +1,5 @@
 <template>
-    <CreateLinkModalComponent triggerClass="w-full px-3 py-2 bg-white dark:bg-gray-800 hover:bg-gray-100 dark:hover:bg-gray-700 text-gray-700 dark:text-gray-300 text-left text-sm">
+    <CreateLinkModalPartial ref="modal" triggerClass="w-full px-3 py-2 bg-white dark:bg-gray-800 hover:bg-gray-100 dark:hover:bg-gray-700 text-gray-700 dark:text-gray-300 text-left text-sm">
         <div class="flex flex-nowrap items-center">
             <div class="flex-auto">
                 <i class="fa-solid fa-link w-6 text-center mr-2"></i>
@@ -7,17 +7,43 @@
             </div>
             <div class="text-xs font-bold">Alt + L</div>
         </div>
-    </CreateLinkModalComponent>
+    </CreateLinkModalPartial>
 </template>
 
 <script>
-import CreateLinkModalComponent from '../CreateLink.vue';
+import CreateLinkModalPartial from '../CreateLink.vue';
 
 export default {
     name: 'CreateLinkWindowMenuModalPartial', 
 
     components: {
-        CreateLinkModalComponent, 
+        CreateLinkModalPartial, 
+    }, 
+
+    methods: {
+        addKeyUpEventListener() {
+            document.addEventListener('keyup', this.keyup);
+        }, 
+        removeKeyUpEventListener() {
+            document.removeEventListener('keyup', this.keyup);
+        }, 
+        keyup(e) {
+            e.preventDefault();
+            e.stopPropagation();
+
+            // Create link
+            if (e.altKey && e.code == 'KeyL') {
+                this.$refs.modal.show();
+            } 
+        }, 
+    }, 
+
+    mounted() {
+        this.addKeyUpEventListener();
+    }, 
+
+    unmounted() {
+        this.removeKeyUpEventListener();
     }, 
 }
 </script>

@@ -32,7 +32,7 @@
                         <div v-else class="w-6 mr-2"></div>
                     </div>
                     <div class="flex-auto">In full screen</div>
-                    <div class="text-xs font-bold">Alt + I</div>
+                    <div class="text-xs font-bold">Alt + Z</div>
                 </div>
             </DropdownItemComponent>
 

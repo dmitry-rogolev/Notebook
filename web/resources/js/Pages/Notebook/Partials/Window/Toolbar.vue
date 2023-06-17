@@ -8,7 +8,7 @@
         </div>
 
         <div role="menuitem">
-            <ToolbarButtonComponent @click="openFile" title="Open file">
+            <ToolbarButtonComponent @click="$notebook.openFile();" title="Open file">
                 <i class="fa-solid fa-folder-open"></i>
             </ToolbarButtonComponent>
         </div>
@@ -24,7 +24,7 @@
         </div>
 
         <div role="menuitem">
-            <ToolbarButtonComponent @click="print" title="Print">
+            <ToolbarButtonComponent @click="$window.print();" title="Print">
                 <i class="fa-solid fa-print"></i>
             </ToolbarButtonComponent>
         </div>
@@ -294,28 +294,6 @@ export default {
             return faker.lorem.lines(1);
         }, 
     },
-
-    methods: {
-        openFile() {
-            let input = document.createElement('input');
-            input.type = 'file';
-            input.accept = 'text/*';
-            input.onchange = () => {
-                if (input.files[0]) {
-                    input.files[0].arrayBuffer().then((arrayBuffer) => {
-                        this.$notebook.create({
-                            title: input.files[0].name, 
-                            text: new TextDecoder().decode(arrayBuffer), 
-                        });
-                    });
-                }
-            }
-            input.click();
-        }, 
-        print() {
-            window.print();
-        },
-    }, 
 }
 </script>
 

@@ -50,6 +50,8 @@ class Window
 
             this._observe();
 
+            this._addKeyUpEventListener();
+
             return true;
         }
         return false;
@@ -60,6 +62,7 @@ class Window
         this._element = null;
         this._height = 0;
         this._width = 0;
+        this._removeKeyUpEventListener();
     }
 
     isInit() {
@@ -76,6 +79,10 @@ class Window
 
     toggleToolbar() {
         this._toolbar = ! this._toolbar;
+    }
+
+    print() {
+        window.print();
     }
 
     _calcHeight() {
@@ -107,6 +114,26 @@ class Window
         }
         
         return false;
+    }
+
+    _addKeyUpEventListener() {
+        document.addEventListener('keyup', this._keyup);
+    }
+
+    _removeKeyUpEventListener() {
+        document.removeEventListener('keyup', this._keyup);
+    }
+
+    _keyup(e) {
+        e.preventDefault();
+        e.stopPropagation();
+
+        let $window = window.app.config.globalProperties.$window;
+
+        // In full screen
+        if (e.altKey && e.code == 'KeyZ') {
+            $window.toggleFullscreen();
+        } 
     }
 }
 

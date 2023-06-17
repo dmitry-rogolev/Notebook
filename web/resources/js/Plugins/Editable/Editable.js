@@ -183,6 +183,7 @@ class Editable
         if (this._editableElement) {
             this._editableElement.addEventListener('keydown', this._keydownEventHandler);
             this._editableElement.addEventListener('paste', this._paste);
+            document.addEventListener('keyup', this._keyup);
         }
     }
 
@@ -190,6 +191,7 @@ class Editable
         if (this._editableElement) {
             this._editableElement.removeEventListener('keydown', this._keydownEventHandler);
             this._editableElement.removeEventListener('paste', this._paste);
+            document.removeEventListener('keyup', this._keyup);
         }
     }
 
@@ -288,6 +290,23 @@ class Editable
 
     _cutTags(str) {
         return str.replace(/<\/?[^>]+>/igm, '');
+    }
+
+    _keyup(e) {
+        e.preventDefault();
+        e.stopPropagation();
+
+        let $mark = window.app.config.globalProperties.$mark;
+
+        // Find
+        if (e.altKey && e.code == 'KeyF') {
+            $mark.show();
+        } 
+
+        // Replace
+        else if (e.altKey && e.code == 'KeyR') {
+            $mark.showReplace();
+        } 
     }
 }
 
