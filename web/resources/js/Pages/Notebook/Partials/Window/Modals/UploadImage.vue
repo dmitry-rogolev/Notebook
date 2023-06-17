@@ -11,12 +11,51 @@
                     </div>
                 </template>
                 <template #content>
-                    <div class="px-4 py-4 flex">
-                        <form 
-                            :id="dropzoneToken"
-                            class="dropzone w-full h-52 px-4 py-2 bg-white dark:bg-gray-800 border-gray-300 dark:border-gray-700 border-2 border-dashed text-gray-600 dark:text-gray-400 rounded-lg flex items-center justify-center"
-                            ></form>
-                    </div>
+                    <TabsComponent triggersContainerClass="border-gray-300 dark:border-gray-600 border-b px-4">
+                        <template #triggers>
+                            <TabComponent class="px-3 py-2 mr-2">
+                                <div class="flex flex-nowrap items-center">
+                                    <i class="fa-solid fa-link mr-2 block"></i>
+                                    <div class="flex-auto">Link</div>
+                                </div>
+                            </TabComponent>
+                            <TabComponent class="px-3 py-2">
+                                <div class="flex flex-nowrap items-center">
+                                    <i class="fa-solid fa-file mr-2 block"></i>
+                                    <div class="flex-auto">File</div>
+                                </div>
+                            </TabComponent>
+                        </template>
+                        <template #targets>
+                            <TargetComponent>
+                                <div class="px-4 py-4 flex flex-nowrap">
+                                    <InputComponent 
+                                        ref="input"
+                                        v-model="link" 
+                                        type="text" 
+                                        class="rounded-r-none border-r-0 block flex-auto w-full" 
+                                        placeholder="https://" 
+                                        autofocus
+                                        />
+                                    <button 
+                                        @click="add"
+                                        type="button" 
+                                        class="block px-6 py-2 bg-indigo-500 dark:bg-indigo-600 hover:bg-indigo-600 dark:hover:bg-indigo-500 border-indigo-500 dark:border-indigo-600 border text-gray-100 transition duration-200 ease-in-out rounded-r-md focus-visible:outline-none focus:ring-2 focus:ring-indigo-500 dark:focus:ring-indigo-600"
+                                        >
+                                        Add
+                                    </button>
+                                </div>
+                            </TargetComponent>
+                            <TargetComponent>
+                                <div class="px-4 py-4 flex">
+                                    <form 
+                                        :id="dropzoneToken"
+                                        class="dropzone w-full h-52 px-4 py-2 bg-white dark:bg-gray-800 border-gray-300 dark:border-gray-700 border-2 border-dashed text-gray-600 dark:text-gray-400 rounded-lg flex items-center justify-center"
+                                        ></form>
+                                </div>
+                            </TargetComponent>
+                        </template>
+                    </TabsComponent>
                 </template>
             </ModalComponent>
         </teleport>
@@ -26,6 +65,11 @@
 <script>
 import ModalComponent from '@/Components/Modal/Modal.vue';
 import TriggerComponent from '@/Components/Modal/Trigger.vue';
+import TabsComponent from '@/Components/Tabs/Tabs.vue';
+import TabComponent from '@/Components/Tabs/Trigger.vue';
+import TargetComponent from '@/Components/Tabs/Target.vue';
+import InputComponent from '@/Components/TextInput.vue';
+
 import { Modal } from 'flowbite';
 import { token } from '@/helpers';
 import Dropzone from "dropzone";
@@ -36,6 +80,10 @@ export default {
     components: {
         ModalComponent, 
         TriggerComponent, 
+        TabsComponent, 
+        TabComponent, 
+        TargetComponent, 
+        InputComponent, 
     }, 
 
     data() {
@@ -43,6 +91,8 @@ export default {
             dropzoneToken: token(), 
             dropzone: null, 
             modal: null, 
+            link: '', 
+            range: null, 
         };
     },
 
@@ -66,10 +116,13 @@ export default {
                 backdrop: 'dynamic', 
                 closable: true, 
                 onShow: () => {
-                    this.createDropzone();
+                    this.saveRange();
+                    this.$refs.input.$el.focus();
                 }, 
                 onHide: () => {
-                    this.dropzone = null;
+                    if (this.dropzone) {
+                        this.dropzone.removeAllFiles();
+                    }
                 }, 
             });
         }, 
@@ -100,10 +153,39 @@ export default {
                 this.modal.hide();
             });
         }, 
+        add() {
+            this.modal.hide();
+
+            this.defineFocus();
+
+            if (this.link) {
+                this.$editable.execCommand('insertImage', this.link);
+                this.link = '';
+            }
+        }, 
+        saveRange() {
+            if (window.getSelection().rangeCount) {
+                this.range = window.getSelection().getRangeAt(0);
+            }
+        }, 
+        defineFocus() {
+            this.$editable.editableElement.focus();
+
+            if (this.range) {
+                window.getSelection().removeAllRanges();
+                window.getSelection().addRange(this.range);
+                this.range = null;
+            }
+        }, 
     }, 
 
     mounted() {
         this.initModal();
+        this.createDropzone();
+    }, 
+
+    unmounted() {
+        this.dropzone = null;
     }, 
 }
 </script>

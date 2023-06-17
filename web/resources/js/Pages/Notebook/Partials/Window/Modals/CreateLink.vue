@@ -69,6 +69,9 @@ export default {
                 placement: 'center-center', 
                 backdrop: 'dynamic', 
                 closable: true, 
+                onShow: () => {
+                    this.defineFocus();
+                }, 
             });
         }, 
         show() {
@@ -78,7 +81,6 @@ export default {
                 this.range = window.getSelection().getRangeAt(0);
             }
 
-            this.defineFocus();
             this.modal.show();
         }, 
         close() {
