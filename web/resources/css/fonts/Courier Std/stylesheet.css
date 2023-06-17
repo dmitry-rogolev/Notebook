@@ -1,0 +1,52 @@
+@font-face {
+    font-family: 'Courier Std';
+    src: url('CourierStd-BoldOblique.eot');
+    src: local('Courier Std Bold Oblique'), local('CourierStd-BoldOblique'),
+        url('CourierStd-BoldOblique.eot?#iefix') format('embedded-opentype'),
+        url('CourierStd-BoldOblique.woff2') format('woff2'),
+        url('CourierStd-BoldOblique.woff') format('woff'),
+        url('CourierStd-BoldOblique.ttf') format('truetype');
+    font-weight: bold;
+    font-style: italic;
+    font-display: swap;
+}
+
+@font-face {
+    font-family: 'Courier Std';
+    src: url('CourierStd-Oblique.eot');
+    src: local('Courier Std Medium Oblique'), local('CourierStd-Oblique'),
+        url('CourierStd-Oblique.eot?#iefix') format('embedded-opentype'),
+        url('CourierStd-Oblique.woff2') format('woff2'),
+        url('CourierStd-Oblique.woff') format('woff'),
+        url('CourierStd-Oblique.ttf') format('truetype');
+    font-weight: 500;
+    font-style: italic;
+    font-display: swap;
+}
+
+@font-face {
+    font-family: 'Courier Std';
+    src: url('CourierStd-Bold.eot');
+    src: local('Courier Std Bold'), local('CourierStd-Bold'),
+        url('CourierStd-Bold.eot?#iefix') format('embedded-opentype'),
+        url('CourierStd-Bold.woff2') format('woff2'),
+        url('CourierStd-Bold.woff') format('woff'),
+        url('CourierStd-Bold.ttf') format('truetype');
+    font-weight: bold;
+    font-style: normal;
+    font-display: swap;
+}
+
+@font-face {
+    font-family: 'Courier Std';
+    src: url('CourierStd.eot');
+    src: local('Courier Std Medium'), local('CourierStd'),
+        url('CourierStd.eot?#iefix') format('embedded-opentype'),
+        url('CourierStd.woff2') format('woff2'),
+        url('CourierStd.woff') format('woff'),
+        url('CourierStd.ttf') format('truetype');
+    font-weight: 500;
+    font-style: normal;
+    font-display: swap;
+}
+

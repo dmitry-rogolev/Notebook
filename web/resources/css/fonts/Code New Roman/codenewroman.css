@@ -1,0 +1,18 @@
+@font-face {
+    font-family: 'Code New Roman';
+    src: local('Code New Roman Italic'), local('CodeNewRoman-Italic'), url('Codenewromanitalic.woff2') format('woff2'), url('Codenewromanitalic.woff') format('woff'), url('Codenewromanitalic.ttf') format('truetype');
+    font-weight: 400;
+    font-style: italic;
+}
+@font-face {
+    font-family: 'Code New Roman';
+    src: local('Code New Roman'), local('CodeNewRoman'), url('Codenewroman.woff2') format('woff2'), url('Codenewroman.woff') format('woff'), url('Codenewroman.ttf') format('truetype');
+    font-weight: 400;
+    font-style: normal;
+}
+@font-face {
+    font-family: 'Code New Roman';
+    src: local('Code New Roman Bold'), local('CodeNewRoman-Bold'), url('Codenewromanbold.woff2') format('woff2'), url('Codenewromanbold.woff') format('woff'), url('Codenewromanbold.ttf') format('truetype');
+    font-weight: 700;
+    font-style: normal;
+}

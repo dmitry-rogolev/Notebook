@@ -1,0 +1,36 @@
+@font-face {
+    font-family: 'Eurofurence';
+    src: local('eurofurence light'), local('Eurofurencelight'), url('eurofurencelight.woff2') format('woff2'), url('eurofurencelight.woff') format('woff'), url('eurofurencelight.ttf') format('truetype');
+    font-weight: 300;
+    font-style: normal;
+}
+@font-face {
+    font-family: 'Eurofurence';
+    src: local('eurofurence light  italic'), local('Eurofurencelightitalic'), url('eurofurencelightitalic.woff2') format('woff2'), url('eurofurencelightitalic.woff') format('woff'), url('eurofurencelightitalic.ttf') format('truetype');
+    font-weight: 300;
+    font-style: italic;
+}
+@font-face {
+    font-family: 'Eurofurence';
+    src: local('eurofurence  regular'), local('Eurofurenceregular'), url('eurofurenceregular.woff2') format('woff2'), url('eurofurenceregular.woff') format('woff'), url('eurofurenceregular.ttf') format('truetype');
+    font-weight: 400;
+    font-style: normal;
+}
+@font-face {
+    font-family: 'Eurofurence';
+    src: local('eurofurence  italic'), local('Eurofurenceitalic'), url('eurofurenceitalic.woff2') format('woff2'), url('eurofurenceitalic.woff') format('woff'), url('eurofurenceitalic.ttf') format('truetype');
+    font-weight: 400;
+    font-style: italic;
+}
+@font-face {
+    font-family: 'Eurofurence';
+    src: local('eurofurence  bold'), local('Eurofurencebold'), url('eurofurencebold.woff2') format('woff2'), url('eurofurencebold.woff') format('woff'), url('eurofurencebold.ttf') format('truetype');
+    font-weight: 700;
+    font-style: normal;
+}
+@font-face {
+    font-family: 'Eurofurence';
+    src: local('eurofurence  bolditalic'), local('Eurofurencebolditalic'), url('eurofurencebolditalic.woff2') format('woff2'), url('eurofurencebolditalic.woff') format('woff'), url('eurofurencebolditalic.ttf') format('truetype');
+    font-weight: 700;
+    font-style: italic;
+}

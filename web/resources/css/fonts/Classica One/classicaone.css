@@ -1,0 +1,6 @@
+@font-face {
+    font-family: 'Classica One';
+    src: local('Classica One'), local('ClassicaOne'), url('classicaone.woff2') format('woff2'), url('classicaone.woff') format('woff'), url('classicaone.ttf') format('truetype');
+    font-weight: 400;
+    font-style: normal;
+}

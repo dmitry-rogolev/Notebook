@@ -1,0 +1,24 @@
+@font-face {
+    font-family: 'Arian AMU Mono';
+    src: local('Arian AMU Mono'), local('ArianAMUMono'), url('arianamumono.woff2') format('woff2'), url('arianamumono.woff') format('woff'), url('arianamumono.ttf') format('truetype');
+    font-weight: 400;
+    font-style: normal;
+}
+@font-face {
+    font-family: 'Arian AMU Mono';
+    src: local('Arian AMU Mono Italic'), local('ArianAMUMono-Italic'), url('arianamumonoitalic.woff2') format('woff2'), url('arianamumonoitalic.woff') format('woff'), url('arianamumonoitalic.ttf') format('truetype');
+    font-weight: 400;
+    font-style: italic;
+}
+@font-face {
+    font-family: 'Arian AMU Mono';
+    src: local('Arian AMU Mono Bold'), local('ArianAMUMono-Bold'), url('arianamumonobold.woff2') format('woff2'), url('arianamumonobold.woff') format('woff'), url('arianamumonobold.ttf') format('truetype');
+    font-weight: 700;
+    font-style: normal;
+}
+@font-face {
+    font-family: 'Arian AMU Mono';
+    src: local('Arian AMU Mono Bold Italic'), local('ArianAMUMono-BoldItalic'), url('arianamumonobolditalic.woff2') format('woff2'), url('arianamumonobolditalic.woff') format('woff'), url('arianamumonobolditalic.ttf') format('truetype');
+    font-weight: 700;
+    font-style: italic;
+}

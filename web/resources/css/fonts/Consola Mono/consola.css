@@ -1,0 +1,12 @@
+@font-face {
+    font-family: 'Consola Mono';
+    src: local('Consola Mono'), local('ConsolaMono'), url('consolamono.woff2') format('woff2'), url('consolamono.woff') format('woff'), url('consolamono.ttf') format('truetype');
+    font-weight: 400;
+    font-style: normal;
+}
+@font-face {
+    font-family: 'Consola Mono';
+    src: local('Consola Mono Bold'), local('ConsolaMono-Bold'), url('consolamonobold.woff2') format('woff2'), url('consolamonobold.woff') format('woff'), url('consolamonobold.ttf') format('truetype');
+    font-weight: 700;
+    font-style: normal;
+}

@@ -1,0 +1,6 @@
+@font-face {
+    font-family: 'Pecita';
+    src: local('Pecita'), url('pecita.woff2') format('woff2'), url('pecita.woff') format('woff'), url('pecita.ttf') format('truetype');
+    font-weight: 400;
+    font-style: normal;
+}

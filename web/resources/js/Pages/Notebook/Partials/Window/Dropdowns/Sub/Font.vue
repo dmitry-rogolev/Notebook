@@ -12,52 +12,12 @@
             <slot></slot>
         </template>
         <template #content>
-            <DropdownItemComponent v-for="item in fonts.serif" @click="$editable.execCommand('fontName', `'${item}', serif`, {cssMode: true}); dropdown.hide();">
+            <DropdownItemComponent v-for="item in fonts" @click="$editable.execCommand('fontName', `'${item}', sans-serif`, {cssMode: true}); dropdown.hide();">
                 <div class="flex flex-nowrap items-center justify-between">
                     <div class="text-gray-700 dark:text-gray-300 text-xs">
                         {{ item }}
                     </div>
-                    <div class="pl-3 flex-auto text-right truncate text-gray-600 dark:text-gray-400 text-lg" :style="{fontFamily: `${item}, serif`}">
-                        {{ exampleText }}
-                    </div>
-                </div>
-            </DropdownItemComponent>
-            <DropdownItemComponent v-for="item in fonts['sans-serif']" @click="$editable.execCommand('fontName', `'${item}', sans-serif`, {cssMode: true}); dropdown.hide();">
-                <div class="flex flex-nowrap items-center justify-between">
-                    <div class="text-gray-700 dark:text-gray-300 text-xs">
-                        {{ item }}
-                    </div>
-                    <div class="pl-3 flex-auto text-right truncate text-gray-600 dark:text-gray-400 text-lg" :style="{fontFamily: `${item}, sans-serif`}">
-                        {{ exampleText }}
-                    </div>
-                </div>
-            </DropdownItemComponent>
-            <DropdownItemComponent v-for="item in fonts.cursive" @click="$editable.execCommand('fontName', `'${item}', cursive`, {cssMode: true}); dropdown.hide();">
-                <div class="flex flex-nowrap items-center justify-between">
-                    <div class="text-gray-700 dark:text-gray-300 text-xs">
-                        {{ item }}
-                    </div>
-                    <div class="pl-3 flex-auto text-right truncate text-gray-600 dark:text-gray-400 text-lg" :style="{fontFamily: `${item}, cursive`}">
-                        {{ exampleText }}
-                    </div>
-                </div>
-            </DropdownItemComponent>
-            <DropdownItemComponent v-for="item in fonts.fantasy" @click="$editable.execCommand('fontName', `'${item}', fantasy`, {cssMode: true}); dropdown.hide();">
-                <div class="flex flex-nowrap items-center justify-between">
-                    <div class="text-gray-700 dark:text-gray-300 text-xs">
-                        {{ item }}
-                    </div>
-                    <div class="pl-3 flex-auto text-right truncate text-gray-600 dark:text-gray-400 text-lg" :style="{fontFamily: `${item}, fantasy`}">
-                        {{ exampleText }}
-                    </div>
-                </div>
-            </DropdownItemComponent>
-            <DropdownItemComponent v-for="item in fonts.monospace" @click="$editable.execCommand('fontName', `'${item}', monospace`, {cssMode: true}); dropdown.hide();">
-                <div class="flex flex-nowrap items-center justify-between">
-                    <div class="text-gray-700 dark:text-gray-300 text-xs">
-                        {{ item }}
-                    </div>
-                    <div class="pl-3 flex-auto text-right truncate text-gray-600 dark:text-gray-400 text-lg" :style="{fontFamily: `${item}, monospace`}">
+                    <div class="pl-3 flex-auto text-right truncate text-gray-600 dark:text-gray-400 text-lg" :style="{fontFamily: `'${item}', sans-serif`}">
                         {{ exampleText }}
                     </div>
                 </div>

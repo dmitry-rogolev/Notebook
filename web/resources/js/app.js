@@ -1,5 +1,6 @@
 import './bootstrap';
 import '../css/app.css';
+import '../css/fonts.css';
 import 'https://kit.fontawesome.com/7484c95978.js';
 
 import { createApp, h } from 'vue';

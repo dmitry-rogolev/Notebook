@@ -1,0 +1,6 @@
+@font-face {
+    font-family: 'Solena';
+    src: local('Solena'), local('Solena-Regular'), url('Solena.woff2') format('woff2'), url('Solena.woff') format('woff'), url('Solena.ttf') format('truetype');
+    font-weight: 400;
+    font-style: normal;
+}
