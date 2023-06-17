@@ -1,5 +1,5 @@
 <template>
-    <DropdownComponent @show="$emit('show')" @hide="$emit('hide')" ref="dropdown" :triggerClass="[triggerClass]" :options="options" :heightClass="[heightClass]">
+    <DropdownComponent @show="$emit('show')" @hide="$emit('hide')" ref="dropdown" :triggerClass="[triggerClass]" :options="options" :heightClass="[heightClass]" widthClass="w-60">
         <template #trigger>
             <slot></slot>
         </template>
@@ -32,8 +32,8 @@ export default {
                 'Header 4': 'h4', 
                 'Header 5': 'h5', 
                 'Header 6': 'h6', 
-                Paragraph: 'p', 
-                'Block quote': 'blockquote', 
+                'Paragraph': 'p', 
+                'Blockquote': 'blockquote', 
             }, 
         };
     },
@@ -51,7 +51,7 @@ export default {
         },
         heightClass: {
             type: [ Array, String ],
-            default: 'w-48', 
+            default: '', 
         },
         options: {
             type: Object, 
