@@ -15,6 +15,7 @@
 
 <script>
 import WindowStatusbarComponent from '@/Plugins/Window/Components/WindowStatusbar.vue';
+import { cutTags } from '@/helpers';
 
 export default {
     name: 'WindowStatusbarPartial', 
@@ -25,10 +26,10 @@ export default {
 
     computed: {
         countWords() {
-            return this.$notebook.record.text.replace(/<\/?[^>]+>/igm, '').split(/\s/).filter((v) => v).length;
+            return cutTags(this.$notebook.record.text).split(/\s/).filter((v) => v).length;
         }, 
         countСharacters() {
-            return this.$notebook.record.text.replace(/<\/?[^>]+>/igm, '').split(/\s|\&nbsp;/).filter((v) => v).join('').length;
+            return cutTags(this.$notebook.record.text).split(/\s|\&nbsp;/).filter((v) => v).join('').length;
         }, 
         statusbar() {
             return this.$window.statusbar;
