@@ -97,6 +97,13 @@
                 </div>
             </DropdownItemComponent>
 
+            <DropdownItemComponent @click="$editable.execCommand('removeFormat'); dropdown.hide();">
+                <div class="flex flex-nowrap items-center">
+                    <i class="block fa-solid fa-eraser mr-2 w-4"></i>
+                    <div class="flex-auto">Remove format</div>
+                </div>
+            </DropdownItemComponent>
+
         </template>
     </DropdownComponent>
 </template>

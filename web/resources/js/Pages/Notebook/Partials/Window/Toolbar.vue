@@ -209,6 +209,12 @@
         <div role="menuitem">
             <InsertEmoticonsWindowToolbarModalPartial />
         </div>
+
+        <div role="menuitem">
+            <ToolbarButtonComponent @click="$editable.execCommand('removeFormat')" title="Remove format">
+                <i class="fa-solid fa-eraser"></i>
+            </ToolbarButtonComponent>
+        </div>
         
     </WindowToolbarComponent>
 </template>
