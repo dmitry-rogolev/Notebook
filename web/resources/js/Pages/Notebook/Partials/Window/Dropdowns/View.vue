@@ -5,6 +5,16 @@
         </template>
         <template #content>
 
+            <DropdownItemComponent @click="$window.showTabs(); dropdown.hide();">
+                <div class="flex flex-nowrap items-center">
+                    <div class="flex items-center">
+                        <i v-if="tabs" class="fa-solid fa-check w-6 text-center mr-2"></i>
+                        <div v-else class="w-6 mr-2"></div>
+                    </div>
+                    <div class="flex-auto">Tabs</div>
+                </div>
+            </DropdownItemComponent>
+
             <DropdownItemComponent @click="$window.toggleToolbar(); dropdown.hide();">
                 <div class="flex flex-nowrap items-center">
                     <div class="flex items-center">
@@ -59,6 +69,9 @@ export default {
         toolbar() {
             return this.$window.toolbar;
         },
+        tabs() {
+            return this.$window.tabs;
+        }, 
         fullscreen() {
             return this.$window.fullscreen;
         }, 

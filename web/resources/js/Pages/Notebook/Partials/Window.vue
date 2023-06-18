@@ -5,6 +5,8 @@
 
         <WindowToolbarPartial />
 
+        <WindowTabsPartial />
+
         <WindowHeaderPartial />
 
         <EditableComponent 
@@ -29,6 +31,7 @@ import WindowMenuPartial from '@/Pages/Notebook/Partials/Window/Menu.vue';
 import WindowHeaderPartial from '@/Pages/Notebook/Partials/Window/Header.vue';
 import WindowStatusbarPartial from '@/Pages/Notebook/Partials/Window/Statusbar.vue';
 import WindowToolbarPartial from '@/Pages/Notebook/Partials/Window/Toolbar.vue';
+import WindowTabsPartial from '@/Pages/Notebook/Partials/Window/Tabs.vue';
 import EditableComponent from '@/Plugins/Editable/Components/Editable.vue';
 import MarkPartial from './Window/Mark.vue';
 
@@ -42,6 +45,7 @@ export default {
         WindowHeaderPartial, 
         WindowStatusbarPartial, 
         WindowToolbarPartial, 
+        WindowTabsPartial, 
         EditableComponent, 
         MarkPartial, 
     }, 

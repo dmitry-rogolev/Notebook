@@ -8,7 +8,7 @@
 
 <script>
 export default {
-    name: 'WindowToolbar', 
+    name: 'WindowToolbarComponent', 
 
     computed: {
         toolbar() {

@@ -5,7 +5,9 @@ class Window
     _width = 0;
     _fullscreen = false;
     _statusbar = true;
-    _toolbar = true;
+    _toolbar = false;
+    _tabs = true;
+    _standard = false;
     _resizeTimer = null;
     _timerInterval = 100;
 
@@ -35,6 +37,14 @@ class Window
 
     get toolbar() {
         return this._toolbar;
+    }
+
+    get tabs() {
+        return this._tabs;
+    }
+
+    get standard() {
+        return this._standard;
     }
 
     constructor(options = {}) {
@@ -79,6 +89,18 @@ class Window
 
     toggleToolbar() {
         this._toolbar = ! this._toolbar;
+    }
+
+    showStandard() {
+        this._standard = true;
+        this._toolbar = true;
+        this._tabs = false;
+    }
+
+    showTabs() {
+        this._tabs = true;
+        this._standard = false;
+        this._toolbar = false;
     }
 
     print() {
