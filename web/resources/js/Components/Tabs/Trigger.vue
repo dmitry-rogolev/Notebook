@@ -2,7 +2,7 @@
     <button 
         role="button" 
         type="submit" 
-        class="trigger block bg-white dark:bg-gray-800 focus:border-indigo-500 dark:focus:border-indigo-600 focus-visible:outline-none focus:text-indigo-500 dark:focus:text-indigo-600 transition duration-300 ease-in-out"
+        class="trigger block focus:border-indigo-500 dark:focus:border-indigo-600 focus-visible:outline-none focus:text-indigo-500 dark:focus:text-indigo-600 transition duration-300 ease-in-out"
         :class="[borderClass]"
         aria-haspopup="menu"
         >

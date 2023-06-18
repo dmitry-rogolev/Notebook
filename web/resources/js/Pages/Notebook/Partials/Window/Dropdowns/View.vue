@@ -5,16 +5,6 @@
         </template>
         <template #content>
 
-            <DropdownItemComponent @click="$window.toggleStatusbar(); dropdown.hide();">
-                <div class="flex flex-nowrap items-center">
-                    <div class="flex items-center">
-                        <i v-if="statusbar" class="fa-solid fa-check w-6 text-center mr-2"></i>
-                        <div v-else class="w-6 mr-2"></div>
-                    </div>
-                    <div class="flex-auto">Statusbar</div>
-                </div>
-            </DropdownItemComponent>
-
             <DropdownItemComponent @click="$window.toggleToolbar(); dropdown.hide();">
                 <div class="flex flex-nowrap items-center">
                     <div class="flex items-center">
@@ -22,6 +12,16 @@
                         <div v-else class="w-6 mr-2"></div>
                     </div>
                     <div class="flex-auto">Toolbar</div>
+                </div>
+            </DropdownItemComponent>
+
+            <DropdownItemComponent @click="$window.toggleStatusbar(); dropdown.hide();">
+                <div class="flex flex-nowrap items-center">
+                    <div class="flex items-center">
+                        <i v-if="statusbar" class="fa-solid fa-check w-6 text-center mr-2"></i>
+                        <div v-else class="w-6 mr-2"></div>
+                    </div>
+                    <div class="flex-auto">Statusbar</div>
                 </div>
             </DropdownItemComponent>
 
