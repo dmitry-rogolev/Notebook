@@ -21,8 +21,9 @@
         </div>
 
         <div role="menuitem">
-            <button role="button" @click="$notebook.closeWindow()" type="button" class="px-2 sm:px-3 md:px-4 py-1 text-base lg:text-lg text-gray-700 dark:text-gray-300 hover:bg-gray-200 dark:hover:bg-slate-600 focus:bg-gray-200 dark:focus:bg-slate-600 focus-visible:outline-none transition duration-200 ease-in-out select-none">
-                <i class="fa-solid fa-xmark"></i>
+            <button role="button" @click="$notebook.closeWindow()" @mouseenter="showXmark = true" @mouseleave="showXmark = false" type="button" class="h-full px-2 sm:px-3 md:px-4 py-1 text-base lg:text-lg text-gray-700 dark:text-gray-300 hover:bg-gray-200 dark:hover:bg-slate-600 focus:bg-gray-200 dark:focus:bg-slate-600 focus-visible:outline-none transition duration-200 ease-in-out select-none">
+                <div v-if="changed && ! showXmark" class="bg-gray-600 dark:bg-gray-300 rounded-full w-3 h-3 min-w-[0.75rem] min-h-[0.75rem]"></div>
+                <i v-else class="fa-solid fa-xmark"></i>
             </button>
         </div>
 
@@ -51,9 +52,18 @@ export default {
         ViewDropdownPartial, 
     },
 
+    data() {
+        return {
+            showXmark: false, 
+        };
+    },
+
     computed: {
         fullscreen() {
             return this.$window.fullscreen;
+        }, 
+        changed() {
+            return this.$notebook.note.changed;
         }, 
     },
 }

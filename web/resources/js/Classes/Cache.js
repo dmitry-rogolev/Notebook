@@ -18,6 +18,16 @@ class Cache
         return JSON.parse(localStorage.getItem(key));
     }
 
+    static has(key) {
+        let value = localStorage.getItem(key);
+
+        if (value === null) {
+            return false;
+        }
+
+        return true;
+    }
+
     static remove(key) {
         localStorage.removeItem(key);
     }

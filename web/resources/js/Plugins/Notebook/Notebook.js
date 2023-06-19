@@ -74,10 +74,18 @@ class Notebook
                 record = v;
             } 
 
+            let self = this;
+
             this._record = new Proxy(Object.assign({}, record), {
                 set(target, property, value) {
                     if ((property === 'text' || property === 'title') && target[property] != value) {
-                        Cache.add(target.id, target);
+                        if (self._note[property] == value) {
+                            Cache.remove(target.id);
+                            self._note.changed = false;
+                        } else {
+                            Cache.add(target.id, target);
+                            self._note.changed = true;
+                        }
                     }
 
                     target[property] = value;
@@ -178,6 +186,7 @@ class Notebook
             }
 
             Cache.remove(this.record.id);
+            this.note.changed = false;
 
             axios.patch(this._defaultOptions.path + '/' + this._note.id, this._record).then((response) => {
                 this.note = response.data.data;
@@ -192,6 +201,8 @@ class Notebook
 
     delete() {
         axios.delete(this._defaultOptions.path + '/' + this._note.id);
+
+        Cache.remove(this._note.id);
 
         this._notes = this._notes.filter((item) => {
             return item.id != this._note.id;
@@ -286,6 +297,7 @@ class Notebook
     _fetchNotes() {
         axios.get(this._defaultOptions.path).then((response) => {
             this._notes = response.data.data;
+            this._setChangedPropertyToNotes();
 
             this._defineNote();
 
@@ -302,6 +314,16 @@ class Notebook
             }
 
             this.note = this._notes[index];
+        }
+    }
+
+    _setChangedPropertyToNotes() {
+        for (let note of this._notes) {
+            if (Cache.has(note.id)) {
+                note.changed = true;
+            } else {
+                note.changed = false;
+            }
         }
     }
 

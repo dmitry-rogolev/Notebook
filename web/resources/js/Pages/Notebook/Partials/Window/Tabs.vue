@@ -33,8 +33,9 @@
                     <i v-if="fullscreen" class="fa-solid fa-down-left-and-up-right-to-center fa-rotate-90"></i>
                     <i v-else class="fa-solid fa-up-right-and-down-left-from-center fa-rotate-90"></i>
                 </button>
-                <button role="button" @click="$notebook.closeWindow()" type="button" class="px-2 sm:px-3 md:px-4 py-1 text-base lg:text-lg text-gray-700 dark:text-gray-300 hover:bg-gray-200 dark:hover:bg-slate-600 focus:bg-gray-200 dark:focus:bg-slate-600 focus-visible:outline-none transition duration-200 ease-in-out select-none">
-                    <i class="fa-solid fa-xmark"></i>
+                <button role="button" @click="$notebook.closeWindow()" @mouseenter="showXmark = true" @mouseleave="showXmark = false" type="button" class="px-2 sm:px-3 md:px-4 py-1 text-base lg:text-lg text-gray-700 dark:text-gray-300 hover:bg-gray-200 dark:hover:bg-slate-600 focus:bg-gray-200 dark:focus:bg-slate-600 focus-visible:outline-none transition duration-200 ease-in-out select-none">
+                    <div v-if="changed && ! showXmark" class="bg-gray-600 dark:bg-gray-300 rounded-full w-3 h-3 min-w-[0.75rem] min-h-[0.75rem]"></div>
+                    <i v-else class="fa-solid fa-xmark"></i>
                 </button>
             </template>
             <template #targets>
@@ -325,6 +326,7 @@ export default {
             hiliteColorToken: token(), 
             color: '', 
             background: '', 
+            showXmark: false, 
         };
     },
 
@@ -361,6 +363,9 @@ export default {
         }, 
         fullscreen() {
             return this.$window.fullscreen;
+        }, 
+        changed() {
+            return this.$notebook.note.changed;
         }, 
     },
 }
