@@ -1,63 +1,72 @@
 <template>
-    <SidebarComponent 
-        triggerContainerClass="bg-white dark:bg-gray-800 border-gray-300 dark:border-gray-600 border-r h-full overflow-y-auto z-10"
-        contentClass="bg-white dark:bg-gray-800 border-gray-300 dark:border-gray-600 border-r h-full min-w-[8rem] w-32 md:w-40 lg:w-52 xl:w-64 overflow-y-auto resize-x focus-visible:outline-none"
-        ref="sidebar" 
+    <SidebarComponent
         :active="isShowNotes || isShowSearch" 
+        triggersContainerClass="bg-white dark:bg-gray-800 border-gray-300 dark:border-gray-600 border-r h-full overflow-y-auto z-10"
+        targetsContainerClass="bg-white dark:bg-gray-800 border-gray-300 dark:border-gray-600 border-r h-full min-w-[8rem] w-32 md:w-40 lg:w-52 xl:w-64 overflow-y-auto resize-x focus-visible:outline-none"
         >
         <template #triggers>
-
-            <BarTriggerComponent ref="notes" :aria-controls="notesMenuToken" @click="isShowNotes = ! isShowNotes; isShowSearch = false;" :active="isShowNotes"><i class="fa-solid fa-note-sticky"></i></BarTriggerComponent>
-            <BarTriggerComponent ref="search" :aria-controls="searchMenuToken" @click="isShowSearch = ! isShowSearch; isShowNotes = false;" :active="isShowSearch"><i class="fa-sharp fa-solid fa-magnifying-glass"></i></BarTriggerComponent>
-            <BarTriggerComponent @click="$notebook.create()"><i class="fa-solid fa-plus"></i></BarTriggerComponent>
-            <BarTriggerComponent v-if="! dark" @click="toggleDark"><i class="fa-solid fa-sun"></i></BarTriggerComponent>
-            <BarTriggerComponent v-else @click="toggleDark"><i class="fa-solid fa-moon"></i></BarTriggerComponent>
-        
+            <TriggerSidebarPartial @click="isShowNotes = ! isShowNotes; isShowSearch = false;" :active="isShowNotes">
+                <i class="fa-solid fa-note-sticky"></i>
+            </TriggerSidebarPartial>
+            <TriggerSidebarPartial @click="isShowSearch = ! isShowSearch; isShowNotes = false;" :active="isShowSearch">
+                <i class="fa-sharp fa-solid fa-magnifying-glass"></i>
+            </TriggerSidebarPartial>
+            <TriggerSidebarPartial @click="$notebook.create()">
+                <i class="fa-solid fa-plus"></i>
+            </TriggerSidebarPartial>
+            <TriggerSidebarPartial @click="toggleDark">
+                <i v-if="dark" class="fa-solid fa-sun"></i>
+                <i v-else class="fa-solid fa-moon"></i>
+            </TriggerSidebarPartial>
         </template>
-        <template #contents>
-
-            <BarContentComponent :id="notesMenuToken" v-if="isShowNotes">
-                <BarNoteComponent v-for="note in notes" :key="note.id" :note="note" @click="$notebook.openWindow(note)" :active="note.id == this.note?.id" />
-            </BarContentComponent>
-
-            <BarContentComponent :id="searchMenuToken" v-else-if="isShowSearch">
+        <template #targets>
+            <TargetPartial v-show="isShowNotes">
+                <NotePartial
+                    v-for="note in notes"
+                    :key="note.id"
+                    :note="note"
+                    @click="$notebook.openWindow(note)"
+                    />
+            </TargetPartial>
+            <TargetPartial v-show="isShowSearch">
                 <div class="p-1">
                     <InputComponent @input="$notebook.find($event.target.value)" @keyup.enter="$notebook.find($event.target.value)" type="text" autofocus class="w-full px-2 py-1 text-sm" placeholder="Search" />
                 </div>
-                <BarNoteComponent v-for="note in found" :key="note.id" :note="note" @click="$notebook.openWindow(note)" :active="note.id == this.note?.id" />
-            </BarContentComponent>
-
+                <NotePartial
+                    v-for="note in found"
+                    :key="note.id"
+                    :note="note"
+                    @click="$notebook.openWindow(note)"
+                    />
+            </TargetPartial>
         </template>
     </SidebarComponent>
 </template>
 
 <script>
 import SidebarComponent from '@/Plugins/Sidebar/Components/Sidebar.vue';
-import BarTriggerComponent from '@/Components/Sidebar/Trigger.vue';
-import BarContentComponent from '@/Components/Sidebar/Content.vue';
-import BarNoteComponent from '@/Components/Sidebar/Note.vue';
 import InputComponent from '@/Components/TextInput.vue';
-import { token } from '@/helpers';
+import TargetPartial from './Sidebar/Target.vue';
+import TriggerSidebarPartial from './Sidebar/Trigger.vue';
+import NotePartial from './Sidebar/Note.vue';
 
 export default {
     name: 'SidebarPartial', 
     
     components: {
         SidebarComponent, 
-        BarTriggerComponent, 
-        BarContentComponent, 
-        BarNoteComponent, 
         InputComponent, 
+        TargetPartial, 
+        TriggerSidebarPartial, 
+        NotePartial, 
     }, 
 
     data() {
         return {
-            notesMenuToken: token(), 
-            searchMenuToken: token(), 
             isShowNotes: false, 
             isShowSearch: false, 
         };
-    }, 
+    },
 
     computed: {
         dark() {

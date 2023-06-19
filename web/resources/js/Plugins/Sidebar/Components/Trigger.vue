@@ -2,8 +2,7 @@
     <button 
         role="button" 
         type="button" 
-        class="trigger block transition duration-200 ease-in-out focus-visible:outline-none"
-        aria-haspopup="menu"
+        class="block transition duration-200 ease-in-out focus-visible:outline-none"
         >
         <slot></slot>
     </button>
@@ -11,6 +10,10 @@
 
 <script>
 export default {
-    name: 'TriggerTabsComponent', 
-};
+    name: 'TriggerSidebarComponent', 
+}
 </script>
+
+<style scoped>
+
+</style>

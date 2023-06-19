@@ -3,23 +3,23 @@
         <section 
             v-show="! fullscreen || show" 
             ref="sidebar" 
-            class="flex print:hidden" 
+            class="flex flex-nowrap print:hidden" 
             role="menubar" 
             :style="{height: height, maxHeight: height}"
             @mouseleave="show = false"
             v-bind="$attrs"
             >
-            <div :class="[triggerContainerClass]">
+            <div :class="[triggersContainerClass]">
                 <slot name="triggers"></slot>
             </div>
             <transition name="slide">
                 <div 
                     v-if="active" 
-                    :class="[contentClass]" 
+                    :class="[targetsContainerClass]" 
                     tabindex="-1"
                     role="menu" 
                     >
-                    <slot name="contents"></slot>
+                    <slot name="targets"></slot>
                 </div>
             </transition>
         </section>
@@ -27,7 +27,7 @@
     <teleport to="body">
         <div 
             v-show="fullscreen && ! show"
-            class="absolute top-0 left-0 bottom-0 w-2 z-10"
+            class="absolute top-0 left-0 bottom-0 w-2 z-[100]"
             @mouseenter="show = true"
             ></div>
     </teleport>
@@ -61,11 +61,11 @@ export default {
             type: Boolean, 
             default: false, 
         }, 
-        triggerContainerClass: {
+        triggersContainerClass: {
             type: [ Array, String ], 
             default: '', 
         }, 
-        contentClass: {
+        targetsContainerClass: {
             type: [ Array, String ], 
             default: '', 
         }, 
