@@ -340,6 +340,7 @@ class Notebook
 
     _fetchNotesFromCache() {
         this._notes = this._getNotesFromCache();
+        this._setDateForUpdatedAtAndCreatedAtProperties();
         this._setChangedPropertyToNotes();
         this._defineNote();
         this._isOpenWindow = true;
@@ -348,8 +349,9 @@ class Notebook
     _fetchNotesFromServer() {
         axios.get(this._defaultOptions.path).then((response) => {
             this._notes = response.data.data;
-            this._cacheNotes();
+            this._setDateForUpdatedAtAndCreatedAtProperties();
             this._setChangedPropertyToNotes();
+            this._cacheNotes();
             this._defineNote();
             this._isOpenWindow = true;
         });
@@ -382,6 +384,13 @@ class Notebook
             } else {
                 note.changed = false;
             }
+        }
+    }
+
+    _setDateForUpdatedAtAndCreatedAtProperties() {
+        for (let note of this._notes) {
+            note.updated_at = new Date(note.updated_at);
+            note.created_at = new Date(note.created_at);
         }
     }
 

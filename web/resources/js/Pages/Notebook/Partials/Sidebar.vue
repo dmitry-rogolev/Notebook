@@ -20,14 +20,17 @@
             </TriggerSidebarPartial>
         </template>
         <template #targets>
-            <TargetPartial v-show="isShowNotes">
-                <NotePartial
-                    v-for="note in notes"
-                    :key="note.id"
-                    :note="note"
-                    @click="$notebook.openWindow(note)"
-                    />
-            </TargetPartial>
+            <div v-show="isShowNotes">
+                <SortbarPartial />
+                <TargetPartial>
+                    <NotePartial
+                        v-for="note in notes"
+                        :key="note.id"
+                        :note="note"
+                        @click="$notebook.openWindow(note)"
+                        />
+                </TargetPartial>
+            </div>
             <TargetPartial v-show="isShowSearch">
                 <div class="p-1">
                     <InputComponent @input="$notebook.find($event.target.value)" @keyup.enter="$notebook.find($event.target.value)" type="text" autofocus class="w-full px-2 py-1 text-sm" placeholder="Search" />
@@ -49,6 +52,7 @@ import InputComponent from '@/Components/TextInput.vue';
 import TargetPartial from './Sidebar/Target.vue';
 import TriggerSidebarPartial from './Sidebar/Trigger.vue';
 import NotePartial from './Sidebar/Note.vue';
+import SortbarPartial from './Sidebar/Sortbar.vue';
 
 export default {
     name: 'SidebarPartial', 
@@ -59,6 +63,7 @@ export default {
         TargetPartial, 
         TriggerSidebarPartial, 
         NotePartial, 
+        SortbarPartial, 
     }, 
 
     data() {
@@ -73,7 +78,7 @@ export default {
             return this.$store.state.dark;
         }, 
         notes() {
-            return this.$notebook.notes;
+            return this.$sort.sort(this.$notebook.notes);
         }, 
         found() {
             return this.$notebook.found;

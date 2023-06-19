@@ -16,6 +16,7 @@ import Window from './Plugins/Window/plugin';
 import Sidebar from './Plugins/Sidebar/plugin';
 import Notebook from './Plugins/Notebook/plugin';
 import Mark from './Plugins/Mark/plugin';
+import Sort from './Plugins/Sort/plugin';
 
 const appName = window.document.getElementsByTagName('title')[0]?.innerText || 'Laravel';
 
@@ -28,6 +29,7 @@ createInertiaApp({
             .use(ZiggyVue, Ziggy)
             .use(store)
             .use(VueApp)
+            .use(Sort)
             .use(notifier, {interval: 3000})
             .use(Editable, {autofocus: true})
             .use(Window)
