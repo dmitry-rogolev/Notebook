@@ -26,7 +26,6 @@
 
 <script>
 import WindowComponent from '@/Plugins/Window/Components/Window.vue';
-import WindowMenuButtonComponent from '@/Components/Window/MenuButton.vue';
 import WindowMenuPartial from '@/Pages/Notebook/Partials/Window/Menu.vue';
 import WindowHeaderPartial from '@/Pages/Notebook/Partials/Window/Header.vue';
 import WindowStatusbarPartial from '@/Pages/Notebook/Partials/Window/Statusbar.vue';
@@ -40,7 +39,6 @@ export default {
 
     components: {
         WindowComponent, 
-        WindowMenuButtonComponent, 
         WindowMenuPartial, 
         WindowHeaderPartial, 
         WindowStatusbarPartial, 

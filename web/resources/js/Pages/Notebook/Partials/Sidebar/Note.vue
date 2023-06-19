@@ -33,10 +33,57 @@ export default {
         }, 
     }, 
 
+    watch: {
+        note() {
+            this.toDateFormat();
+        }, 
+    }, 
+
     methods: {
         cutTags(str) {
             return cutTags(str);
         }, 
+        toDateFormat() {
+            this.note.updated = this.dateDiff(this.note.updated_at);
+        }, 
+        dateDiff(date) {
+            let diff = new Date() - new Date(date);
+            let postfix = '';
+
+            diff /= 1000;
+            postfix = 'seconds';
+
+            if (diff > 60) {
+                diff /= 60;
+                postfix = 'minutes';
+
+                if (diff > 60) {
+                    diff /= 60;
+                    postfix = 'hours';
+
+                    if (diff > 24) {
+                        diff /= 24;
+                        postfix = 'days';
+
+                        if (diff > 31) {
+                            diff /= 31;
+                            postfix = 'monthes';
+
+                            if (diff > 12) {
+                                diff /= 12;
+                                postfix = 'years';
+                            }
+                        }
+                    }
+                }
+            }
+
+            return Math.round(diff) + ' ' + postfix + ' ago';
+        }, 
+    }, 
+
+    mounted() {
+        this.toDateFormat();
     }, 
 }
 </script>

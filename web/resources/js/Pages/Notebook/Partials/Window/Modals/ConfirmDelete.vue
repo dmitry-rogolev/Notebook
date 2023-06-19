@@ -4,14 +4,14 @@
             <i class="fa-solid fa-trash"></i>
         </TriggerComponent>
         <teleport to="body">
-            <ModalComponent ref="modal" @close="modal.hide();">
+            <ModalComponent ref="modal" @close="modal.hide();" widthClass="w-96">
                 <template #content>
-                    <div class="text-gray-700 dark:text-gray-300 text-xl text-center mb-2">Are you sure you want to delete this note?</div>
+                    <div class="text-gray-700 dark:text-gray-300 text-lg text-center mb-2 select-none">Are you sure you want to delete this note?</div>
                     <div class="flex justify-center items-center p-4">
                         <button 
                             type="button"
                             role="button"
-                            class="block mr-3 bg-red-600 hover:bg-red-700 border-red-600 hover:border-red-600 border-2 text-gray-100 focus-visible:outline-none focus:ring-2 focus:ring-indigo-500 dark:focus:ring-indigo-600 rounded-lg shadow-md px-4 py-2 transition duration-300 ease-in-out"
+                            class="block mr-3 bg-red-600 hover:bg-red-700 border-red-600 hover:border-red-600 border-2 text-gray-100 focus-visible:outline-none focus:ring-2 focus:ring-indigo-500 dark:focus:ring-indigo-600 rounded-lg shadow-md px-3 py-1.5 transition duration-300 ease-in-out"
                             @click="$notebook.delete(); modal.hide();" 
                             >
                             Yes, I'm sure
@@ -20,7 +20,7 @@
                             type="button"
                             role="button"
                             @click="modal.hide();" 
-                            class="block border-gray-300 dark:border-gray-600 border-2 rounded-lg shadow-md px-4 py-2 bg-white dark:bg-gray-800 hover:bg-gray-200 dark:hover:bg-gray-700 transition duration-300 ease-in-out focus-visible:outline-none focus:ring-2 focus:ring-indigo-500 dark:focus:ring-indigo-600"
+                            class="block border-gray-300 dark:border-gray-600 border-2 rounded-lg shadow-md px-3 py-1.5 bg-white dark:bg-gray-800 hover:bg-gray-200 dark:hover:bg-gray-700 transition duration-300 ease-in-out focus-visible:outline-none focus:ring-2 focus:ring-indigo-500 dark:focus:ring-indigo-600"
                             >
                             No, cancel
                         </button>
