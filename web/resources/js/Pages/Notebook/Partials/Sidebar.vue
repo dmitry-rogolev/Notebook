@@ -87,6 +87,27 @@ export default {
         toggleDark() {
             this.$store.dispatch('dark', ! this.dark);
         }, 
+        keyup(e) {
+            e.preventDefault();
+
+            if (e.altKey && e.code == 'KeyB') {
+                this.isShowNotes = ! this.isShowNotes; this.isShowSearch = false;
+            }
+        }, 
+        addKeyupEventListener() {
+            document.addEventListener('keyup', this.keyup);
+        }, 
+        removeKeyupEventListener() {
+            document.removeEventListener('keyup', this.keyup);
+        }, 
+    }, 
+
+    mounted() {
+        this.addKeyupEventListener();
+    }, 
+
+    unmounted() {
+        this.removeKeyupEventListener();
     }, 
 };
 </script>
