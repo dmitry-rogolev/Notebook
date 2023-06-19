@@ -4,7 +4,7 @@
             <i class="fa-solid fa-trash"></i>
         </TriggerComponent>
         <teleport to="body">
-            <ModalComponent ref="modal" @close="modal.hide();" widthClass="w-96">
+            <ModalComponent ref="modal" @close="modal.hide();" widthClass="max-w-md">
                 <template #content>
                     <div class="text-gray-700 dark:text-gray-300 text-lg text-center mb-2 select-none">Are you sure you want to delete this note?</div>
                     <div class="flex justify-center items-center p-4">

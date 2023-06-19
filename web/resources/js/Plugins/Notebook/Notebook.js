@@ -172,6 +172,8 @@ class Notebook
         axios.post(this._defaultOptions.path, note).then((response) => {
             this.note = response.data.data;
 
+            this._cacheNotes();
+
             window.app.config.globalProperties.$notifier.push({
                 message: 'Created', 
                 success: true, 
@@ -180,33 +182,47 @@ class Notebook
     }
 
     update() {
-        if (this._note.title != this._record.title || this._note.text != this._record.text) {
+        if (this._isChanged()) {
             if (this._record.text) {
                 this._record.text = this._cutForbiddenTags(this._record.text);
             }
 
             Cache.remove(this.record.id);
-            this.note.changed = false;
 
-            axios.patch(this._defaultOptions.path + '/' + this._note.id, this._record).then((response) => {
-                this.note = response.data.data;
+            this._updateOnServer();
 
-                window.app.config.globalProperties.$notifier.push({
-                    message: 'Saved', 
-                    success: true, 
-                });
+            this._updateInCache();
+
+            window.app.config.globalProperties.$notifier.push({
+                message: 'Saved', 
+                success: true, 
             });
         }
     }
 
-    delete() {
-        axios.delete(this._defaultOptions.path + '/' + this._note.id);
+    _updateInCache() {
+        this._cacheNotes();
+    }
 
-        Cache.remove(this._note.id);
+    _updateOnServer() {
+        axios.patch(this._defaultOptions.path + '/' + this._note.id, this._record).then((response) => {
+            this.note = response.data.data;
+            this._note.changed = false;
 
-        this._notes = this._notes.filter((item) => {
-            return item.id != this._note.id;
+            this._updateInCache();
         });
+    }
+
+    _isChanged() {
+        return this._note.changed;
+    }
+
+    delete() {
+        this._deleteFromServer();
+
+        this._deleteFromCache();
+
+        this._deleteFromFound();
 
         this._defineNote();
 
@@ -214,7 +230,23 @@ class Notebook
             message: 'Deleted', 
             success: true, 
         });
+    }
 
+    _deleteFromServer() {
+        axios.delete(this._defaultOptions.path + '/' + this._note.id);
+    }
+
+    _deleteFromCache() {
+        Cache.remove(this._note.id);
+
+        this._notes = this._notes.filter((item) => {
+            return item.id != this._note.id;
+        });
+
+        this._cacheNotes();
+    }
+
+    _deleteFromFound() {
         if (this._found && this._found.length) {
             this._found = this._found.filter((item) => {
                 return item.id != this._note.id;
@@ -295,14 +327,40 @@ class Notebook
     }
 
     _fetchNotes() {
+        if (this._isCashed()) {
+            this._fetchNotesFromCache();
+        } else {
+            this._fetchNotesFromServer();
+        }
+    }
+
+    _isCashed() {
+        return Cache.has('notes');
+    }
+
+    _fetchNotesFromCache() {
+        this._notes = this._getNotesFromCache();
+        this._setChangedPropertyToNotes();
+        this._defineNote();
+        this._isOpenWindow = true;
+    }
+
+    _fetchNotesFromServer() {
         axios.get(this._defaultOptions.path).then((response) => {
             this._notes = response.data.data;
+            this._cacheNotes();
             this._setChangedPropertyToNotes();
-
             this._defineNote();
-
             this._isOpenWindow = true;
         });
+    }
+
+    _getNotesFromCache() {
+        return Cache.get('notes');
+    }
+
+    _cacheNotes() {
+        Cache.add('notes', this._notes);
     }
 
     _defineNote() {
