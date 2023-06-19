@@ -1,3 +1,5 @@
+import Cache from "@/Classes/Cache";
+
 class Notebook 
 {
     _isInit = false;
@@ -65,7 +67,24 @@ class Notebook
             }
 
             this._note = v;
-            this._record = Object.assign({}, v);
+
+            let record = Cache.get(v.id);
+
+            if (! record) {
+                record = v;
+            } 
+
+            this._record = new Proxy(Object.assign({}, record), {
+                set(target, property, value) {
+                    if ((property === 'text' || property === 'title') && target[property] != value) {
+                        Cache.add(target.id, target);
+                    }
+
+                    target[property] = value;
+
+                    return true;
+                }, 
+            });
         } else {
             this._note = {
                 title: '', 
@@ -157,6 +176,9 @@ class Notebook
             if (this._record.text) {
                 this._record.text = this._cutForbiddenTags(this._record.text);
             }
+
+            Cache.remove(this.record.id);
+
             axios.patch(this._defaultOptions.path + '/' + this._note.id, this._record).then((response) => {
                 this.note = response.data.data;
 
