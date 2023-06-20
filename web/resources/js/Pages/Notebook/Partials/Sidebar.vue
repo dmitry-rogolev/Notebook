@@ -23,12 +23,19 @@
             <div v-show="isShowNotes">
                 <SortbarPartial />
                 <TargetPartial>
-                    <NotePartial
-                        v-for="note in notes"
-                        :key="note.id"
-                        :note="note"
-                        @click="$notebook.openWindow(note)"
-                        />
+                    <Sortable
+                        :list="notes"
+                        :itemKey="(item) => item.id"
+                        >
+                        <template #item="{element}">
+                            <NotePartial
+                                :key="element.id"
+                                :note="element"
+                                class="draggable"
+                                @click="$notebook.openWindow(element)"
+                                />
+                        </template>
+                    </Sortable>
                 </TargetPartial>
             </div>
             <TargetPartial v-show="isShowSearch">
@@ -53,6 +60,7 @@ import TargetPartial from './Sidebar/Target.vue';
 import TriggerSidebarPartial from './Sidebar/Trigger.vue';
 import NotePartial from './Sidebar/Note.vue';
 import SortbarPartial from './Sidebar/Sortbar.vue';
+import { Sortable } from "sortablejs-vue3";
 
 export default {
     name: 'SidebarPartial', 
@@ -64,6 +72,7 @@ export default {
         TriggerSidebarPartial, 
         NotePartial, 
         SortbarPartial, 
+        Sortable, 
     }, 
 
     data() {
