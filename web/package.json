@@ -23,6 +23,7 @@
     "dependencies": {
         "dropzone": "^6.0.0-beta.2",
         "flowbite": "^1.6.5",
+        "fuse.js": "^6.6.2",
         "jquery": "^3.7.0",
         "sortablejs": "^1.15.0",
         "sortablejs-vue3": "^1.2.9",

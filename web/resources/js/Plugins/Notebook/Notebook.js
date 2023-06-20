@@ -1,4 +1,5 @@
 import Cache from "@/Classes/Cache";
+import Fuse from 'fuse.js'
 
 class Notebook 
 {
@@ -190,13 +191,6 @@ class Notebook
             Cache.remove(this.record.id);
 
             this._updateOnServer();
-
-            this._updateInCache();
-
-            window.app.config.globalProperties.$notifier.push({
-                message: 'Saved', 
-                success: true, 
-            });
         }
     }
 
@@ -210,6 +204,11 @@ class Notebook
             this._note.changed = false;
 
             this._updateInCache();
+
+            window.app.config.globalProperties.$notifier.push({
+                message: 'Saved', 
+                success: true, 
+            });
         });
     }
 
@@ -257,9 +256,27 @@ class Notebook
     find(search) {
         if (search) {
             this._search = search;
-            axios.get(this._defaultOptions.path + '?search=' + search).then((response) => {
-                this._found = response.data.data;
+
+            let notes = [];
+
+            this.notes.forEach(v => {
+                let n = Object.assign({}, v);
+                n.text = this._cutTags(v.text);
+                notes.push(n);
             });
+
+            let fuse = new Fuse(notes, {
+                keys: [
+                    'title', 
+                    'text', 
+                ], 
+                includeMatches: true, 
+            });
+            let found = fuse.search(search);
+
+            this._found = found;
+
+            
         } else {
             this._found = null;
         }
@@ -398,6 +415,10 @@ class Notebook
         return str.replace(/<\/?[^>]+>/igm, (v) => { 
             return /<\/?(script|meta|body|iframe|head|html).*>/igm.test(v) ? '' : v;
         });
+    }
+
+    _cutTags(str) {
+        return str.replace(/<\/?[^>]+>/igm, '');
     }
 
     _getAutosaveFromLocalStorage() {

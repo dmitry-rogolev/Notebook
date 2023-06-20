@@ -44,9 +44,10 @@
                 </div>
                 <NotePartial
                     v-for="note in found"
-                    :key="note.id"
-                    :note="note"
-                    @click="$notebook.openWindow(note)"
+                    :key="note.item.id"
+                    :note="note.item"
+                    @click="$notebook.openWindow(this.notes.find((v) => v.id === note.item.id));"
+                    :htmlMode="true"
                     />
             </TargetPartial>
         </template>
