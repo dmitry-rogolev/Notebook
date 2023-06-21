@@ -171,7 +171,7 @@ class Notebook
             note.text = this._cutForbiddenTags(note.text);
         }
         axios.post(this._defaultOptions.path, note).then((response) => {
-            this.note = response.data.data;
+            this.openWindow(response.data.data);
 
             this._cacheNotes();
 
@@ -360,7 +360,6 @@ class Notebook
         this._setDateForUpdatedAtAndCreatedAtProperties();
         this._setChangedPropertyToNotes();
         this._defineNote();
-        this._isOpenWindow = true;
     }
 
     _fetchNotesFromServer() {
@@ -370,7 +369,6 @@ class Notebook
             this._setChangedPropertyToNotes();
             this._cacheNotes();
             this._defineNote();
-            this._isOpenWindow = true;
         });
     }
 
@@ -391,6 +389,9 @@ class Notebook
             }
 
             this.note = this._notes[index];
+            this._isOpenWindow = true;
+        } else {
+            this.closeWindow();
         }
     }
 
