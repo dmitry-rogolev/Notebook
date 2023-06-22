@@ -1,5 +1,5 @@
 import Base from "@/Classes/Configuration/Configuration";
-import config from './config.json';
+import config from '../config.json';
 import Url from "@/Classes/Configuration/Url/Url";
 
 class Configuration extends Base

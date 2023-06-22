@@ -1,6 +1,6 @@
 import Cache from "@/Classes/Cache";
 import Fuse from 'fuse.js'
-import Configuration from "./Configuration";
+import Configuration from "@/Classes/Configuration";
 
 class Notebook 
 {
