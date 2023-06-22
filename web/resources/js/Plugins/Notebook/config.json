@@ -1,0 +1,16 @@
+{
+    "url": {
+        "host": "/",
+        "prefix": "api", 
+        "path": "notes"
+    },
+    "init": {
+        "window": {
+            "open": true, 
+            "item": "first"
+        } 
+    }, 
+    "autosave": {
+        "interval": 60000
+    }
+}

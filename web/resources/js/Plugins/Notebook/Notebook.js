@@ -1,8 +1,14 @@
 import Cache from "@/Classes/Cache";
 import Fuse from 'fuse.js'
+import Configuration from "./Configuration";
 
 class Notebook 
 {
+    /**
+     * @property {Configuration}
+     */
+    _configuration;
+
     _isInit = false;
 
     _defaultOptions = {
@@ -32,6 +38,10 @@ class Notebook
     _autosave = false;
 
     _timerAutosave = null;
+
+    get configuration() {
+        return this._configuration;
+    }
 
     get isInit() {
         return this._isInit;
@@ -134,8 +144,8 @@ class Notebook
         return this._record;
     }
 
-    constructor(options = {}) {
-
+    constructor() {
+        this._configuration = Configuration.getInstance();
     }
 
     init() {
