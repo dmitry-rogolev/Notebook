@@ -1,12 +1,14 @@
-import DriverInterface from "@/Interfaces/DriverInterface";
-import Configuration from "../../Configuration/Configuration";
+import Configuration from '@/Classes/Configuration';
+import axios from 'axios';
+import ServerDriverInterface from "@/Interfaces/ServerDriverInterface";
 
-class AxiosServerDriver extends DriverInterface
+class AxiosServerDriver extends ServerDriverInterface
 {
     static _instance = null;
     _configuration = null;
 
     constructor() {
+        super();
         this._configuration = Configuration.getInstance();
     }
 
@@ -24,13 +26,41 @@ class AxiosServerDriver extends DriverInterface
 
     /**
      * 
-     * @param {String} key 
-     * @param {any|null} value default value
+     * @param {String} path 
+     * @param {any|null} data default data
      * @returns {any}
      */
-    get(key, value = null) {
-        if (this._isKey(key)) {
-            axios.get()
+    async get(path, data = null) {
+        if (this._isPath(path)) {
+            let response = await axios.get(this._configuration.getUrl() + '/' + this._parsePath(path));
+            let responseData = response?.data?.data;
+
+            if (Array.isArray(responseData) && ! responseData.length) {
+                return data;
+            } 
+
+            return responseData;
+        }
+
+        return data;
+    }
+
+    /**
+     * 
+     * @param {String} path 
+     * @param {any} data 
+     * @returns {any}
+     */
+    async post(path, data) {
+        if (this._isPath(path)) {
+            let response = await axios.post(this._configuration.getUrl() + '/' + this._parsePath(path), data);
+            let responseData = response?.data?.data;
+
+            if (Array.isArray(responseData) && ! responseData.length) {
+                return null;
+            } 
+
+            return responseData;
         }
 
         return null;
@@ -38,57 +68,62 @@ class AxiosServerDriver extends DriverInterface
 
     /**
      * 
-     * @param {String} key 
-     * @param {any} value 
-     * @returns {Boolean}
+     * @param {String} path 
+     * @param {any} data 
+     * @returns {any}
      */
-    set(key, value) {
-        if (this._isKey(key)) {
-            localStorage.setItem(key, value);
+    async patch(path, data) {
+        if (this._isPath(path)) {
+            let response = await axios.patch(this._configuration.getUrl() + '/' + this._parsePath(path), data);
+            let responseData = response?.data?.data;
+
+            if (Array.isArray(responseData) && ! responseData.length) {
+                return null;
+            } 
+
+            return responseData;
         }
 
-        return false;
+        return null;
     }
 
     /**
      * 
-     * @param {String} key 
-     * @returns {Boolean}
-     */
-    has(key) {
-        if (this._isKey(key) && localStorage.getItem(key) !== null) {
-            return true;
-        }
-
-        return false;
-    }
-
-    /**
-     * 
-     * @param {String} key 
+     * @param {String} path 
      * @returns {void}
      */
-    remove(key) {
-        if (this._isKey(key)) {
-            localStorage.removeItem(key);
+    async delete(path) {
+        if (this._isPath(path)) {
+            await axios.delete(this._configuration.getUrl() + '/' + this._parsePath(path));
         }
     }
 
     /**
-     * @returns {void}
-     */
-    clear() {
-        localStorage.clear();
-    }
-
-    /**
      * 
-     * @param {any} key 
+     * @param {any} path 
      * @returns {Boolean}
      */
-    _isKey(key) {
-        return key && typeof key === 'string';
+    _isPath(path) {
+        return path && typeof path === 'string';
     } 
+
+    /**
+     * 
+     * @param {String} path 
+     */
+    _parsePath(path) {
+        let result = path;
+
+        if (result.startsWith('/')) {
+            result = result.slice(1);
+        }
+
+        if (result.endsWith('/')) {
+            result = result.slice(0, -1);
+        }
+
+        return encodeURI(path);
+    }
 }
 
 export default AxiosServerDriver;

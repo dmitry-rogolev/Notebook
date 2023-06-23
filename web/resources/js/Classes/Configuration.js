@@ -26,7 +26,7 @@ class Configuration extends Base
      * @returns {Url}
      */
     getUrl() {
-        return new URL(Url.factory().makeBuilder().addPathname(this.configurations.url.prefix + '/' + this.configurations.url.path).make().render());
+        return new URL(Url.factory().makeBuilder().addPathname(this.configurations.url.prefix).make().render());
     }
 
     /**
@@ -34,7 +34,7 @@ class Configuration extends Base
      * @returns {Boolean}
      */
     getIsOpenWindowAfterInit() {
-        return !! this.configurations.init.window.open;
+        return Boolean(this.configurations.init.window.open);
     }
 
     /**
@@ -42,7 +42,7 @@ class Configuration extends Base
      * @returns {String}
      */
     getOpenItemAfterInit() {
-        return this.configurations.init.window.item;
+        return String(this.configurations.init.window.item);
     }
 
     /**
@@ -51,6 +51,14 @@ class Configuration extends Base
      */
     getAutosaveInterval() {
         return Number(this.configurations.autosave.interval);
+    }
+
+    /**
+     * 
+     * @returns {String}
+     */
+    getDataIdName() {
+        return String(this.configurations.data.id);
     }
 }
 

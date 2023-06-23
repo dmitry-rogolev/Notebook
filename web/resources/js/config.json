@@ -1,9 +1,11 @@
 {
     "url": {
         "host": "/",
-        "prefix": "api", 
-        "path": "notes"
+        "prefix": "api"
     },
+    "data": {
+        "id": "id"
+    }, 
     "init": {
         "window": {
             "open": true, 

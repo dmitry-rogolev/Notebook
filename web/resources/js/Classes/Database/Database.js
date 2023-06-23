@@ -1,15 +1,21 @@
-import DriverInterface from "../../Interfaces/DriverInterface";
+import ClientDriverInterface from "../../Interfaces/ClientDriverInterface";
+import ServerDriverInterface from "../../Interfaces/ServerDriverInterface";
 
 class Database
 {
     _driver = null;
 
-    constructor(driver) {
-        if (! (driver instanceof DriverInterface)) {
-            throw new Error('The driver must be extends from Interfaces/DriverInterface.');
+    constructor(clientDriver, serverDriver) {
+        if (! (clientDriver instanceof ClientDriverInterface)) {
+            throw new Error('The driver must be extends from Interfaces/ClientDriverInterface.');
         }
 
-        this._driver = driver;
+        if (! (serverDriver instanceof ServerDriverInterface)) {
+            throw new Error('The driver must be extends from Interfaces/ServerDriverInterface.');
+        }
+
+        this._driver = clientDriver;
+        this._driver.setServerDriver(serverDriver);
     }
 
     /**

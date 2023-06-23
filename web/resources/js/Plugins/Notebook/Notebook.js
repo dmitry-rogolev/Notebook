@@ -1,6 +1,9 @@
 import Cache from "@/Classes/Cache";
 import Fuse from 'fuse.js'
 import Configuration from "@/Classes/Configuration";
+import LocalStorageDriver from "../../Classes/Database/Drivers/LocalStorageDriver";
+import AxiosServerDriver from "../../Classes/Database/Drivers/AxiosServerDriver";
+import Database from "../../Classes/Database/Database";
 
 class Notebook 
 {
@@ -146,6 +149,12 @@ class Notebook
 
     constructor() {
         this._configuration = Configuration.getInstance();
+        let database = new Database(LocalStorageDriver.getInstance(), AxiosServerDriver.getInstance());
+        database.get('notes').then((response) => {
+            console.log(response);
+        });
+
+        database.set('notes/110/text', 'This is a text.');
     }
 
     init() {
