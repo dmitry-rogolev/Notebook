@@ -2,6 +2,7 @@ import Cache from "@/Classes/Cache";
 import Fuse from 'fuse.js'
 import Configuration from "@/Classes/Configuration";
 import Note from "../../Classes/Models/Note";
+import IndexContoller from "../../Classes/Controllers/Note/IndexController";
 
 class Notebook 
 {
@@ -147,30 +148,6 @@ class Notebook
 
     constructor() {
         this._configuration = Configuration.getInstance();
-        
-        Note.all().then((notes) => {
-            console.log(notes);
-        });
-
-        Note.create({text: 'text', title: 'title'}).then((note) => {
-            console.log(note);
-            console.log(note.getAttribute('text'));
-            console.log(note.getOriginalAttribute('text'));
-            note.setAttribute('text', 'It\'s a text.');
-            console.log(note.getAttribute('text'));
-            console.log(note.getOriginalAttribute('text'));
-            note.fill({
-                title: 'Big title', 
-                text: 'Big text', 
-            });
-            console.log(note);
-            note.save();
-            console.log(note.getAttribute('id'));
-            note.delete();
-            Note.all().then((notes) => {
-                console.log(notes);
-            });
-        });
     }
 
     init() {
@@ -199,6 +176,75 @@ class Notebook
         this._offAutosave();
         this._removeKeyUpEventListener();
         this._isInit = false;
+    }
+
+    _fetchNotes() {
+        if (this._isCashed()) {
+            this._fetchNotesFromCache();
+        } else {
+            this._fetchNotesFromServer();
+        }
+    }
+
+    _isCashed() {
+        return Cache.has('notes');
+    }
+
+    _fetchNotesFromCache() {
+        this._notes = this._getNotesFromCache();
+        this._setDateForUpdatedAtAndCreatedAtProperties();
+        this._setChangedPropertyToNotes();
+        this._defineNote();
+    }
+
+    _fetchNotesFromServer() {
+        axios.get(this._defaultOptions.path).then((response) => {
+            this._notes = response.data.data;
+            this._setDateForUpdatedAtAndCreatedAtProperties();
+            this._setChangedPropertyToNotes();
+            this._cacheNotes();
+            this._defineNote();
+        });
+    }
+
+    _getNotesFromCache() {
+        return Cache.get('notes');
+    }
+
+    _cacheNotes() {
+        Cache.add('notes', this._notes);
+    }
+
+    _defineNote() {
+        if (this._notes.length) {
+            let index = 0;
+
+            if (this._defaultOptions.current == 'last') {
+                index = this._notes.length - 1;
+            }
+
+            this.note = this._notes[index];
+            this._isOpenWindow = true;
+        } else {
+            this.closeWindow();
+        }
+    }
+
+    _setChangedPropertyToNotes() {
+        for (let note of this._notes) {
+            if (Cache.has(note.id)) {
+                note.changed = true;
+            } else {
+                note.changed = false;
+            }
+        }
+    }
+
+    _setDateForUpdatedAtAndCreatedAtProperties() {
+        for (let note of this._notes) {
+            note.updated_at = new Date(note.updated_at);
+            note.created_at = new Date(note.created_at);
+        }
     }
 
     create(note = {}) {
@@ -375,75 +421,6 @@ class Notebook
                 message: 'Auto save mod off', 
                 success: true, 
             });
-        }
-    }
-
-    _fetchNotes() {
-        if (this._isCashed()) {
-            this._fetchNotesFromCache();
-        } else {
-            this._fetchNotesFromServer();
-        }
-    }
-
-    _isCashed() {
-        return Cache.has('notes');
-    }
-
-    _fetchNotesFromCache() {
-        this._notes = this._getNotesFromCache();
-        this._setDateForUpdatedAtAndCreatedAtProperties();
-        this._setChangedPropertyToNotes();
-        this._defineNote();
-    }
-
-    _fetchNotesFromServer() {
-        axios.get(this._defaultOptions.path).then((response) => {
-            this._notes = response.data.data;
-            this._setDateForUpdatedAtAndCreatedAtProperties();
-            this._setChangedPropertyToNotes();
-            this._cacheNotes();
-            this._defineNote();
-        });
-    }
-
-    _getNotesFromCache() {
-        return Cache.get('notes');
-    }
-
-    _cacheNotes() {
-        Cache.add('notes', this._notes);
-    }
-
-    _defineNote() {
-        if (this._notes.length) {
-            let index = 0;
-
-            if (this._defaultOptions.current == 'last') {
-                index = this._notes.length - 1;
-            }
-
-            this.note = this._notes[index];
-            this._isOpenWindow = true;
-        } else {
-            this.closeWindow();
-        }
-    }
-
-    _setChangedPropertyToNotes() {
-        for (let note of this._notes) {
-            if (Cache.has(note.id)) {
-                note.changed = true;
-            } else {
-                note.changed = false;
-            }
-        }
-    }
-
-    _setDateForUpdatedAtAndCreatedAtProperties() {
-        for (let note of this._notes) {
-            note.updated_at = new Date(note.updated_at);
-            note.created_at = new Date(note.created_at);
         }
     }
 
