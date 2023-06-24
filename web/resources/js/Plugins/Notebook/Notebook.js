@@ -150,11 +150,10 @@ class Notebook
     constructor() {
         this._configuration = Configuration.getInstance();
         let database = new Database(LocalStorageDriver.getInstance(), AxiosServerDriver.getInstance());
-        database.get('notes').then((response) => {
-            console.log(response);
+        database.get('notes').then((data) => {
+            console.log(data);
         });
 
-        database.set('notes/110/text', 'This is a text.');
     }
 
     init() {
