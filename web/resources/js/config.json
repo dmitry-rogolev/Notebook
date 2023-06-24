@@ -3,7 +3,7 @@
         "host": "/",
         "prefix": "api"
     },
-    "data": {
+    "model": {
         "id": "id"
     }, 
     "init": {

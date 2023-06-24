@@ -1,24 +1,18 @@
-import ClientDriverInterface from "../../Interfaces/ClientDriverInterface";
-import ServerDriverInterface from "../../Interfaces/ServerDriverInterface";
 import Configuration from '@/Classes/Configuration';
+import DatabaseFactory from "./DabaseFactory";
+import DriverInterface from "@/Interfaces/DriverInterface";
 
 class Database
 {
-    _clientDriver = null;
-    _serverDriver = null;
+    _driver = null;
     _configuration = null;
 
-    constructor(clientDriver, serverDriver) {
-        if (! (clientDriver instanceof ClientDriverInterface)) {
-            throw new Error('The driver must be extends from Interfaces/ClientDriverInterface.');
+    constructor(driver) {
+        if (! (driver instanceof DriverInterface)) {
+            throw new Error('The driver must be extends from Interfaces/DriverInterface.');
         }
 
-        if (! (serverDriver instanceof ServerDriverInterface)) {
-            throw new Error('The driver must be extends from Interfaces/ServerDriverInterface.');
-        }
-
-        this._clientDriver = clientDriver;
-        this._serverDriver = serverDriver;
+        this._driver = driver;
         this._configuration = Configuration.getInstance();
     }
 
@@ -30,19 +24,11 @@ class Database
      */
     async get(key, value = null) {
         if (this._isKey(key)) {
-            let data = this._clientDriver.get(key);
-
-            if (data === null) {
-                data = await this._serverDriver.get(key);
+            let data = await this._driver.get(key);
     
-                if (data === null) {
-                    return value;
-                }
-
-                this._clientDriver.set(key, data);
+            if (data !== null) {
+                return data;
             }
-
-            return data;
         }
 
         return value;
@@ -56,12 +42,7 @@ class Database
      */
     async store(key, data) {
         if (this._isKey(key) && typeof data === 'object') {
-            data = await this._serverDriver.post(key, data);
-            let table = this._clientDriver.get(key) ?? [];
-            table.push(data);
-            this._clientDriver.set(key, table);
-
-            return data;
+            return await this._driver.post(key, data);
         }
 
         return null;
@@ -71,26 +52,33 @@ class Database
      * 
      * @param {String} key 
      * @param {any} data 
-     * @returns {void}
+     * @returns {any}
      */
     async update(key, data) {
         if (this._isKey(key) && typeof data === 'object' && key.split('/').length === 2 && ! isNaN(Number(key.split('/')[1]))) {
-            data = await this._serverDriver.patch(key, data);
-            let table = this._clientDriver.get(key);
-            table[table.findIndex((v) => v.id === data.id)] = data;
-            this._clientDriver.set(key, table);
+            return await this._driver.patch(key, data);
         }
+
+        return null;
     }
 
-    delete(key) {
-        if (this._isKey(key) && typeof data === 'object' && key.split('/').length === 2 && ! isNaN(Number(key.split('/')[1]))) {
-            this._clientDriver.remove(key);
-            this._serverDriver.delete(key);
+    /**
+     * 
+     * @param {String} key 
+     * @return {void}
+     */
+    async delete(key) {
+        if (this._isKey(key) && key.split('/').length === 2 && ! isNaN(Number(key.split('/')[1]))) {
+            await this._driver.delete(key);
         }
     }
 
     _isKey(key) {
         return key && typeof key === 'string';
+    }
+
+    static factory(clientDriver = null, serverDriver = null) {
+        return new DatabaseFactory(clientDriver, serverDriver);
     }
 }
 

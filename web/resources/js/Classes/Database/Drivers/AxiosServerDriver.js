@@ -1,8 +1,8 @@
 import Configuration from '@/Classes/Configuration';
 import axios from 'axios';
-import ServerDriverInterface from "@/Interfaces/ServerDriverInterface";
+import DriverInterface from '@/Interfaces/DriverInterface';
 
-class AxiosServerDriver extends ServerDriverInterface
+class AxiosServerDriver extends DriverInterface
 {
     static _instance = null;
     _configuration = null;

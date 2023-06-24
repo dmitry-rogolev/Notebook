@@ -57,8 +57,8 @@ class Configuration extends Base
      * 
      * @returns {String}
      */
-    getDataIdName() {
-        return String(this.configurations.data.id);
+    getModelIdName() {
+        return String(this.configurations.model.id);
     }
 }
 
