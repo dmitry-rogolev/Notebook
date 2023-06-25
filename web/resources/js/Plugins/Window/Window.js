@@ -129,20 +129,16 @@ class Window
      * @returns {void}
      */
     open(file) {
-        if (! this._isOpen) {
-            this.setFile(file);
-            this._isOpen = true;
-        }
+        this.setFile(file);
+        this._isOpen = true;
     }
 
     /**
      * @returns {void}
      */
     close() {
-        if (this._isOpen) {
-            this._isOpen = false;
-            this._file = null;
-        }
+        this._isOpen = false;
+        this._file = null;
     }
 
     /**

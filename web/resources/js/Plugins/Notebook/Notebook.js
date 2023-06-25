@@ -130,7 +130,7 @@ class Notebook
         let note = this._$window.file;
         DestroyController.destroy(note).then(() => {
             this._notes.splice(this._notes.findIndex((v) => v.id === note.id), 1);
-            this._found.splice(this._found.findIndex((v) => v.id === note.id), 1);
+            this.find(this._search);
             this._openWindow();
             this._$notifier.push({
                 message: 'Deleted', 
@@ -183,11 +183,7 @@ class Notebook
                 index = this._notes.length - 1;
             }
 
-            if (this._$window.isOpen) {
-                this._$window.setFile(this._notes[index]);
-            } else {
-                this._$window.open(this._notes[index]);
-            }
+            this._$window.open(this._notes[index]);
         }
     }
 

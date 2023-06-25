@@ -4,7 +4,8 @@ import Controller from "../Controller";
 class IndexContoller extends Controller
 {
     static async index() {
-        return await Note.all() ?? [];
+        let $sort = window.app.config.globalProperties.$sort;
+        return $sort.sort(await Note.all()) ?? [];
     }
 }
 
