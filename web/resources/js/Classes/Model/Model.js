@@ -1,6 +1,7 @@
 import Configuration from "../Configuration";
 import Database from "../Database/Database";
 import AxiosServerDriver from "../Database/Drivers/AxiosServerDriver";
+import { reactive } from 'vue';
 
 class Model
 {
@@ -12,6 +13,7 @@ class Model
 
     _originals = {};
     _attributes = {};
+    _defaults = {};
     _isDirty = false;
 
     /**
@@ -52,8 +54,8 @@ class Model
             throw new Error('The "originals" parameter must be an object.');
         }
 
-        this._originals = originals;
-        this._attributes = Object.assign({}, originals);
+        this._originals = this._parseTimestamps(originals);
+        this._attributes = Object.assign({}, this._originals);
     }
 
     /**
@@ -131,7 +133,7 @@ class Model
             let models = [];
 
             for (let model of data) {
-                models.push(new this(model));
+                models.push(this._proxy(reactive(new this(model))));
             }
 
             return models;
@@ -153,7 +155,7 @@ class Model
 
         let data = await this._database.store(this._table, attributes);
 
-        return new this(data);
+        return this._proxy(reactive(new this(data)));
     }
 
     /**
@@ -164,8 +166,8 @@ class Model
             let data = await this.constructor._database.update(this.constructor._table + '/' + this._originals[this.constructor._primaryKey], this._attributes);
 
             if (data) {
-                this._originals = data;
-                this._attributes = Object.assign({}, data);
+                this._originals = this._parseTimestamps(data);
+                this._attributes = Object.assign({}, this._originals);
                 this._isDirty = false;
             }
         }
@@ -176,6 +178,87 @@ class Model
      */
     async delete() {
         await this.constructor._database.delete(this.constructor._table + '/' + this._originals[this.constructor._primaryKey]);
+    }
+
+    /**
+     * 
+     * @returns {Boolean}
+     */
+    isChanged() {
+        let dirty = false;
+
+        for (let attribute in this._attributes) {
+            if (this._attributes[attribute] !== this._originals[attribute]) {
+                dirty = true;
+                break;
+            }
+        }
+
+        return dirty;
+    }
+
+    /**
+     * 
+     * @param {Object} attributes 
+     * @returns {Object}
+     */
+    _parseTimestamps(attributes) {
+        if (typeof attributes !== 'object') {
+            throw new Error('The "attributes" parameter must be an object.');
+        }
+
+        let created_at = this.constructor._configuration.getModelCreatedAt();
+        let updated_at = this.constructor._configuration.getModelUpdatedAt();
+
+        if (created_at in attributes) {
+            attributes[created_at] = new Date(attributes[created_at]);
+        }
+
+        if (updated_at in attributes) {
+            attributes[updated_at] = new Date(attributes[updated_at]);
+        }
+
+        return attributes;
+    }
+
+    static _proxy(model) {
+        return new Proxy(model, {
+            get(target, property, receiver) {
+                if (property in target) {
+                    return target[property];
+                }
+
+                if (property in target._attributes && target._attributes[property] !== null) {
+                    return target._attributes[property];
+                }
+
+                if (property in target._defaults && target._defaults[property] !== null) {
+                    return target._defaults[property];
+                }
+
+                return Reflect.get(target, property, receiver);
+            }, 
+            set(target, property, value, receiver) {
+                if (property in target) {
+                    target[property] = value;
+                    return true;
+                }
+
+                if (property in target._attributes) {
+                    target._attributes[property] = value;
+
+                    if (target.isChanged()) {
+                        target._isDirty = true;
+                    } else {
+                        target._isDirty = false;
+                    }
+                    
+                    return true;
+                }
+
+                return Reflect.set(target, property, value, receiver);
+            }, 
+        });
     }
 }
 

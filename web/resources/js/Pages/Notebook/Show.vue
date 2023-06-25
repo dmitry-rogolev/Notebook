@@ -18,7 +18,7 @@
 
                 <SidebarPartial />
 
-                <WindowPartial v-show="$notebook.isOpenWindow" />
+                <WindowPartial v-show="windowIsOpen" />
 
             </div>
         </main>
@@ -53,7 +53,10 @@ export default {
         }, 
         fullscreen() {
             return this.$window.fullscreen;
-        }, 
+        },
+        windowIsOpen() {
+            return this.$window.isOpen;
+        },
     }, 
 
     created() {

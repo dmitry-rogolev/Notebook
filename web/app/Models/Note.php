@@ -42,6 +42,11 @@ class Note extends Model
         'user_id', 
     ];
 
+    protected $attributes = [
+        'title' => '',
+        'text' => '', 
+    ];
+
     public function user() {
         return $this->belongsTo(User::class);
     }

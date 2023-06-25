@@ -1,15 +1,22 @@
+import Cache from "../../Classes/Cache";
+import Note from "../../Classes/Models/Note";
+
 class Window 
 {
     _element = null;
     _height = 0;
     _width = 0;
-    _fullscreen = false;
     _statusbar = true;
     _toolbar = false;
     _tabs = true;
     _standard = false;
     _resizeTimer = null;
     _timerInterval = 100;
+
+    _file = null;
+    _defaultFile = null;
+    _isOpen = false;
+    _fullscreen = false;
 
     get windowElement() {
         return this._element;
@@ -21,14 +28,6 @@ class Window
 
     get width() {
         return this._width;
-    }
-
-    get originalNote() {
-        return this._originalNote;
-    }
-
-    get fullscreen() {
-        return this._fullscreen;
     }
 
     get statusbar() {
@@ -45,6 +44,27 @@ class Window
 
     get standard() {
         return this._standard;
+    }
+
+    /**
+     * @property {Object}
+     */
+    get file() {
+        return this._file ?? this._defaultFile;
+    }
+
+    /**
+     * @property {Boolean}
+     */
+    get isOpen() {
+        return this._isOpen;
+    }
+
+    /**
+     * @property {Boolean}
+     */
+    get fullscreen() {
+        return this._fullscreen;
     }
 
     constructor(options = {}) {
@@ -79,10 +99,6 @@ class Window
         return !! this._element;
     }
 
-    toggleFullscreen() {
-        this._fullscreen = ! this._fullscreen;
-    }
-
     toggleStatusbar() {
         this._statusbar = ! this._statusbar;
     }
@@ -105,6 +121,79 @@ class Window
 
     print() {
         window.print();
+    }
+
+    /**
+     * 
+     * @param {Object} file 
+     * @returns {void}
+     */
+    open(file) {
+        if (! this._isOpen) {
+            this.setFile(file);
+            this._isOpen = true;
+        }
+    }
+
+    /**
+     * @returns {void}
+     */
+    close() {
+        if (this._isOpen) {
+            this._isOpen = false;
+            this._file = null;
+        }
+    }
+
+    /**
+     * @returns {void}
+     */
+    toggleFullscreen() {
+        this._fullscreen = ! this._fullscreen;
+        this._setFullscreen(this._fullscreen);
+    }
+
+    /**
+     * 
+     * @param {Object} file 
+     * @returns {void}
+     */
+    setFile(file) {
+        if (typeof file !== 'object') {
+            throw new Error('The "file" parameter must be of type "object".');
+        }
+
+        this._file = file;
+    }
+
+    /**
+     * 
+     * @param {Object} file 
+     * @returns {void}
+     */
+    setDefaultFile(file) {
+        if (typeof file !== 'object') {
+            throw new Error('The "file" parameter must be of type "object".');
+        }
+
+        this._defaultFile = file;
+    }
+
+    /**
+     * 
+     * @returns {Boolean}
+     */
+    _getFullscreen() {
+        return Cache.get('fullscreen', false) === 'true' ? true : false;
+    }
+
+    /**
+     * 
+     * @param {Boolean} fullscreen 
+     * @returns {void}
+     */
+    _setFullscreen(fullscreen) {
+        Cache.add('fullscreen', fullscreen);
     }
 
     _calcHeight() {

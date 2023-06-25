@@ -32,7 +32,7 @@
                                 :key="element.id"
                                 :note="element"
                                 class="draggable"
-                                @click="$notebook.openWindow(element)"
+                                @click="$window.setFile(element)"
                                 />
                         </template>
                     </Sortable>
@@ -46,7 +46,7 @@
                     v-for="note in found"
                     :key="note.item.id"
                     :note="note.item"
-                    @click="$notebook.openWindow(this.notes.find((v) => v.id === note.item.id));"
+                    @click="$window.setFile(this.notes.find((v) => v.id === note.item.id));"
                     :htmlMode="true"
                     />
             </TargetPartial>
@@ -94,7 +94,7 @@ export default {
             return this.$notebook.found;
         }, 
         note() {
-            return this.$notebook.note;
+            return this.$window.file;
         }, 
     }, 
 

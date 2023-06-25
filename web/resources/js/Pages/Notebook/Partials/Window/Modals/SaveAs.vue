@@ -98,9 +98,9 @@ export default {
         saveAs() {
             let a = document.createElement('a');
             if (this.as == 'html') {
-                a.href = 'data:text/plain;charset=utf-8,%EF%BB%BF' + encodeURIComponent(this.$notebook.record.text);
+                a.href = 'data:text/plain;charset=utf-8,%EF%BB%BF' + encodeURIComponent(this.$window.file.text);
             } else {
-                a.href = 'data:text/plain;charset=utf-8,%EF%BB%BF' + encodeURIComponent(cutTags(this.$notebook.record.text));
+                a.href = 'data:text/plain;charset=utf-8,%EF%BB%BF' + encodeURIComponent(cutTags(this.$window.file.text));
             }
             a.download = this.fileName;
             a.click();
@@ -136,15 +136,15 @@ export default {
                     this.as = 'txt';
                 }
             } else {
-                if (this.$notebook.record.title) {
-                    if (this.$notebook.record.title.endsWith('.txt')) {
-                        name = this.$notebook.record.title;
+                if (this.$window.file.title) {
+                    if (this.$window.file.title.endsWith('.txt')) {
+                        name = this.$window.file.title;
                         this.as = 'txt';
-                    } else if (this.$notebook.record.title.endsWith('.html')) {
-                        name = this.$notebook.record.title;
+                    } else if (this.$window.file.title.endsWith('.html')) {
+                        name = this.$window.file.title;
                         this.as = 'html';
                     } else {
-                        name = this.$notebook.record.title + '.txt';
+                        name = this.$window.file.title + '.txt';
                         this.as = 'txt';
                     }
                 } else {

@@ -26,10 +26,10 @@ export default {
 
     computed: {
         countWords() {
-            return cutTags(this.$notebook.record.text).split(/\s/).filter((v) => v).length;
+            return cutTags(this.$window.file.text).split(/\s/).filter((v) => v).length;
         }, 
         countСharacters() {
-            return cutTags(this.$notebook.record.text).split(/\s|\&nbsp;/).filter((v) => v).join('').length;
+            return cutTags(this.$window.file.text).split(/\s|\&nbsp;/).filter((v) => v).join('').length;
         }, 
         statusbar() {
             return this.$window.statusbar;

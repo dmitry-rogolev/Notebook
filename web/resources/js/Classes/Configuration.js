@@ -60,6 +60,22 @@ class Configuration extends Base
     getModelIdName() {
         return String(this.configurations.model.id);
     }
+
+    /**
+     * 
+     * @returns {String}
+     */
+    getModelCreatedAt() {
+        return String(this.configurations.model.created_at);
+    }
+
+    /**
+     * 
+     * @returns {String}
+     */
+    getModelUpdatedAt() {
+        return String(this.configurations.model.updated_at);
+    }
 }
 
 export default Configuration;

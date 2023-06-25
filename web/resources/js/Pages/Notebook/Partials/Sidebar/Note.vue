@@ -10,7 +10,7 @@
         </div>
         <div v-if="note.text && htmlMode" class="truncate text-sm lg:text-base text-gray-700 dark:text-gray-300" v-html="cutTags(note.text)"></div>
         <div v-if="note.text && ! htmlMode" class="truncate text-sm lg:text-base text-gray-700 dark:text-gray-300">{{ cutTags(note.text) }}</div>
-        <div class="truncate text-xs lg:text-sm text-gray-600 dark:text-gray-400">{{ note.updated }}</div>
+        <div class="truncate text-xs lg:text-sm text-gray-600 dark:text-gray-400">{{ updated }}</div>
     </ItemSidebarComponent>
 </template>
 
@@ -25,12 +25,18 @@ export default {
         ItemSidebarComponent, 
     }, 
 
+    data() {
+        return {
+            updated: null, 
+        };
+    },
+
     computed: {
         currentNote() {
-            return this.$notebook.note;
+            return this.$window.file;
         }, 
         changed() {
-            return this.$notebook.notes.find((v) => v.id === this.note.id).changed;
+            return this.$notebook.notes.find((v) => v.id === this.note.id).isDirty;
         }, 
     }, 
 
@@ -56,7 +62,7 @@ export default {
             return cutTags(str);
         }, 
         toDateFormat() {
-            this.note.updated = this.dateDiff(this.note.updated_at);
+            this.updated = this.dateDiff(this.note.updated_at);
         }, 
         dateDiff(date) {
             let diff = new Date() - new Date(date);

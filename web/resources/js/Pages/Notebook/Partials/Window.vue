@@ -14,7 +14,7 @@
             class="h-full px-3 sm:px-4 md:px-5 py-3 bg-gray-50 dark:bg-slate-800 text-gray-800 dark:text-gray-200 text-base focus-visible:outline-none whitespace-pre-wrap overflow-auto" 
             :style="{tabSize: 4}"
             autofocus
-            v-model="$notebook.record.text"
+            v-model="note.text"
             />
 
         <WindowStatusbarPartial />
@@ -49,8 +49,8 @@ export default {
     }, 
 
     computed: {
-        record() {
-            return this.$notebook.record;
+        note() {
+            return this.$window.file;
         }, 
     },
 };

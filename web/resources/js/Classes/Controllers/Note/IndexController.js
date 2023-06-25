@@ -3,8 +3,8 @@ import Controller from "../Controller";
 
 class IndexContoller extends Controller
 {
-    static index() {
-        return Note.all();
+    static async index() {
+        return await Note.all() ?? [];
     }
 }
 

@@ -4,6 +4,7 @@ namespace Database\Seeders;
 
 use App\Models\Note;
 use App\Models\User;
+use Auth;
 use Illuminate\Database\Console\Seeds\WithoutModelEvents;
 use Illuminate\Database\Seeder;
 
@@ -14,6 +15,6 @@ class NoteSeeder extends Seeder
      */
     public function run(): void
     {
-        Note::factory()->count(100)->for(User::factory())->create();
+        Note::factory()->count(10)->for(User::find(2))->create();
     }
 }
