@@ -1,6 +1,6 @@
 <template>
     <SortbarComponent class="px-2 border-gray-300 dark:border-gray-600 border-b">
-        <TypeSortDropdownPartial />
+        <OptionsDropdownPartial />
         <button 
             type="button"
             role="button"
@@ -16,14 +16,14 @@
 
 <script>
 import SortbarComponent from '@/Plugins/Sort/Components/Sortbar.vue';
-import TypeSortDropdownPartial from './Dropdowns/TypeSort.vue';
+import OptionsDropdownPartial from './Dropdowns/Options.vue';
 
 export default {
     name: 'SortbarSidebarPartial', 
 
     components: {
         SortbarComponent, 
-        TypeSortDropdownPartial, 
+        OptionsDropdownPartial, 
     }, 
 
     computed: {

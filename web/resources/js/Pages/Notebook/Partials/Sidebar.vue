@@ -2,7 +2,7 @@
     <SidebarComponent
         :active="showNotes || showSearch" 
         triggersContainerClass="bg-white dark:bg-gray-800 border-gray-300 dark:border-gray-600 border-r h-full overflow-y-auto z-10"
-        targetsContainerClass="bg-white dark:bg-gray-800 border-gray-300 dark:border-gray-600 border-r h-full min-w-[8rem] w-32 md:w-40 lg:w-52 xl:w-64 overflow-y-auto resize-x focus-visible:outline-none"
+        targetsContainerClass="bg-white dark:bg-gray-800 border-gray-300 dark:border-gray-600 border-r h-full min-w-[8rem] w-32 md:w-40 lg:w-52 xl:w-64 overflow-auto resize-x focus-visible:outline-none"
         >
         <template #triggers>
             <TriggerSidebarPartial @click="$sidebar.showNotes();" :active="showNotes">
@@ -47,7 +47,6 @@
                     :key="note.item.id"
                     :note="note.item"
                     @click="$window.open(this.notes.find((v) => v.id === note.item.id));"
-                    :htmlMode="true"
                     />
             </TargetPartial>
         </template>

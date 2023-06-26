@@ -4,13 +4,11 @@
         class="p-2 lg:p-3 border-b border-gray-300 dark:border-gray-600 transition duration-200 ease-in-out select-none w-full text-left focus-visible:outline-none focus:bg-indigo-200 dark:focus:bg-indigo-900"
         >
         <div class="flex flex-nowrap">
-            <div v-if="htmlMode" class="flex-auto truncate text-base lg:text-lg font-bold text-gray-700 dark:text-gray-300" v-html="note.title ? note.title : 'No name'"></div>
-            <div v-else class="flex-auto truncate text-base lg:text-lg font-bold text-gray-700 dark:text-gray-300">{{ note.title ? note.title : 'No name' }}</div>
+            <div class="flex-auto truncate text-base lg:text-lg font-bold text-gray-700 dark:text-gray-300">{{ note.title ? note.title : 'No name' }}</div>
             <div v-show="changed" title="Changed" class="bg-gray-600 dark:bg-gray-300 rounded-full w-3 h-3 min-w-[0.75rem] min-h-[0.75rem]"></div>
         </div>
-        <div v-if="note.text && htmlMode" class="truncate text-sm lg:text-base text-gray-700 dark:text-gray-300" v-html="cutTags(note.text)"></div>
-        <div v-if="note.text && ! htmlMode" class="truncate text-sm lg:text-base text-gray-700 dark:text-gray-300">{{ cutTags(note.text) }}</div>
-        <div class="truncate text-xs lg:text-sm text-gray-600 dark:text-gray-400">{{ updated }}</div>
+        <div v-show="note.text && detailed" class="truncate text-sm lg:text-base text-gray-700 dark:text-gray-300">{{ cutTags(note.text) }}</div>
+        <div v-show="detailed" class="truncate text-xs lg:text-sm text-gray-600 dark:text-gray-400">{{ updated }}</div>
     </ItemSidebarComponent>
 </template>
 
@@ -39,16 +37,15 @@ export default {
 
             return '';
         }, 
+        detailed() {
+            return this.$sidebar.isDetailed;
+        }, 
     }, 
 
     props: {
         note: {
             type: Object, 
             required: true, 
-        }, 
-        htmlMode: {
-            type: Boolean, 
-            default: false, 
         }, 
     }, 
 

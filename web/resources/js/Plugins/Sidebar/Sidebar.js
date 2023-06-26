@@ -13,6 +13,8 @@ class Sidebar
     _showNotes = false;
     _showSearch = false;
 
+    _detailed = true;
+
     get element() {
         return this._element;
     }
@@ -37,6 +39,22 @@ class Sidebar
      */
     get isShowSearch() {
         return this._showSearch;
+    }
+
+    /**
+     * @property {Boolean}
+     */
+    get isDetailed() {
+        return this._detailed;
+    }
+
+    set isDetailed(v) {
+        if (typeof v !== 'boolean') {
+            throw new Error('The "isDetailed" property must be an boolean.');
+        }
+
+        this._detailed = v;
+        this._setDeteiled(v);
     }
 
     constructor(options = {}) {
@@ -70,11 +88,15 @@ class Sidebar
         this._width = this._calcWidth();
         this._showNotes = this._getShowNotes();
         this._showSearch = this._getShowSearch();
+        this._detailed = this._getDeteiled();
     }
 
     _disposeVariables() {
         this._height = 0;
         this._width = 0;
+        this._showNotes = false;
+        this._showSearch = false;
+        this._detailed = false;
     }
 
     showNotes() {
@@ -123,6 +145,23 @@ class Sidebar
      */
     _setShowSearch(show) {
         Cache.add(this._configuration.getSidebarCachePrefix() + 'show_search', show);
+    }
+
+    /**
+     * 
+     * @returns {Boolean}
+     */
+    _getDeteiled() {
+        return Cache.get(this._configuration.getSidebarCachePrefix() + 'detailed', true);
+    }
+
+    /**
+     * 
+     * @param {Boolean} detailed 
+     * @returns {void}
+     */
+    _setDeteiled(detailed) {
+        Cache.add(this._configuration.getSidebarCachePrefix() + 'detailed', detailed);
     }
 
     _calcHeight() {
