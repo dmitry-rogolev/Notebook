@@ -23,19 +23,19 @@ export default {
         ItemSidebarComponent, 
     }, 
 
+    data() {
+        return {
+            timer: null, 
+            updated: '', 
+        };
+    },
+
     computed: {
         currentNote() {
             return this.$window.file;
         }, 
         changed() {
             return this.$notebook.notes.find((v) => v.id === this.note.id).isDirty;
-        }, 
-        updated() {
-            if (this.note.updated_at) {
-                return this.dateDiff(this.note.updated_at);
-            }
-
-            return '';
         }, 
         detailed() {
             return this.$sidebar.isDetailed;
@@ -53,6 +53,12 @@ export default {
         cutTags(str) {
             return cutTags(str);
         }, 
+        addTimer() {
+            this.timer = setInterval(() => this.updated = this.dateDiff(this.note.updated_at), 60000);
+        },
+        clearTimer() {
+            clearInterval(this.timer);
+        },
         dateDiff(date) {
             let diff = new Date() - new Date(date);
             let postfix = '';
@@ -87,6 +93,15 @@ export default {
 
             return Math.round(diff) + ' ' + postfix + ' ago';
         }, 
+    }, 
+
+    mounted() {
+        this.updated = this.dateDiff(this.note.updated_at),
+        this.addTimer();
+    }, 
+
+    unmounted() {
+        this.clearTimer();
     }, 
 }
 </script>
