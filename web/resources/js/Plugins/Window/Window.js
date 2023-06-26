@@ -1,8 +1,9 @@
 import Cache from "../../Classes/Cache";
-import Note from "../../Classes/Models/Note";
+import Configuration from "../../Classes/Configuration";
 
 class Window 
 {
+    _configuration = null;
     _element = null;
     _height = 0;
     _width = 0;
@@ -30,22 +31,6 @@ class Window
         return this._width;
     }
 
-    get statusbar() {
-        return this._statusbar;
-    }
-
-    get toolbar() {
-        return this._toolbar;
-    }
-
-    get tabs() {
-        return this._tabs;
-    }
-
-    get standard() {
-        return this._standard;
-    }
-
     /**
      * @property {Object}
      */
@@ -67,19 +52,43 @@ class Window
         return this._fullscreen;
     }
 
-    constructor(options = {}) {
+    /**
+     * @property {Boolean}
+     */
+    get statusbar() {
+        return this._statusbar;
+    }
 
+    /**
+     * @property {Boolean}
+     */
+    get toolbar() {
+        return this._toolbar;
+    }
+
+    /**
+     * @property {Boolean}
+     */
+    get tabs() {
+        return this._tabs;
+    }
+
+    /**
+     * @property {Boolean}
+     */
+    get standard() {
+        return this._standard;
+    }
+
+    constructor(options = {}) {
+        this._configuration = Configuration.getInstance();
     }
 
     init(element) {
         if (element && typeof element == 'object' && element instanceof HTMLElement) {
             this._element = element;
-
-            this._height = this._calcHeight();
-            this._width = this._calcWidth();
-
+            this._initVariables();
             this._observe();
-
             this._addKeyUpEventListener();
 
             return true;
@@ -90,33 +99,32 @@ class Window
     dispose() {
         this._disconnect();
         this._element = null;
+        this._disposeVariables();
+        this._removeKeyUpEventListener();
+    }
+
+    _initVariables() {
+        this._height = this._calcHeight();
+        this._width = this._calcWidth();
+        this._fullscreen = this._getFullscreen();
+        this._statusbar = this._getStatusbar();
+        this._toolbar = this._getToolbar();
+        this._standard = this._getStandard();
+        this._tabs = this._getTabs();
+    }
+
+    _disposeVariables() {
         this._height = 0;
         this._width = 0;
-        this._removeKeyUpEventListener();
+        this._fullscreen = false;
+        this._statusbar = false;
+        this._tabs = true;
+        this._standard = false;
+        this._toolbar = false;
     }
 
     isInit() {
         return !! this._element;
-    }
-
-    toggleStatusbar() {
-        this._statusbar = ! this._statusbar;
-    }
-
-    toggleToolbar() {
-        this._toolbar = ! this._toolbar;
-    }
-
-    showStandard() {
-        this._standard = true;
-        this._toolbar = true;
-        this._tabs = false;
-    }
-
-    showTabs() {
-        this._tabs = true;
-        this._standard = false;
-        this._toolbar = false;
     }
 
     print() {
@@ -150,6 +158,46 @@ class Window
     }
 
     /**
+     * @returns {void}
+     */
+    toggleStatusbar() {
+        this._statusbar = ! this._statusbar;
+        this._setStatusbar(this._statusbar);
+    }
+
+    /**
+     * @returns {void}
+     */
+    toggleToolbar() {
+        this._toolbar = ! this._toolbar;
+        this._setToolbar(this._toolbar);
+    }
+
+    /**
+     * @returns {void}
+     */
+    showStandard() {
+        this._standard = true;
+        this._setStandard(true);
+        this._toolbar = true;
+        this._setToolbar(true);
+        this._tabs = false;
+        this._setTabs(false);
+    }
+
+    /**
+     * @returns {void}
+     */
+    showTabs() {
+        this._tabs = true;
+        this._setTabs(true);
+        this._standard = false;
+        this._setStandard(false);
+        this._toolbar = false;
+        this._setToolbar(false);
+    }
+
+    /**
      * 
      * @param {Object} file 
      * @returns {void}
@@ -180,7 +228,7 @@ class Window
      * @returns {Boolean}
      */
     _getFullscreen() {
-        return Cache.get('fullscreen', false) === 'true' ? true : false;
+        return Cache.get(this._configuration.getWindowCachePrefix() + 'fullscreen', false);
     }
 
     /**
@@ -189,7 +237,75 @@ class Window
      * @returns {void}
      */
     _setFullscreen(fullscreen) {
-        Cache.add('fullscreen', fullscreen);
+        Cache.add(this._configuration.getWindowCachePrefix() + 'fullscreen', fullscreen);
+    }
+
+    /**
+     * 
+     * @returns {Boolean}
+     */
+    _getStatusbar() {
+        return Cache.get(this._configuration.getWindowCachePrefix() + 'statusbar', true);
+    }
+
+    /**
+     * 
+     * @param {Boolean} statusbar 
+     * @returns {void}
+     */
+    _setStatusbar(statusbar) {
+        Cache.add(this._configuration.getWindowCachePrefix() + 'statusbar', statusbar);
+    }
+
+    /**
+     * 
+     * @returns {Boolean}
+     */
+    _getToolbar() {
+        return Cache.get(this._configuration.getWindowCachePrefix() + 'toolbar', false);
+    }
+
+    /**
+     * 
+     * @param {Boolean} toolbar 
+     * @returns {void}
+     */
+    _setToolbar(toolbar) {
+        Cache.add(this._configuration.getWindowCachePrefix() + 'toolbar', toolbar);
+    }
+
+    /**
+     * 
+     * @returns {Boolean}
+     */
+    _getStandard() {
+        return Cache.get(this._configuration.getWindowCachePrefix() + 'standard', false);
+    }
+
+    /**
+     * 
+     * @param {Boolean} standard 
+     * @returns {void}
+     */
+    _setStandard(standard) {
+        Cache.add(this._configuration.getWindowCachePrefix() + 'standard', standard);
+    }
+
+    /**
+     * 
+     * @returns {Boolean}
+     */
+    _getTabs() {
+        return Cache.get(this._configuration.getWindowCachePrefix() + 'tabs', true);
+    }
+
+    /**
+     * 
+     * @param {Boolean} tabs 
+     * @returns {void}
+     */
+    _setTabs(tabs) {
+        Cache.add(this._configuration.getWindowCachePrefix() + 'tabs', tabs);
     }
 
     _calcHeight() {

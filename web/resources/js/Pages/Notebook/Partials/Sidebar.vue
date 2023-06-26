@@ -1,14 +1,14 @@
 <template>
     <SidebarComponent
-        :active="isShowNotes || isShowSearch" 
+        :active="showNotes || showSearch" 
         triggersContainerClass="bg-white dark:bg-gray-800 border-gray-300 dark:border-gray-600 border-r h-full overflow-y-auto z-10"
         targetsContainerClass="bg-white dark:bg-gray-800 border-gray-300 dark:border-gray-600 border-r h-full min-w-[8rem] w-32 md:w-40 lg:w-52 xl:w-64 overflow-y-auto resize-x focus-visible:outline-none"
         >
         <template #triggers>
-            <TriggerSidebarPartial @click="isShowNotes = ! isShowNotes; isShowSearch = false;" :active="isShowNotes">
+            <TriggerSidebarPartial @click="$sidebar.showNotes();" :active="showNotes">
                 <i class="fa-solid fa-note-sticky"></i>
             </TriggerSidebarPartial>
-            <TriggerSidebarPartial @click="isShowSearch = ! isShowSearch; isShowNotes = false;" :active="isShowSearch">
+            <TriggerSidebarPartial @click="$sidebar.showSearch();" :active="showSearch">
                 <i class="fa-sharp fa-solid fa-magnifying-glass"></i>
             </TriggerSidebarPartial>
             <TriggerSidebarPartial @click="$notebook.create()">
@@ -20,7 +20,7 @@
             </TriggerSidebarPartial>
         </template>
         <template #targets>
-            <div v-show="isShowNotes">
+            <div v-show="showNotes">
                 <SortbarPartial />
                 <TargetPartial>
                     <Sortable
@@ -38,7 +38,7 @@
                     </Sortable>
                 </TargetPartial>
             </div>
-            <TargetPartial v-show="isShowSearch">
+            <TargetPartial v-show="showSearch">
                 <div class="p-1">
                     <InputComponent @input="$notebook.find($event.target.value)" @keyup.enter="$notebook.find($event.target.value)" type="text" autofocus class="w-full px-2 py-1 text-sm" placeholder="Search" />
                 </div>
@@ -76,13 +76,6 @@ export default {
         Sortable, 
     }, 
 
-    data() {
-        return {
-            isShowNotes: false, 
-            isShowSearch: false, 
-        };
-    },
-
     computed: {
         dark() {
             return this.$store.state.dark;
@@ -96,6 +89,12 @@ export default {
         note() {
             return this.$window.file;
         }, 
+        showNotes() {
+            return this.$sidebar.isShowNotes;
+        }, 
+        showSearch() {
+            return this.$sidebar.isShowSearch;
+        }, 
     }, 
 
     methods: {
@@ -106,7 +105,7 @@ export default {
             e.preventDefault();
 
             if (e.altKey && e.code == 'KeyB') {
-                this.isShowNotes = ! this.isShowNotes; this.isShowSearch = false;
+                this.$sidebar.showNotes();
             }
         }, 
         addKeyupEventListener() {

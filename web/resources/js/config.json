@@ -8,14 +8,20 @@
         "created_at": "created_at", 
         "updated_at": "updated_at", 
         "cache": {
-            "prefix": "__cache_m_"
+            "prefix": "__cache_model_"
         }
     }, 
-    "init": {
-        "window": {
-            "open": true, 
-            "item": "first"
-        } 
+    "window": {
+        "open": true, 
+        "item": "first", 
+        "cache": {
+            "prefix": "__cache_window_"
+        }
+    }, 
+    "sidebar": {
+        "cache": {
+            "prefix": "__cache_sidebar_"
+        }
     }, 
     "autosave": {
         "interval": 60000

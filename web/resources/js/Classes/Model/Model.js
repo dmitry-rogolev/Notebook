@@ -236,7 +236,11 @@ class Model
                 models.push(attributes);
                 this._setCache(models);
             }
-        } 
+        } else {
+            models = [];
+            models.push(attributes);
+            this._setCache(models);
+        }
     }
 
     /**
@@ -284,7 +288,7 @@ class Model
      * @returns {void}
      */
     _getCache() {
-        return Cache.get(this.constructor._configuration.getModelCachePrefix() + this._table);
+        return Cache.get(this.constructor._configuration.getModelCachePrefix() + this.constructor._table);
     }
 
     /**
@@ -293,7 +297,7 @@ class Model
      * @returns {void}
      */
     _setCache(cache) {
-        Cache.add(this.constructor._configuration.getModelCachePrefix() + this._table, cache);
+        Cache.add(this.constructor._configuration.getModelCachePrefix() + this.constructor._table, cache);
     }
 
     /**

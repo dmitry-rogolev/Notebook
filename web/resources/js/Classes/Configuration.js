@@ -34,7 +34,7 @@ class Configuration extends Base
      * @returns {Boolean}
      */
     getIsOpenWindowAfterInit() {
-        return Boolean(this.configurations.init.window.open);
+        return Boolean(this.configurations.window.open);
     }
 
     /**
@@ -42,7 +42,23 @@ class Configuration extends Base
      * @returns {String}
      */
     getOpenItemAfterInit() {
-        return String(this.configurations.init.window.item);
+        return String(this.configurations.window.item);
+    }
+
+    /**
+     * 
+     * @returns {String}
+     */
+    getWindowCachePrefix() {
+        return String(this.configurations.window.cache.prefix);
+    }
+
+    /**
+     * 
+     * @returns {String}
+     */
+    getSidebarCachePrefix() {
+        return String(this.configurations.sidebar.cache.prefix);
     }
 
     /**

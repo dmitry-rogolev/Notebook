@@ -1,9 +1,17 @@
+import Cache from "../../Classes/Cache";
+import Configuration from "../../Classes/Configuration";
+
 class Sidebar 
 {
+    _configuration = null;
+
     _element = null;
     _height = 0;
     _width = 0;
     _resizeObserver = null;
+
+    _showNotes = false;
+    _showSearch = false;
 
     get element() {
         return this._element;
@@ -17,17 +25,29 @@ class Sidebar
         return this._width;
     }
 
-    constructor(options = {}) {
+    /**
+     * @property {Boolean}
+     */
+    get isShowNotes() {
+        return this._showNotes;
+    }
 
+    /**
+     * @property {Boolean}
+     */
+    get isShowSearch() {
+        return this._showSearch;
+    }
+
+    constructor(options = {}) {
+        this._configuration = Configuration.getInstance();
     }
 
     init(element) {
         if (element && typeof element == 'object' && element instanceof HTMLElement) {
             this._element = element;
 
-            this._height = this._calcHeight();
-            this._width = this._calcWidth();
-
+            this._initVariables();
             this._observe();
 
             return true;
@@ -38,12 +58,71 @@ class Sidebar
     dispose() {
         this._disconnect();
         this._element = null;
-        this._height = 0;
-        this._width = 0;
+        this._disposeVariables();
     }
 
     isInit() {
         return !! this._element;
+    }
+
+    _initVariables() {
+        this._height = this._calcHeight();
+        this._width = this._calcWidth();
+        this._showNotes = this._getShowNotes();
+        this._showSearch = this._getShowSearch();
+    }
+
+    _disposeVariables() {
+        this._height = 0;
+        this._width = 0;
+    }
+
+    showNotes() {
+        this._showNotes = ! this._showNotes;
+        this._setShowNotes(this._showNotes);
+        this._showSearch = false;
+        this._setShowSearch(false);
+    }
+
+    showSearch() {
+        this._showSearch = ! this._showSearch;
+        this._setShowSearch(this._showSearch);
+        this._showNotes = false;
+        this._setShowNotes(false);
+    }
+
+    /**
+     * 
+     * @returns {Boolean}
+     */
+    _getShowNotes() {
+        return Cache.get(this._configuration.getSidebarCachePrefix() + 'show_notes', false);
+    }
+
+    /**
+     * 
+     * @param {Boolean} show 
+     * @returns {void}
+     */
+    _setShowNotes(show) {
+        Cache.add(this._configuration.getSidebarCachePrefix() + 'show_notes', show);
+    }
+
+    /**
+     * 
+     * @returns {Boolean}
+     */
+    _getShowSearch() {
+        return Cache.get(this._configuration.getSidebarCachePrefix() + 'show_search', false);
+    }
+
+    /**
+     * 
+     * @param {Boolean} show 
+     * @returns {void}
+     */
+    _setShowSearch(show) {
+        Cache.add(this._configuration.getSidebarCachePrefix() + 'show_search', show);
     }
 
     _calcHeight() {
