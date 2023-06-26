@@ -6,7 +6,10 @@
     "model": {
         "id": "id", 
         "created_at": "created_at", 
-        "updated_at": "updated_at"
+        "updated_at": "updated_at", 
+        "cache": {
+            "prefix": "__cache_m_"
+        }
     }, 
     "init": {
         "window": {

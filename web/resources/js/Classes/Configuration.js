@@ -76,6 +76,14 @@ class Configuration extends Base
     getModelUpdatedAt() {
         return String(this.configurations.model.updated_at);
     }
+
+    /**
+     * 
+     * @returns {String}
+     */
+    getModelCachePrefix() {
+        return String(this.configurations.model.cache.prefix);
+    }
 }
 
 export default Configuration;

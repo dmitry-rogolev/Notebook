@@ -1,3 +1,4 @@
+import Cache from "../Cache";
 import Configuration from "../Configuration";
 import Database from "../Database/Database";
 import AxiosServerDriver from "../Database/Drivers/AxiosServerDriver";
@@ -55,7 +56,18 @@ class Model
         }
 
         this._originals = this._parseTimestamps(originals);
-        this._attributes = Object.assign({}, this._originals);
+
+        let attributes = this._getAttributesFromCache(originals);
+
+        if (attributes) {
+            this._attributes = this._parseTimestamps(attributes);
+
+            if (this.isChanged()) {
+                this._isDirty = true;
+            }
+        } else {
+            this._attributes = Object.assign({}, this._originals);
+        }
     }
 
     /**
@@ -98,6 +110,7 @@ class Model
         if (attribute in this._attributes && this._attributes[attribute] !== value) {
             this._attributes[attribute] = value;
             this._isDirty = true;
+            this._cacheAttributes();
         } 
 
         return this;
@@ -118,6 +131,8 @@ class Model
                 this._isDirty = true;
             }
         }
+
+        this._cacheAttributes();
 
         return this;
     }
@@ -169,6 +184,7 @@ class Model
                 this._originals = this._parseTimestamps(data);
                 this._attributes = Object.assign({}, this._originals);
                 this._isDirty = false;
+                this._removeCacheAttributes();
             }
         }
     }
@@ -178,6 +194,7 @@ class Model
      */
     async delete() {
         await this.constructor._database.delete(this.constructor._table + '/' + this._originals[this.constructor._primaryKey]);
+        this._removeCacheAttributes();
     }
 
     /**
@@ -195,6 +212,88 @@ class Model
         }
 
         return dirty;
+    }
+
+    /**
+     * 
+     * @param {Object} attributes 
+     * @returns {void}
+     */
+    _cacheAttributes(attributes = null) {
+        if (! attributes) {
+            attributes = this._attributes;
+        }
+
+        let models = this._getCache();
+
+        if (Array.isArray(models)) {
+            let index = models.findIndex((v) => v.id === attributes[this.constructor._configuration.getModelIdName()]);
+
+            if (index !== -1) {
+                models[index] = attributes;
+                this._setCache(models);
+            } else {
+                models.push(attributes);
+                this._setCache(models);
+            }
+        } 
+    }
+
+    /**
+     * 
+     * @param {Object} attributes 
+     * @returns {any}
+     */
+    _getAttributesFromCache(attributes = null) {
+        if (! attributes) {
+            attributes = this._attributes;
+        }
+
+        let models = this._getCache();
+
+        if (models && Array.isArray(models)) {
+            let model = models.find((v) => v.id === attributes[this.constructor._configuration.getModelIdName()]);
+
+            if (model !== undefined) {
+                return model;
+            }
+        }
+
+        return null;
+    }
+
+    _removeCacheAttributes(attributes = null) {
+        if (! attributes) {
+            attributes = this._attributes;
+        }
+
+        let models = this._getCache();
+
+        if (models && Array.isArray(models)) {
+            let index = models.findIndex((v) => v.id === attributes[this.constructor._configuration.getModelIdName()]);
+
+            if (index !== -1) {
+                models.splice(index, 1);
+                this._setCache(models);
+            }
+        }
+    }
+
+    /**
+     * 
+     * @returns {void}
+     */
+    _getCache() {
+        return Cache.get(this.constructor._configuration.getModelCachePrefix() + this._table);
+    }
+
+    /**
+     * 
+     * @param {any} cache 
+     * @returns {void}
+     */
+    _setCache(cache) {
+        Cache.add(this.constructor._configuration.getModelCachePrefix() + this._table, cache);
     }
 
     /**
@@ -249,8 +348,10 @@ class Model
 
                     if (target.isChanged()) {
                         target._isDirty = true;
+                        target._cacheAttributes();
                     } else {
                         target._isDirty = false;
+                        target._removeCacheAttributes();
                     }
                     
                     return true;

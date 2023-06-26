@@ -25,18 +25,19 @@ export default {
         ItemSidebarComponent, 
     }, 
 
-    data() {
-        return {
-            updated: null, 
-        };
-    },
-
     computed: {
         currentNote() {
             return this.$window.file;
         }, 
         changed() {
             return this.$notebook.notes.find((v) => v.id === this.note.id).isDirty;
+        }, 
+        updated() {
+            if (this.note.updated_at) {
+                return this.dateDiff(this.note.updated_at);
+            }
+
+            return '';
         }, 
     }, 
 
@@ -51,18 +52,9 @@ export default {
         }, 
     }, 
 
-    watch: {
-        note() {
-            this.toDateFormat();
-        }, 
-    }, 
-
     methods: {
         cutTags(str) {
             return cutTags(str);
-        }, 
-        toDateFormat() {
-            this.updated = this.dateDiff(this.note.updated_at);
         }, 
         dateDiff(date) {
             let diff = new Date() - new Date(date);
@@ -98,10 +90,6 @@ export default {
 
             return Math.round(diff) + ' ' + postfix + ' ago';
         }, 
-    }, 
-
-    mounted() {
-        this.toDateFormat();
     }, 
 }
 </script>
