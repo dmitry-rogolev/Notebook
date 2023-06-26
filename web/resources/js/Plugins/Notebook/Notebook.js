@@ -107,7 +107,7 @@ class Notebook
                 input.files[0].arrayBuffer().then((arrayBuffer) => {
                     this.create({
                         title: input.files[0].name, 
-                        text: new TextDecoder().decode(arrayBuffer), 
+                        text: this._toHtml(new TextDecoder().decode(arrayBuffer)), 
                     });
                 });
             }
@@ -229,6 +229,15 @@ class Notebook
                 success: true, 
             });
         }
+    }
+
+    _toHtml(str) {
+        return str
+            .split('\n\n')
+            .map((v) => {
+                return `<div>${v.split('\n').join(' ')}</div>`;
+            })
+            .join('');
     }
 
     _addKeyUpEventListener() {
