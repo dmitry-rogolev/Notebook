@@ -1,5 +1,6 @@
 import Cache from "../../Classes/Cache";
 import Configuration from "../../Classes/Configuration";
+import DeleteAllController from "../../Classes/Controllers/Note/DeleteAllController";
 import DestroyController from "../../Classes/Controllers/Note/DestroyController";
 import IndexContoller from "../../Classes/Controllers/Note/IndexController";
 import StoreController from "../../Classes/Controllers/Note/StoreController";
@@ -90,7 +91,7 @@ class Notebook
     create(note = {}) {
         StoreController.store(note).then(note => {
             this._notes.push(note);
-            this._$window.setFile(note);
+            this._$window.open(note);
             this._$notifier.push({
                 message: 'Created', 
                 success: true, 
@@ -134,6 +135,17 @@ class Notebook
             this._openWindow();
             this._$notifier.push({
                 message: 'Deleted', 
+                success: true, 
+            });
+        });
+    }
+
+    clear() {
+        DeleteAllController.truncate().then(() => {
+            this._notes = [];
+            this._closeWindow();
+            this._$notifier.push({
+                message: 'Cleared', 
                 success: true, 
             });
         });
@@ -196,7 +208,7 @@ class Notebook
      * @returns {Boolean}
      */
     _getAutosave() {
-        return Cache.get('autosave', false) === 'true' ? true : false;
+        return Cache.get(this._configuration.getNotebookCachePrefix() + 'autosave', false);
     }
 
     /**
@@ -205,7 +217,7 @@ class Notebook
      * @returns {void}
      */
     _setAutosave(autosave) {
-        Cache.add('autosave', autosave);
+        Cache.add(this._configuration.getNotebookCachePrefix() + 'autosave', autosave);
     }
 
     _onAutosave() {

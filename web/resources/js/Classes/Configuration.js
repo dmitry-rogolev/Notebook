@@ -49,6 +49,14 @@ class Configuration extends Base
      * 
      * @returns {String}
      */
+    getNotebookCachePrefix() {
+        return String(this.configurations.notebook.cache.prefix);
+    }
+
+    /**
+     * 
+     * @returns {String}
+     */
     getWindowCachePrefix() {
         return String(this.configurations.window.cache.prefix);
     }

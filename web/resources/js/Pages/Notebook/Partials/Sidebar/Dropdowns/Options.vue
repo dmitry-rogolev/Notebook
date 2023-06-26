@@ -22,6 +22,10 @@
             <DropdownItemComponent @click="$sidebar.isDetailed = true; dropdown.hide();" :active="detailed">
                 Detailed
             </DropdownItemComponent>
+            <div class="block px-4 py-2 text-xs text-gray-500 select-none">
+                Notes
+            </div>
+            <ConfirmClearModalSidebarPartial @click="dropdown.hide()" />
         </template>
     </DropdownComponent>
 </template>
@@ -29,6 +33,7 @@
 <script>
 import DropdownComponent from '@/Components/Dropdown/Dropdown.vue';
 import DropdownItemComponent from '@/Components/Dropdown/Item.vue';
+import ConfirmClearModalSidebarPartial from '../Modals/ConfirmClear.vue';
 
 export default {
     name: 'OptionsDropdownSidebarPartial', 
@@ -36,6 +41,7 @@ export default {
     components: {
         DropdownComponent, 
         DropdownItemComponent, 
+        ConfirmClearModalSidebarPartial, 
     }, 
 
     computed: {

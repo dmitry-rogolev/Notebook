@@ -73,6 +73,17 @@ class Database
         }
     }
 
+    /**
+     * 
+     * @param {String} key 
+     * @return {void}
+     */
+    async truncate(key) {
+        if (this._isKey(key) && key.split('/').length === 1) {
+            await this._driver.delete(key);
+        }
+    }
+
     _isKey(key) {
         return key && typeof key === 'string';
     }

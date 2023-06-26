@@ -5,6 +5,7 @@ use App\Http\Controllers\Note\ShowController as NoteShowController;
 use App\Http\Controllers\Note\StoreController as NoteStoreController;
 use App\Http\Controllers\Note\UpdateController as NoteUpdateController;
 use App\Http\Controllers\Note\DeleteController as NoteDeleteController;
+use App\Http\Controllers\Note\DeleteAllController as NoteDeleteAllController;
 use App\Http\Controllers\Note\Image\StoreController as ImageStoreController;
 use App\Http\Controllers\Note\Image\ShowController as ImageShowController;
 use App\Models\Note;
@@ -49,6 +50,9 @@ Route::middleware(['auth:sanctum', config('jetstream.auth_session')])->group(fun
         Route::delete('notes/{note}', NoteDeleteController::class)
             ->can('delete', 'note')
             ->name('delete');
+
+        Route::delete('notes', NoteDeleteAllController::class)
+            ->name('delete.all');
 
         Route::name('images.')->prefix('notes/{note}')->group(function () {
 

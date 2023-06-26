@@ -11,6 +11,11 @@
             "prefix": "__cache_model_"
         }
     }, 
+    "notebook": {
+        "cache": {
+            "prefix": "__cache_notebook_"
+        }
+    }, 
     "window": {
         "open": true, 
         "item": "first", 

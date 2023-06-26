@@ -47,4 +47,15 @@ class NoteService extends Service
         Storage::deleteDirectory('public/' . request()->user()->id . '/' . $note->id);
         $note->delete();
     }
+
+    /**
+     * Delete all
+     *
+     * @return void
+     */
+    public function deleteAll()
+    {
+        Storage::deleteDirectory('public/' . request()->user()->id);
+        request()->user()->notes()->delete();
+    }
 }

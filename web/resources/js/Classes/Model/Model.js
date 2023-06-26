@@ -198,6 +198,14 @@ class Model
     }
 
     /**
+     * @returns {void}
+     */
+    static async truncate() {
+        await this._database.truncate(this._table);
+        this._removeCache();
+    }
+
+    /**
      * 
      * @returns {Boolean}
      */
@@ -298,6 +306,14 @@ class Model
      */
     _setCache(cache) {
         Cache.add(this.constructor._configuration.getModelCachePrefix() + this.constructor._table, cache);
+    }
+
+    /**
+     * 
+     * @returns {void}
+     */
+    static _removeCache() {
+        Cache.remove(this._configuration.getModelCachePrefix() + this._table);
     }
 
     /**

@@ -14,6 +14,9 @@
             <TriggerSidebarPartial @click="$notebook.create()">
                 <i class="fa-solid fa-plus"></i>
             </TriggerSidebarPartial>
+            <TriggerSidebarPartial @click="$notebook.openFile();">
+                <i class="fa-solid fa-folder-open"></i>
+            </TriggerSidebarPartial>
             <TriggerSidebarPartial @click="toggleDark">
                 <i v-if="dark" class="fa-solid fa-sun"></i>
                 <i v-else class="fa-solid fa-moon"></i>
