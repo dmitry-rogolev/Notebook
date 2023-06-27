@@ -1,7 +1,7 @@
 <template>
     <SidebarComponent
         :active="showNotes || showSearch" 
-        triggersContainerClass="bg-white dark:bg-gray-800 border-gray-300 dark:border-gray-600 border-r h-full overflow-y-auto z-10"
+        triggersContainerClass="bg-white dark:bg-gray-800 border-gray-300 dark:border-gray-600 border-r h-full overflow-y-auto z-10 flex flex-col"
         targetsContainerClass="bg-white dark:bg-gray-800 border-gray-300 dark:border-gray-600 border-r h-full min-w-[8rem] w-32 md:w-40 lg:w-52 xl:w-64 overflow-auto resize-x focus-visible:outline-none"
         >
         <template #triggers>
@@ -21,6 +21,7 @@
                 <i v-if="dark" class="fa-solid fa-sun"></i>
                 <i v-else class="fa-solid fa-moon"></i>
             </TriggerSidebarPartial>
+            <ProfilePartial />
         </template>
         <template #targets>
             <div v-show="showNotes">
@@ -63,6 +64,7 @@ import TargetPartial from './Sidebar/Target.vue';
 import TriggerSidebarPartial from './Sidebar/Trigger.vue';
 import NotePartial from './Sidebar/Note.vue';
 import SortbarPartial from './Sidebar/Sortbar.vue';
+import ProfilePartial from './Sidebar/Dropdowns/Profile.vue';
 import { Sortable } from "sortablejs-vue3";
 
 export default {
@@ -76,6 +78,7 @@ export default {
         NotePartial, 
         SortbarPartial, 
         Sortable, 
+        ProfilePartial, 
     }, 
 
     computed: {
