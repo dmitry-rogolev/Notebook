@@ -1,18 +1,26 @@
 import Configuration from '@/Classes/Configuration';
 import DatabaseFactory from "./DabaseFactory";
 import DriverInterface from "@/Interfaces/DriverInterface";
+import { usePage } from '@inertiajs/vue3';
 
 class Database
 {
     _driver = null;
+    _clientDriver = null;
+    _serverDriver = null;
     _configuration = null;
 
-    constructor(driver) {
-        if (! (driver instanceof DriverInterface)) {
-            throw new Error('The driver must be extends from Interfaces/DriverInterface.');
+    constructor(clientDriver, serverDriver) {
+        if (! (clientDriver instanceof DriverInterface)) {
+            throw new Error('The clientDriver must be extends from Interfaces/DriverInterface.');
         }
 
-        this._driver = driver;
+        if (! (serverDriver instanceof DriverInterface)) {
+            throw new Error('The serverDriver must be extends from Interfaces/DriverInterface.');
+        }
+
+        this._clientDriver = clientDriver;
+        this._serverDriver = serverDriver;
         this._configuration = Configuration.getInstance();
     }
 
@@ -24,6 +32,8 @@ class Database
      */
     async get(key, value = null) {
         if (this._isKey(key)) {
+            await this._setDriver(key);
+
             let data = await this._driver.get(key);
     
             if (data !== null) {
@@ -42,6 +52,8 @@ class Database
      */
     async store(key, data) {
         if (this._isKey(key) && typeof data === 'object') {
+            await this._setDriver(key);
+
             return await this._driver.post(key, data);
         }
 
@@ -56,6 +68,8 @@ class Database
      */
     async update(key, data) {
         if (this._isKey(key) && typeof data === 'object' && key.split('/').length === 2 && ! isNaN(Number(key.split('/')[1]))) {
+            await this._setDriver(key);
+
             return await this._driver.patch(key, data);
         }
 
@@ -69,6 +83,8 @@ class Database
      */
     async delete(key) {
         if (this._isKey(key) && key.split('/').length === 2 && ! isNaN(Number(key.split('/')[1]))) {
+            await this._setDriver(key);
+
             await this._driver.delete(key);
         }
     }
@@ -80,12 +96,32 @@ class Database
      */
     async truncate(key) {
         if (this._isKey(key) && key.split('/').length === 1) {
+            this._setDriver(key);
+
             await this._driver.delete(key);
         }
     }
 
     _isKey(key) {
         return key && typeof key === 'string';
+    }
+
+    async _setDriver(key) {
+        let driver = null;
+
+        if (usePage().props.auth.user) {
+            driver = this._serverDriver;
+        } else {
+            driver = this._clientDriver;
+        }
+
+        if (this._driver !== driver) {
+            this._driver = driver;
+
+            if (driver === this._serverDriver) {
+                await this._clientDriver.export(key);
+            }
+        }
     }
 
     static factory(clientDriver = null, serverDriver = null) {

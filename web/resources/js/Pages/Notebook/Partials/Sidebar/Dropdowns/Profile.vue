@@ -27,7 +27,7 @@
     
                 <div class="border-t border-gray-300 dark:border-gray-600"></div>
     
-                <DropdownItemComponent @click="logout">
+                <DropdownItemComponent @click="$notebook.logout(); dropdown.hide();">
                     Log Out
                 </DropdownItemComponent>
             </template>
@@ -69,12 +69,6 @@ export default {
     computed: {
         dropdown() {
             return this.$refs.dropdown?.dropdown;
-        }, 
-    },
-
-    methods: {
-        logout() {
-            router.post(route('logout'));
         }, 
     },
 }

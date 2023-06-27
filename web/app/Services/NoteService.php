@@ -58,4 +58,18 @@ class NoteService extends Service
         Storage::deleteDirectory('public/' . request()->user()->id);
         request()->user()->notes()->delete();
     }
+
+    /**
+     * Export models from client
+     *
+     * @param array $notes
+     * @return void
+     */
+    public function export(array $notes) {
+        $user = request()->user();
+        foreach ($notes as $note) {
+            $note['user_id'] = $user->id;
+            Note::create($note);
+        }
+    }
 }

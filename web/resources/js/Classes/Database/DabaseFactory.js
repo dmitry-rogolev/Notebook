@@ -4,22 +4,32 @@ import Database from "./Database";
 
 class DatabaseFactory extends FactoryInterface
 {
-    _driver = null;
+    _clientDriver = null;
+    _serverDriver = null;
 
-    constructor(driver = null) {
+    constructor(clientDriver = null, serverDriver = null) {
         super();
-        this.driver(driver);
+        this.clientDriver(clientDriver);
+        this.serverDriver(serverDriver);
     }
 
-    make(driver = null) {
-        this.driver(driver);
+    make(clientDriver = null, serverDriver = null) {
+        this.clientDriver(clientDriver);
+        this.serverDriver(serverDriver);
 
-        return new Database(this._driver);
+        return new Database(this._clientDriver, this._serverDriver);
     }
 
-    driver(driver) {
-        if (driver && driver instanceof DriverInterface) {
-            this._driver = driver;
+    clientDriver(clientDriver) {
+        if (clientDriver && clientDriver instanceof DriverInterface) {
+            this._clientDriver = clientDriver;
+        }
+        return this;
+    }
+
+    serverDriver(serverDriver) {
+        if (serverDriver && serverDriver instanceof DriverInterface) {
+            this._serverDriver = serverDriver;
         }
         return this;
     }

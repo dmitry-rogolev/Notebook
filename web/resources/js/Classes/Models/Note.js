@@ -4,7 +4,7 @@ class Note extends Model
 {
     static _table = 'notes';
 
-    _defaults = {
+    static _defaults = {
         title: '', 
         text: '', 
     }

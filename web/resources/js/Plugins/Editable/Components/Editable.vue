@@ -52,6 +52,10 @@ export default {
 
     watch: {
         modelValue() {
+            if (! this.modelValue) {
+                this.$refs.editable.innerHTML = '';
+            }
+
             if (this.emited != this.modelValue) {
                 this.emited = this.modelValue;
                 this.value = this.modelValue;

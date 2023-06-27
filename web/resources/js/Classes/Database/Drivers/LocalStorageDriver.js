@@ -1,5 +1,6 @@
 import DriverInterface from "../../../Interfaces/DriverInterface";
 import Configuration from "../../Configuration";
+import AxiosServerDriver from "./AxiosServerDriver";
 import Server from "./LocalStorageDriver/Server";
 
 class LocalStorageDriver extends DriverInterface
@@ -7,11 +8,13 @@ class LocalStorageDriver extends DriverInterface
     static _instance = null;
     _configuration = null;
     _server = null;
+    _serverDriver = null;
 
     constructor() {
         super();
         this._configuration = Configuration.getInstance();
         this._server = Server.getInstance();
+        this._serverDriver = AxiosServerDriver.getInstance();
     }
 
     /**
@@ -188,6 +191,27 @@ class LocalStorageDriver extends DriverInterface
 
                 this._setTable(keys[0], table);
             }
+        }
+    }
+
+    async export(path) {
+        if (this._isPath(path)) {
+            path = this._parsePath(path);
+            let keys = path.split('/');
+
+            let table = this._getTable(keys[0]);
+
+            if (this._isJson(table)) {
+                table = this._parseJson(table);
+            }
+
+            if (table === null || ! Array.isArray(table) || Array.isArray(table) && ! table.length) {
+                return;
+            }
+
+            await this._serverDriver.post(keys[0] + '/export', {[keys[0]]: table});
+
+            this._removeTable(keys[0]);
         }
     }
 

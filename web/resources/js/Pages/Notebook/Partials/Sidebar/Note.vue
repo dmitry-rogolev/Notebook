@@ -35,6 +35,7 @@ export default {
             return this.$window.file;
         }, 
         changed() {
+            this.updated = this.dateDiff(this.note.updated_at);
             return this.$notebook.notes.find((v) => v.id === this.note.id).isDirty;
         }, 
         detailed() {

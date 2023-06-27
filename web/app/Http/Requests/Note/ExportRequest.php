@@ -4,7 +4,7 @@ namespace App\Http\Requests\Note;
 
 use Illuminate\Foundation\Http\FormRequest;
 
-class StoreRequest extends FormRequest
+class ExportRequest extends FormRequest
 {
     /**
      * Get the validation rules that apply to the request.
@@ -14,8 +14,7 @@ class StoreRequest extends FormRequest
     public function rules(): array
     {
         return [
-            'title' => [ 'string', 'max:255', 'nullable' ], 
-            'text' => [ 'string', 'max:4294967295', 'nullable' ], 
+            'notes' => [ 'array', 'required' ], 
         ];
     }
 }

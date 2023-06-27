@@ -1,3 +1,4 @@
+import { router, usePage } from "@inertiajs/vue3";
 import Cache from "../../Classes/Cache";
 import Configuration from "../../Classes/Configuration";
 import DeleteAllController from "../../Classes/Controllers/Note/DeleteAllController";
@@ -183,8 +184,21 @@ class Notebook
         }
     }
 
+    logout() {
+        router.post(route('logout'));
+        this._closeWindow();
+        this._notes = [];
+    }
+
     _getNotes() {
         return IndexContoller.index();
+    }
+
+    _updateNotes() {
+        this._getNotes().then((notes) => {
+            this._notes = notes;
+            this._openWindow();
+        });
     }
 
     _openWindow() {
@@ -196,6 +210,8 @@ class Notebook
             }
 
             this._$window.open(this._notes[index]);
+        } else if (! this._notes.length) {
+            this._$window.close();
         }
     }
 

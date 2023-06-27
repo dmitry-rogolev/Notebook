@@ -7,15 +7,15 @@ import LocalStorageDriver from "../Database/Drivers/LocalStorageDriver";
 
 class Model
 {
-    static _database = Database.factory(LocalStorageDriver.getInstance()).make();
+    static _database = Database.factory(LocalStorageDriver.getInstance(), AxiosServerDriver.getInstance()).make();
     static _configuration = Configuration.getInstance();
 
     static _table = 'models';
     static _primaryKey = Model._configuration.getModelIdName();
+    static _defaults = {};
 
     _originals = {};
     _attributes = {};
-    _defaults = {};
     _isDirty = false;
 
     /**
@@ -169,6 +169,8 @@ class Model
             throw new Error('The "attributes" parameter must be an object.');
         }
 
+        attributes = this._defaultAttributes(attributes);
+
         let data = await this._database.store(this._table, attributes);
 
         return this._proxy(reactive(new this(data)));
@@ -221,6 +223,16 @@ class Model
         }
 
         return dirty;
+    }
+
+    static _defaultAttributes(attributes) {
+        for (let attribute in this._defaults) {
+            if (! (attribute in attributes) || attributes[attribute] === null) {
+                attributes[attribute] = this._defaults[attribute];
+            } 
+        }
+
+        return attributes;
     }
 
     /**
@@ -352,8 +364,8 @@ class Model
                     return target._attributes[property];
                 }
 
-                if (property in target._defaults && target._defaults[property] !== null) {
-                    return target._defaults[property];
+                if (property in target.constructor._defaults && target.constructor._defaults[property] !== null) {
+                    return target.constructor._defaults[property];
                 }
 
                 return Reflect.get(target, property, receiver);
