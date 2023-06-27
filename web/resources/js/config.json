@@ -30,5 +30,10 @@
     }, 
     "autosave": {
         "interval": 60000
+    }, 
+    "database": {
+        "cache": {
+            "prefix": "__cache_database_"
+        }
     }
 }

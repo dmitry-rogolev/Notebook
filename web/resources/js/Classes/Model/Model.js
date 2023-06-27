@@ -3,10 +3,11 @@ import Configuration from "../Configuration";
 import Database from "../Database/Database";
 import AxiosServerDriver from "../Database/Drivers/AxiosServerDriver";
 import { reactive } from 'vue';
+import LocalStorageDriver from "../Database/Drivers/LocalStorageDriver";
 
 class Model
 {
-    static _database = Database.factory(AxiosServerDriver.getInstance()).make();
+    static _database = Database.factory(LocalStorageDriver.getInstance()).make();
     static _configuration = Configuration.getInstance();
 
     static _table = 'models';

@@ -71,6 +71,14 @@ class Configuration extends Base
 
     /**
      * 
+     * @returns {String}
+     */
+    getDatabaseCachePrefix() {
+        return String(this.configurations.database.cache.prefix);
+    }
+
+    /**
+     * 
      * @returns {Number}
      */
     getAutosaveInterval() {

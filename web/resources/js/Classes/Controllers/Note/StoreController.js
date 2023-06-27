@@ -13,6 +13,14 @@ class StoreController extends Controller
             note.text = cutForbiddenTags(note.text);
         }
 
+        if (! ('title' in note)) {
+            note.title = '';
+        }
+
+        if (! ('text' in note)) {
+            note.text = '';
+        }
+
         return Note.create(note);
     }
 }
