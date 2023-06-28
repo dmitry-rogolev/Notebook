@@ -67,7 +67,7 @@ class Database
      * @returns {any}
      */
     async update(key, data) {
-        if (this._isKey(key) && typeof data === 'object' && key.split('/').length === 2 && ! isNaN(Number(key.split('/')[1]))) {
+        if (this._isKey(key) && typeof data === 'object') {
             await this._setDriver(key);
 
             return await this._driver.patch(key, data);
@@ -82,7 +82,7 @@ class Database
      * @return {void}
      */
     async delete(key) {
-        if (this._isKey(key) && key.split('/').length === 2 && ! isNaN(Number(key.split('/')[1]))) {
+        if (this._isKey(key)) {
             await this._setDriver(key);
 
             await this._driver.delete(key);
@@ -95,10 +95,23 @@ class Database
      * @return {void}
      */
     async truncate(key) {
-        if (this._isKey(key) && key.split('/').length === 1) {
+        if (this._isKey(key)) {
             this._setDriver(key);
 
             await this._driver.delete(key);
+        }
+    }
+
+    /**
+     * 
+     * @param {String} key 
+     * @return {void}
+     */
+    async restore(key) {
+        if (this._isKey(key)) {
+            this._setDriver(key);
+
+            await this._driver.patch(key, {});
         }
     }
 

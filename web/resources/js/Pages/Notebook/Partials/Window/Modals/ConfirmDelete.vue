@@ -12,7 +12,7 @@
                             type="button"
                             role="button"
                             class="block mr-3 bg-red-600 hover:bg-red-700 border-red-600 hover:border-red-600 border-2 text-gray-100 focus-visible:outline-none focus:ring-2 focus:ring-indigo-500 dark:focus:ring-indigo-600 rounded-lg shadow-md px-3 py-1.5 transition duration-300 ease-in-out"
-                            @click="$notebook.delete(); modal.hide();" 
+                            @click="note.isTrashed ? $notebook.forceDelete() : $notebook.delete(); modal.hide();" 
                             >
                             Yes, I'm sure
                         </button>
@@ -48,6 +48,12 @@ export default {
         return {
             modal: null, 
         };
+    },
+
+    computed: {
+        note() {
+            return this.$window.file;
+        }, 
     },
 
     methods: {

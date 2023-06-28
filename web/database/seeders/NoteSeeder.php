@@ -15,6 +15,6 @@ class NoteSeeder extends Seeder
      */
     public function run(): void
     {
-        Note::factory()->count(10)->for(User::find(2))->create();
+        Note::factory()->count(10)->for(User::find(1))->create();
     }
 }

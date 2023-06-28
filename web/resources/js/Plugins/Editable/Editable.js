@@ -297,16 +297,19 @@ class Editable
         e.stopPropagation();
 
         let $mark = window.app.config.globalProperties.$mark;
+        let $window = window.app.config.globalProperties.$window;
 
-        // Find
-        if (e.altKey && e.code == 'KeyF') {
-            $mark.show();
-        } 
+        if ($window.file.id && ! $window.file.isTrashed) {
+            // Find
+            if (e.altKey && e.code == 'KeyF') {
+                $mark.show();
+            } 
 
-        // Replace
-        else if (e.altKey && e.code == 'KeyR') {
-            $mark.showReplace();
-        } 
+            // Replace
+            else if (e.altKey && e.code == 'KeyR') {
+                $mark.showReplace();
+            } 
+        }
     }
 }
 

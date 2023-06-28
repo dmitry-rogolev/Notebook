@@ -31,10 +31,12 @@ export default {
             e.preventDefault();
             e.stopPropagation();
 
-            // Create link
-            if (e.altKey && e.code == 'KeyL') {
-                this.$refs.modal.show();
-            } 
+            if (this.$window.file.id && ! this.$window.file.isTrashed) {
+                // Create link
+                if (e.altKey && e.code == 'KeyL') {
+                    this.$refs.modal.show();
+                } 
+            }
         }, 
     }, 
 

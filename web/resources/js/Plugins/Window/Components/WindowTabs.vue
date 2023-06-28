@@ -1,6 +1,6 @@
 <template>
     <transition name="tabs">
-        <section v-show="tabs" role="menubar" tabindex="-1" class="z-[1] print:hidden">
+        <section v-show="tabs && ! note.isTrashed" role="menubar" tabindex="-1" class="z-[1] print:hidden">
             <slot></slot>
         </section>
     </transition>
@@ -14,6 +14,9 @@ export default {
         tabs() {
             return this.$window.tabs;
         },
+        note() {
+            return this.$window.file;
+        }, 
     },
 }
 </script>

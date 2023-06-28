@@ -37,10 +37,12 @@ export default {
             e.preventDefault();
             e.stopPropagation();
 
-            // Save as
-            if (e.altKey && e.code == 'KeyA') {
-                this.modal.show();
-            } 
+            if (this.$window.file.id && ! this.$window.file.isTrashed) {
+                // Save as
+                if (e.altKey && e.code == 'KeyA') {
+                    this.modal.show();
+                } 
+            }
         }, 
     }, 
 

@@ -44,8 +44,17 @@ class NoteService extends Service
      */
     public function delete(Note $note)
     {
-        Storage::deleteDirectory('public/' . request()->user()->id . '/' . $note->id);
         $note->delete();
+    }
+
+    /**
+     *
+     * @param \App\Models\Note $note
+     * @return void
+     */
+    public function restore(Note $note)
+    {
+        $note->restore();
     }
 
     /**
@@ -55,8 +64,25 @@ class NoteService extends Service
      */
     public function deleteAll()
     {
+        Note::whereUserId(request()->user()->id)->delete();
+    }
+
+    /**
+     * @return void
+     */
+    public function restoreAll()
+    {
+        Note::onlyTrashed()->whereUserId(request()->user()->id)->restore();
+    }
+
+    public function forceDelete(Note $note) {
+        Storage::deleteDirectory('public/' . $note->user_id . '/' . $note->id);
+        $note->forceDelete();
+    }
+
+    public function forceDeleteAll() {
         Storage::deleteDirectory('public/' . request()->user()->id);
-        request()->user()->notes()->delete();
+        Note::onlyTrashed()->whereUserId(request()->user()->id)->forceDelete();
     }
 
     /**

@@ -1,12 +1,12 @@
 <template>
     <div 
         ref="editable" 
-        contenteditable="true" 
+        :contenteditable="note && ! note.isTrashed" 
         aria-multiline="true"
         role="textbox"
         :spellcheck="spellcheck"
         v-html="value"
-        class="overflow-y-auto print:z-[1000]"
+        class="overflow-y-auto print:z-[1000] editable"
         >
     </div>
 </template>
@@ -40,6 +40,9 @@ export default {
     computed: {
         spellcheck() {
             return this.$editable.spellcheck;
+        }, 
+        note() {
+            return this.$window.file;
         }, 
     },
 

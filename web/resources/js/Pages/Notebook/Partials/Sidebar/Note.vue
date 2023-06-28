@@ -8,7 +8,8 @@
             <div v-show="changed" title="Changed" class="bg-gray-600 dark:bg-gray-300 rounded-full w-3 h-3 min-w-[0.75rem] min-h-[0.75rem]"></div>
         </div>
         <div v-show="note.text && detailed" class="truncate text-sm lg:text-base text-gray-700 dark:text-gray-300">{{ cutTags(note.text) }}</div>
-        <div v-show="detailed" class="truncate text-xs lg:text-sm text-gray-600 dark:text-gray-400">{{ updated }}</div>
+        <div v-show="detailed && updated" class="truncate text-xs lg:text-sm text-gray-600 dark:text-gray-400">{{ updated }}</div>
+        <div v-show="detailed && deleted" class="truncate text-xs lg:text-sm text-gray-600 dark:text-gray-400">{{ deleted }}</div>
     </ItemSidebarComponent>
 </template>
 
@@ -27,6 +28,7 @@ export default {
         return {
             timer: null, 
             updated: '', 
+            deleted: '', 
         };
     },
 
@@ -35,8 +37,8 @@ export default {
             return this.$window.file;
         }, 
         changed() {
-            this.updated = this.dateDiff(this.note.updated_at);
-            return this.$notebook.notes.find((v) => v.id === this.note.id).isDirty;
+            this.setDateAgo();
+            return this.note.isDirty;
         }, 
         detailed() {
             return this.$sidebar.isDetailed;
@@ -54,8 +56,15 @@ export default {
         cutTags(str) {
             return cutTags(str);
         }, 
+        setDateAgo() {
+            if (this.note.isTrashed) {
+                this.deleted = this.dateDiff(this.note.deleted_at);
+            } else {
+                this.updated = this.dateDiff(this.note.updated_at);
+            }
+        }, 
         addTimer() {
-            this.timer = setInterval(() => this.updated = this.dateDiff(this.note.updated_at), 60000);
+            this.timer = setInterval(this.setDateAgo, 60000);
         },
         clearTimer() {
             clearInterval(this.timer);
@@ -97,7 +106,7 @@ export default {
     }, 
 
     mounted() {
-        this.updated = this.dateDiff(this.note.updated_at),
+        this.setDateAgo();
         this.addTimer();
     }, 
 

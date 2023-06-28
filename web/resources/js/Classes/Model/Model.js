@@ -17,6 +17,7 @@ class Model
     _originals = {};
     _attributes = {};
     _isDirty = false;
+    _isTrashed = false;
 
     /**
      * @property {String}
@@ -47,6 +48,13 @@ class Model
     }
 
     /**
+     * @property {Boolean}
+     */
+    get isTrashed() {
+        return this._isTrashed;
+    }
+
+    /**
      * 
      * @param {String} table
      * @param {Object} originals 
@@ -55,6 +63,8 @@ class Model
         if (typeof originals !== 'object') {
             throw new Error('The "originals" parameter must be an object.');
         }
+
+        originals = this._defaultAttributes(originals);
 
         this._originals = this._parseTimestamps(originals);
 
@@ -160,6 +170,28 @@ class Model
 
     /**
      * 
+     * @returns {Array|null}
+     */
+    static async allOnlyTrash() {
+        let data = await this._database.get(this._table + '/trash');
+
+        if (data) {
+            let models = [];
+
+            for (let model of data) {
+                let proxy = this._proxy(reactive(new this(model)));
+                proxy._isTrashed = true;
+                models.push(proxy);
+            }
+
+            return models;
+        }
+
+        return null;
+    }
+
+    /**
+     * 
      * @param {String} table
      * @param {Object} attributes 
      * @returns {Model}
@@ -168,8 +200,6 @@ class Model
         if (typeof attributes !== 'object') {
             throw new Error('The "attributes" parameter must be an object.');
         }
-
-        attributes = this._defaultAttributes(attributes);
 
         let data = await this._database.store(this._table, attributes);
 
@@ -203,9 +233,39 @@ class Model
     /**
      * @returns {void}
      */
+    async forceDelete() {
+        await this.constructor._database.delete(this.constructor._table + '/trash/' + this._originals[this.constructor._primaryKey]);
+        this._removeCacheAttributes();
+    }
+
+    /**
+     * @returns {void}
+     */
     static async truncate() {
         await this._database.truncate(this._table);
         this._removeCache();
+    }
+
+    /**
+     * @returns {void}
+     */
+    static async truncateTrash() {
+        await this._database.truncate(this._table + '/trash');
+        this._removeCache();
+    }
+
+    /**
+     * @returns {void}
+     */
+    async restore() {
+        await this.constructor._database.restore(this.constructor._table + '/trash/' + this._originals[this.constructor._primaryKey] + '/restore');
+    }
+
+    /**
+     * @returns {void}
+     */
+    static async restoreTrash() {
+        await this._database.restore(this._table + '/trash/restore');
     }
 
     /**
@@ -225,7 +285,7 @@ class Model
         return dirty;
     }
 
-    static _defaultAttributes(attributes) {
+    _defaultAttributes(attributes) {
         for (let attribute in this._defaults) {
             if (! (attribute in attributes) || attributes[attribute] === null) {
                 attributes[attribute] = this._defaults[attribute];
@@ -341,6 +401,7 @@ class Model
 
         let created_at = this.constructor._configuration.getModelCreatedAt();
         let updated_at = this.constructor._configuration.getModelUpdatedAt();
+        let deleted_at = this.constructor._configuration.getModelDeletedAt();
 
         if (created_at in attributes) {
             attributes[created_at] = new Date(attributes[created_at]);
@@ -348,6 +409,10 @@ class Model
 
         if (updated_at in attributes) {
             attributes[updated_at] = new Date(attributes[updated_at]);
+        }
+
+        if (deleted_at in attributes && attributes[deleted_at] !== null) {
+            attributes[deleted_at] = new Date(attributes[deleted_at]);
         }
 
         return attributes;

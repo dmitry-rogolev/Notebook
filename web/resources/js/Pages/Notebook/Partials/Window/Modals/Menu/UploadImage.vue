@@ -36,11 +36,13 @@ export default {
         keyup(e) {
             e.preventDefault();
             e.stopPropagation();
-
-            // Insert image
-            if (e.altKey && e.code == 'KeyI') {
-                this.modal.show();
-            } 
+            
+            if (this.$window.file.id && ! this.$window.file.isTrashed) {
+                // Insert image
+                if (e.altKey && e.code == 'KeyI') {
+                    this.modal.show();
+                } 
+            }
         }, 
     }, 
 

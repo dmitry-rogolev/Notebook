@@ -26,6 +26,9 @@
                 Notes
             </div>
             <ConfirmClearModalSidebarPartial @click="dropdown.hide()" />
+            <DropdownItemComponent v-if="showTrash" @click="$notebook.restoreAll(); dropdown.hide();">
+                Restore all
+            </DropdownItemComponent>
         </template>
     </DropdownComponent>
 </template>
@@ -50,6 +53,9 @@ export default {
         }, 
         detailed() {
             return this.$sidebar.isDetailed;
+        }, 
+        showTrash() {
+            return this.$sidebar.isShowTrash;
         }, 
     },
 }

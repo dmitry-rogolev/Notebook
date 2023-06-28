@@ -6,6 +6,11 @@ import DestroyController from "../../Classes/Controllers/Note/DestroyController"
 import IndexContoller from "../../Classes/Controllers/Note/IndexController";
 import StoreController from "../../Classes/Controllers/Note/StoreController";
 import UpdateController from "../../Classes/Controllers/Note/UpdateController";
+import TrashIndexController from "../../Classes/Controllers/Note/Trash/IndexController";
+import TrashDeleteController from "../../Classes/Controllers/Note/Trash/DeleteController";
+import TrashDeleteAllController from "../../Classes/Controllers/Note/Trash/DeleteAllController";
+import TrashRestoreController from "../../Classes/Controllers/Note/Trash/RestoreController";
+import TrashRestoreAllController from "../../Classes/Controllers/Note/Trash/RestoreAllController";
 import Fuse from 'fuse.js'
 
 class Notebook
@@ -21,6 +26,7 @@ class Notebook
 
     _notes = [];
     _found = [];
+    _trash = [];
 
     /**
      * @property {Boolean}
@@ -50,6 +56,13 @@ class Notebook
         return this._found;
     }
 
+    /**
+     * @property {Array}
+     */
+    get trash() {
+        return this._trash;
+    }
+
     constructor() {
         this._configuration = Configuration.getInstance();
         this._$window = window.app.config.globalProperties.$window;
@@ -71,7 +84,10 @@ class Notebook
 
                 this._addKeyUpEventListener();
 
-                this._isInit = false;
+                this._isInit = true;
+            });
+            this._getTrash().then(trash => {
+                this._trash = trash;
             });
         }
     }
@@ -81,6 +97,7 @@ class Notebook
             this._closeWindow();
 
             this._notes = [];
+            this._trash = [];
             this._autosave = false;
 
             this._removeKeyUpEventListener();
@@ -138,18 +155,85 @@ class Notebook
                 message: 'Deleted', 
                 success: true, 
             });
+            this._getTrash().then(trash => {
+                this._trash = trash;
+            });
         });
     }
 
-    clear() {
-        DeleteAllController.truncate().then(() => {
-            this._notes = [];
-            this._closeWindow();
-            this._$notifier.push({
-                message: 'Cleared', 
-                success: true, 
+    restore() {
+        let note = this._$window.file;
+        if (note.isTrashed) {
+            TrashRestoreController.restore(note).then(() => {
+                this._notes.push(note);
+                this._trash.splice(this._trash.findIndex((v) => v.id === note.id), 1);
+                this._openWindowTrash();
+                this._$notifier.push({
+                    message: 'Restored', 
+                    success: true, 
+                });
             });
-        });
+        }
+    }
+
+    forceDelete() {
+        let note = this._$window.file;
+        if (note.isTrashed) {
+            TrashDeleteController.delete(note).then(() => {
+                this._trash.splice(this._trash.findIndex((v) => v.id === note.id), 1);
+                this._openWindowTrash();
+                this._$notifier.push({
+                    message: 'Deleted', 
+                    success: true, 
+                });
+            });
+        }
+    }
+
+    clear() {
+        if (this._notes.length) {
+            DeleteAllController.truncate().then(() => {
+                this._notes = [];
+                this._openWindowTrash();
+                this._$notifier.push({
+                    message: 'Cleared', 
+                    success: true, 
+                });
+                this._getTrash().then(trash => {
+                    this._trash = trash;
+                });
+            });
+        }
+    }
+
+    restoreAll() {
+        if (this._trash.length) {
+            TrashRestoreAllController.restore().then(() => {
+                this._trash = [];
+    
+                this._getNotes().then((notes) => {
+                    this._notes = notes;
+                    this._openWindow();
+                    this._$notifier.push({
+                        message: 'Restored', 
+                        success: true, 
+                    });
+                });
+            });
+        }
+    }
+
+    forceClear() {
+        if (this._trash.length) {
+            TrashDeleteAllController.truncate().then(() => {
+                this._trash = [];
+                this._openWindow();
+                this._$notifier.push({
+                    message: 'Cleared', 
+                    success: true, 
+                });
+            });
+        }
     }
 
     /**
@@ -194,6 +278,10 @@ class Notebook
         return IndexContoller.index();
     }
 
+    _getTrash() {
+        return TrashIndexController.index();
+    }
+
     _updateNotes() {
         this._getNotes().then((notes) => {
             this._notes = notes;
@@ -212,6 +300,20 @@ class Notebook
             this._$window.open(this._notes[index]);
         } else if (! this._notes.length) {
             this._$window.close();
+        }
+    }
+
+    _openWindowTrash() {
+        if (this._configuration.getIsOpenWindowAfterInit() && this._trash.length) {
+            let index = 0;
+
+            if (this._configuration.getOpenItemAfterInit() === 'last') {
+                index = this._trash.length - 1;
+            }
+
+            this._$window.open(this._trash[index]);
+        } else if (! this._trash.length) {
+            this._openWindow();
         }
     }
 
@@ -293,10 +395,12 @@ class Notebook
             $notebook.openFile();
         } 
 
-        // Save
-        if (e.altKey && e.code == 'KeyS') {
-            $notebook.update();
-        } 
+        if ($window.file.id && ! $window.file.isTrashed) {
+            // Save
+            if (e.altKey && e.code == 'KeyS') {
+                $notebook.update();
+            } 
+        }
 
         // Exit
         else if (e.altKey && e.code == 'KeyQ') {

@@ -37,10 +37,12 @@ export default {
             e.preventDefault();
             e.stopPropagation();
 
-            // Insert symbols
-            if (e.altKey && e.code == 'KeyY') {
-                this.modal.show();
-            } 
+            if (this.$window.file.id && ! this.$window.file.isTrashed) {
+                // Insert symbols
+                if (e.altKey && e.code == 'KeyY') {
+                    this.modal.show();
+                } 
+            }
         }, 
     }, 
 

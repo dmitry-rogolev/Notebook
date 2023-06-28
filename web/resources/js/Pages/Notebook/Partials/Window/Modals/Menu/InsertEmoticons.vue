@@ -37,10 +37,12 @@ export default {
             e.preventDefault();
             e.stopPropagation();
 
-            // Insert emoticons
-            if (e.altKey && e.code == 'KeyE') {
-                this.modal.show();
-            } 
+            if (this.$window.file.id && ! this.$window.file.isTrashed) {
+                // Insert emoticons
+                if (e.altKey && e.code == 'KeyE') {
+                    this.modal.show();
+                } 
+            }
         }, 
     }, 
 

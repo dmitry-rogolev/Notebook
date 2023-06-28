@@ -1,6 +1,6 @@
 <template>
     <SidebarComponent
-        :active="showNotes || showSearch" 
+        :active="showNotes || showSearch || showTrash" 
         triggersContainerClass="bg-white dark:bg-gray-800 border-gray-300 dark:border-gray-600 border-r h-full overflow-y-auto z-10 flex flex-col"
         targetsContainerClass="bg-white dark:bg-gray-800 border-gray-300 dark:border-gray-600 border-r h-full min-w-[8rem] w-32 md:w-40 lg:w-52 xl:w-64 overflow-auto resize-x focus-visible:outline-none"
         >
@@ -10,6 +10,9 @@
             </TriggerSidebarPartial>
             <TriggerSidebarPartial @click="$sidebar.showSearch();" :active="showSearch">
                 <i class="fa-sharp fa-solid fa-magnifying-glass"></i>
+            </TriggerSidebarPartial>
+            <TriggerSidebarPartial @click="$sidebar.showTrash();" :active="showTrash">
+                <i class="fa-solid fa-box-archive"></i>
             </TriggerSidebarPartial>
             <TriggerSidebarPartial @click="$notebook.create()">
                 <i class="fa-solid fa-plus"></i>
@@ -53,6 +56,24 @@
                     @click="$window.open(this.notes.find((v) => v.id === note.item.id));"
                     />
             </TargetPartial>
+            <div v-show="showTrash">
+                <SortbarPartial />
+                <TargetPartial>
+                    <Sortable
+                        :list="trash"
+                        :itemKey="(item) => item.id"
+                        >
+                        <template #item="{element}">
+                            <NotePartial
+                                :key="element.id"
+                                :note="element"
+                                class="draggable"
+                                @click="$window.open(element)"
+                                />
+                        </template>
+                    </Sortable>
+                </TargetPartial>
+            </div>
         </template>
     </SidebarComponent>
 </template>
@@ -91,6 +112,9 @@ export default {
         found() {
             return this.$notebook.found;
         }, 
+        trash() {
+            return this.$sort.sort(this.$notebook.trash);
+        }, 
         note() {
             return this.$window.file;
         }, 
@@ -99,6 +123,9 @@ export default {
         }, 
         showSearch() {
             return this.$sidebar.isShowSearch;
+        }, 
+        showTrash() {
+            return this.$sidebar.isShowTrash;
         }, 
     }, 
 

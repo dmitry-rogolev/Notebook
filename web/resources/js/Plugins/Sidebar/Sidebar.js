@@ -12,6 +12,7 @@ class Sidebar
 
     _showNotes = false;
     _showSearch = false;
+    _showTrash = false;
 
     _detailed = true;
 
@@ -39,6 +40,13 @@ class Sidebar
      */
     get isShowSearch() {
         return this._showSearch;
+    }
+
+    /**
+     * @property {Boolean}
+     */
+    get isShowTrash() {
+        return this._showTrash;
     }
 
     /**
@@ -88,6 +96,7 @@ class Sidebar
         this._width = this._calcWidth();
         this._showNotes = this._getShowNotes();
         this._showSearch = this._getShowSearch();
+        this._showTrash = this._getShowTrash();
         this._detailed = this._getDeteiled();
     }
 
@@ -96,6 +105,7 @@ class Sidebar
         this._width = 0;
         this._showNotes = false;
         this._showSearch = false;
+        this._showTrash = false;
         this._detailed = false;
     }
 
@@ -104,6 +114,8 @@ class Sidebar
         this._setShowNotes(this._showNotes);
         this._showSearch = false;
         this._setShowSearch(false);
+        this._showTrash = false;
+        this._setShowTrash(false);
     }
 
     showSearch() {
@@ -111,6 +123,17 @@ class Sidebar
         this._setShowSearch(this._showSearch);
         this._showNotes = false;
         this._setShowNotes(false);
+        this._showTrash = false;
+        this._setShowTrash(false);
+    }
+
+    showTrash() {
+        this._showTrash = ! this._showTrash;
+        this._setShowTrash(this._showTrash);
+        this._showNotes = false;
+        this._setShowNotes(false);
+        this._showSearch = false;
+        this._setShowSearch(false);
     }
 
     /**
@@ -145,6 +168,23 @@ class Sidebar
      */
     _setShowSearch(show) {
         Cache.add(this._configuration.getSidebarCachePrefix() + 'show_search', show);
+    }
+
+    /**
+     * 
+     * @returns {Boolean}
+     */
+    _getShowTrash() {
+        return Cache.get(this._configuration.getSidebarCachePrefix() + 'show_trash', false);
+    }
+
+    /**
+     * 
+     * @param {Boolean} show 
+     * @returns {void}
+     */
+    _setShowTrash(show) {
+        Cache.add(this._configuration.getSidebarCachePrefix() + 'show_trash', show);
     }
 
     /**

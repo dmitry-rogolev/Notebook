@@ -1,6 +1,6 @@
 <template>
     <div>
-        <TriggerComponent v-bind="$attrs" @click="if ($notebook.notes.length) modal.show();" class="w-full px-3 py-2 text-gray-700 dark:text-gray-300 text-left text-sm select-none focus-visible:outline-none transition duration-200 ease-in-out print:hidden" :class="[activeClass]">
+        <TriggerComponent v-bind="$attrs" @click="show" class="w-full px-3 py-2 text-gray-700 dark:text-gray-300 text-left text-sm select-none focus-visible:outline-none transition duration-200 ease-in-out print:hidden" :class="[activeClass]">
             Clear all
         </TriggerComponent>
         <teleport to="body">
@@ -12,7 +12,7 @@
                             type="button"
                             role="button"
                             class="block mr-3 bg-red-600 hover:bg-red-700 border-red-600 hover:border-red-600 border-2 text-gray-100 focus-visible:outline-none focus:ring-2 focus:ring-indigo-500 dark:focus:ring-indigo-600 rounded-lg shadow-md px-3 py-1.5 transition duration-300 ease-in-out"
-                            @click="$notebook.clear(); modal.hide();" 
+                            @click="showTrash ? $notebook.forceClear() : $notebook.clear(); modal.hide();" 
                             >
                             Yes, I'm sure
                         </button>
@@ -58,6 +58,12 @@ export default {
 
             return 'bg-white dark:bg-gray-800 hover:bg-gray-200 dark:hover:bg-gray-700 cursor-pointer';
         }, 
+        showTrash() {
+            return this.$sidebar.isShowTrash;
+        }, 
+        showNotes() {
+            return this.$sidebar.isShowNotes;
+        },
     },
 
     props: {
@@ -74,6 +80,13 @@ export default {
                 backdrop: 'dynamic', 
                 closable: true, 
             });
+        }, 
+        show() {
+            if (this.showTrash && this.$notebook.trash.length) {
+                this.modal.show();
+            } else if (this.showNotes && this.$notebook.notes.length) {
+                this.modal.show();
+            }
         }, 
     }, 
 

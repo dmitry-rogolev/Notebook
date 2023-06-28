@@ -113,6 +113,14 @@ class Configuration extends Base
      * 
      * @returns {String}
      */
+    getModelDeletedAt() {
+        return String(this.configurations.model.deleted_at);
+    }
+
+    /**
+     * 
+     * @returns {String}
+     */
     getModelCachePrefix() {
         return String(this.configurations.model.cache.prefix);
     }
