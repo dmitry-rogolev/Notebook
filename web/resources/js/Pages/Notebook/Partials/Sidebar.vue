@@ -5,22 +5,22 @@
         targetsContainerClass="bg-white dark:bg-gray-800 border-gray-300 dark:border-gray-600 border-r h-full min-w-[8rem] w-32 md:w-40 lg:w-52 xl:w-64 overflow-auto resize-x focus-visible:outline-none"
         >
         <template #triggers>
-            <TriggerSidebarPartial @click="$sidebar.showNotes();" :active="showNotes">
+            <TriggerSidebarPartial @click="$sidebar.showNotes();" :active="showNotes" title="Notes">
                 <i class="fa-solid fa-note-sticky"></i>
             </TriggerSidebarPartial>
-            <TriggerSidebarPartial @click="$sidebar.showSearch();" :active="showSearch">
+            <TriggerSidebarPartial @click="$sidebar.showSearch();" :active="showSearch" title="Search">
                 <i class="fa-sharp fa-solid fa-magnifying-glass"></i>
             </TriggerSidebarPartial>
-            <TriggerSidebarPartial @click="$sidebar.showTrash();" :active="showTrash">
+            <TriggerSidebarPartial @click="$sidebar.showTrash();" :active="showTrash" title="Archive">
                 <i class="fa-solid fa-box-archive"></i>
             </TriggerSidebarPartial>
-            <TriggerSidebarPartial @click="$notebook.create()">
-                <i class="fa-solid fa-plus"></i>
-            </TriggerSidebarPartial>
-            <TriggerSidebarPartial @click="$notebook.openFile();">
+            <TriggerSidebarPartial @click="$notebook.openFile();" title="Open the file">
                 <i class="fa-solid fa-folder-open"></i>
             </TriggerSidebarPartial>
-            <TriggerSidebarPartial @click="toggleDark">
+            <TriggerSidebarPartial @click="$notebook.create()" title="Add note">
+                <i class="fa-solid fa-plus"></i>
+            </TriggerSidebarPartial>
+            <TriggerSidebarPartial @click="toggleDark" :title="dark ? 'Bright theme' : 'Dark theme'">
                 <i v-if="dark" class="fa-solid fa-sun"></i>
                 <i v-else class="fa-solid fa-moon"></i>
             </TriggerSidebarPartial>

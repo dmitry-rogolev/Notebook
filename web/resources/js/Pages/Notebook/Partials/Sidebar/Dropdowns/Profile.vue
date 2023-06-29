@@ -4,6 +4,7 @@
         :options="options" 
         @show="show = true"
         @hide="show = false"
+        title="User"
         class="mt-auto w-full" 
         triggerClass="py-3 px-3 text-2xl border-0 block transition duration-300 ease-in-out focus-visible:outline-none"
         >

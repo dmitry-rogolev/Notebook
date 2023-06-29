@@ -1,6 +1,6 @@
 <template>
     <div>
-        <TriggerComponent v-bind="$attrs" @click="modal.show();" class="px-4 py-2 h-full bg-gray-50 hover:bg-gray-100 dark:bg-slate-800 dark:hover:bg-slate-700 focus:bg-gray-100 dark:focus:bg-slate-700 border-b border-r border-gray-300 dark:border-gray-600 dark:focus:border-gray-600 text-gray-700 dark:text-gray-300 select-none focus-visible:outline-none transition duration-200 ease-in-out print:hidden">
+        <TriggerComponent title="Delete this note" v-bind="$attrs" @click="modal.show();" class="px-4 py-2 h-full bg-gray-50 hover:bg-gray-100 dark:bg-slate-800 dark:hover:bg-slate-700 focus:bg-gray-100 dark:focus:bg-slate-700 border-b border-r border-gray-300 dark:border-gray-600 dark:focus:border-gray-600 text-gray-700 dark:text-gray-300 select-none focus-visible:outline-none transition duration-200 ease-in-out print:hidden">
             <i class="fa-solid fa-trash"></i>
         </TriggerComponent>
         <teleport to="body">

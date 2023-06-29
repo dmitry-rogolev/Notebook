@@ -1,5 +1,5 @@
 <template>
-    <DropdownComponent ref="dropdown" triggerClass="hover:bg-gray-200 dark:hover:bg-gray-700 px-2 text-gray-700 dark:text-gray-300">
+    <DropdownComponent ref="dropdown" title="Options" triggerClass="hover:bg-gray-200 dark:hover:bg-gray-700 px-2 text-gray-700 dark:text-gray-300">
         <template #trigger>
             <i class="fa-solid fa-ellipsis"></i>
         </template>
