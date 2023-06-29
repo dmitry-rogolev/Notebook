@@ -3,7 +3,8 @@
         "host": "/",
         "prefix": "api", 
         "trash": "trash", 
-        "restore": "restore"
+        "restore": "restore", 
+        "export": "export"
     },
     "model": {
         "id": "id", 

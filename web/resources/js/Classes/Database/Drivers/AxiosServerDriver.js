@@ -101,6 +101,17 @@ class AxiosServerDriver extends DriverInterface
     /**
      * 
      * @param {String} path 
+     * @returns {void}
+     */
+    async truncate(path) {
+        if (this._isPath(path)) {
+            await axios.delete(this._configuration.getUrl() + '/' + this._parsePath(path));
+        }
+    }
+
+    /**
+     * 
+     * @param {String} path 
      * @returns {any}
      */
     async restore(path) {

@@ -98,4 +98,19 @@ class NoteService extends Service
             Note::create($note);
         }
     }
+
+    /**
+     * Export models from client
+     *
+     * @param array $notes
+     * @return void
+     */
+    public function exportTrash(array $notes) {
+        $user = request()->user();
+        foreach ($notes as $note) {
+            $note['user_id'] = $user->id;
+            $trashed = Note::create($note);
+            $trashed->delete();
+        }
+    }
 }

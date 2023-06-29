@@ -71,6 +71,30 @@ class Configuration extends Base
 
     /**
      * 
+     * @returns {String}
+     */
+    getPathTrash() {
+        return this.configurations.url.trash;
+    }
+
+    /**
+     * 
+     * @returns {String}
+     */
+    getPathRestore() {
+        return this.configurations.url.restore;
+    }
+
+    /**
+     * 
+     * @returns {String}
+     */
+    getPathExport() {
+        return this.configurations.url.export;
+    }
+
+    /**
+     * 
      * @returns {Boolean}
      */
     getIsOpenWindowAfterInit() {

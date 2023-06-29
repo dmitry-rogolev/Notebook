@@ -48,12 +48,29 @@ class Server
             id = table.reverse()[0][this._configuration.getModelIdName()] + 1;
         }
 
+        let trash = this._getTable(keys[0] + '_' + this._configuration.getPathTrash());
+
+        if (this._isJson(trash)) {
+            trash = this._parseJson(trash);
+        }
+
+        if (trash !== null && Array.isArray(trash) && trash.length) {
+            trash.sort((a, b) => a[this._configuration.getModelIdName()] - b[this._configuration.getModelIdName()]);
+
+            let trashId = trash.reverse()[0][this._configuration.getModelIdName()] + 1;
+
+            if (id < trashId) {
+                id = trashId;
+            }
+        }
+
         data[this._configuration.getModelIdName()] = id;
 
         let timestamp = this._getTimestamp();
 
         data[this._configuration.getModelCreatedAt()] = timestamp;
         data[this._configuration.getModelUpdatedAt()] = timestamp;
+        data[this._configuration.getModelDeletedAt()] = null;
 
         return data;
     }
@@ -69,6 +86,42 @@ class Server
         }
 
         data[this._configuration.getModelUpdatedAt()] = this._getTimestamp();
+
+        return data;
+    }
+
+    /**
+     * 
+     * @param {Object} data 
+     * @returns {Object}
+     */
+    delete(data) {
+        if (typeof data !== 'object') {
+            throw new Error('The "data" parameter must be an object.');
+        }
+
+        let timestamp = this._getTimestamp();
+
+        data[this._configuration.getModelUpdatedAt()] = timestamp;
+        data[this._configuration.getModelDeletedAt()] = timestamp;
+
+        return data;
+    }
+
+    /**
+     * 
+     * @param {Object} data 
+     * @returns {Object}
+     */
+    restore(data) {
+        if (typeof data !== 'object') {
+            throw new Error('The "data" parameter must be an object.');
+        }
+
+        let timestamp = this._getTimestamp();
+
+        data[this._configuration.getModelUpdatedAt()] = timestamp;
+        data[this._configuration.getModelDeletedAt()] = null;
 
         return data;
     }

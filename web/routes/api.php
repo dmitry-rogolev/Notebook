@@ -14,6 +14,7 @@ use App\Http\Controllers\Note\Trash\DeleteController as NoteTrashDeleteControlle
 use App\Http\Controllers\Note\Trash\DeleteAllController as NoteTrashDeleteAllController;
 use App\Http\Controllers\Note\Trash\RestoreController as NoteTrashRestoreController;
 use App\Http\Controllers\Note\Trash\RestoreAllController as NoteTrashRestoreAllController;
+use App\Http\Controllers\Note\Trash\ExportController as NoteTrashExportController;
 use App\Models\Note;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Route;
@@ -55,6 +56,8 @@ Route::middleware(['auth:sanctum', config('jetstream.auth_session')])->group(fun
             Route::delete('trash', NoteTrashDeleteAllController::class)
                 ->name('delete.all');
     
+            Route::post('trash/export', NoteTrashExportController::class)
+                ->name('export');
         });
 
         Route::name('images.')->prefix('notes/{note}')->group(function () {

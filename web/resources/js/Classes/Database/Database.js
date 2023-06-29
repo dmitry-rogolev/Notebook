@@ -98,7 +98,7 @@ class Database
         if (this._isKey(key)) {
             this._setDriver(key);
 
-            await this._driver.delete(key);
+            await this._driver.truncate(key);
         }
     }
 
@@ -133,6 +133,7 @@ class Database
 
             if (driver === this._serverDriver) {
                 await this._clientDriver.export(key);
+                await this._clientDriver.export(key + '/' + this._configuration.getPathTrash());
             }
         }
     }

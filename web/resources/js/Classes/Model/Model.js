@@ -173,7 +173,7 @@ class Model
      * @returns {Array|null}
      */
     static async allOnlyTrash() {
-        let data = await this._database.get(this._table + '/trash');
+        let data = await this._database.get(this._table + '/' + this._configuration.getPathTrash());
 
         if (data) {
             let models = [];
@@ -259,6 +259,7 @@ class Model
      */
     async restore() {
         await this.constructor._database.restore(this.constructor._configuration.getUrlRestore(this.constructor._table, this._originals[this.constructor._primaryKey]));
+        this._isTrashed = false;
     }
 
     /**
@@ -286,9 +287,9 @@ class Model
     }
 
     _defaultAttributes(attributes) {
-        for (let attribute in this._defaults) {
+        for (let attribute in this.constructor._defaults) {
             if (! (attribute in attributes) || attributes[attribute] === null) {
-                attributes[attribute] = this._defaults[attribute];
+                attributes[attribute] = this.constructor._defaults[attribute];
             } 
         }
 
@@ -444,7 +445,7 @@ class Model
                 if (property in target._attributes) {
                     target._attributes[property] = value;
 
-                    if (target.isChanged()) {
+                    if (! target._isTrashed && target.isChanged()) {
                         target._isDirty = true;
                         target._cacheAttributes();
                     } else {

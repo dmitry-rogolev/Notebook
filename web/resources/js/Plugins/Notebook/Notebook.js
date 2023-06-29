@@ -148,15 +148,18 @@ class Notebook
     delete() {
         let note = this._$window.file;
         DestroyController.destroy(note).then(() => {
-            this._notes.splice(this._notes.findIndex((v) => v.id === note.id), 1);
-            this.find(this._search);
-            this._openWindow();
-            this._$notifier.push({
-                message: 'Deleted', 
-                success: true, 
-            });
-            this._getTrash().then(trash => {
-                this._trash = trash;
+            this._getNotes().then((notes) => {
+                this._notes = notes;
+
+                this.find(this._search);
+                this._openWindow();
+                this._$notifier.push({
+                    message: 'Deleted', 
+                    success: true, 
+                });
+                this._getTrash().then(trash => {
+                    this._trash = trash;
+                });
             });
         });
     }
@@ -165,12 +168,16 @@ class Notebook
         let note = this._$window.file;
         if (note.isTrashed) {
             TrashRestoreController.restore(note).then(() => {
-                this._notes.push(note);
-                this._trash.splice(this._trash.findIndex((v) => v.id === note.id), 1);
-                this._openWindowTrash();
-                this._$notifier.push({
-                    message: 'Restored', 
-                    success: true, 
+                this._getNotes().then((notes) => {
+                    this._notes = notes;
+                });
+                this._getTrash().then(trash => {
+                    this._trash = trash;
+                    this._openWindowTrash();
+                    this._$notifier.push({
+                        message: 'Restored', 
+                        success: true, 
+                    });
                 });
             });
         }
@@ -180,11 +187,13 @@ class Notebook
         let note = this._$window.file;
         if (note.isTrashed) {
             TrashDeleteController.delete(note).then(() => {
-                this._trash.splice(this._trash.findIndex((v) => v.id === note.id), 1);
-                this._openWindowTrash();
-                this._$notifier.push({
-                    message: 'Deleted', 
-                    success: true, 
+                this._getTrash().then(trash => {
+                    this._trash = trash;
+                    this._openWindowTrash();
+                    this._$notifier.push({
+                        message: 'Deleted', 
+                        success: true, 
+                    });
                 });
             });
         }
@@ -272,6 +281,7 @@ class Notebook
         router.post(route('logout'));
         this._closeWindow();
         this._notes = [];
+        this._trash = [];
     }
 
     _getNotes() {
