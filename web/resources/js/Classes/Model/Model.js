@@ -234,7 +234,7 @@ class Model
      * @returns {void}
      */
     async forceDelete() {
-        await this.constructor._database.delete(this.constructor._table + '/trash/' + this._originals[this.constructor._primaryKey]);
+        await this.constructor._database.delete(this.constructor._configuration.getUrlTrash(this.constructor._table, this._originals[this.constructor._primaryKey]));
         this._removeCacheAttributes();
     }
 
@@ -250,7 +250,7 @@ class Model
      * @returns {void}
      */
     static async truncateTrash() {
-        await this._database.truncate(this._table + '/trash');
+        await this._database.truncate(this._configuration.getUrlTrash(this._table));
         this._removeCache();
     }
 
@@ -258,14 +258,14 @@ class Model
      * @returns {void}
      */
     async restore() {
-        await this.constructor._database.restore(this.constructor._table + '/trash/' + this._originals[this.constructor._primaryKey] + '/restore');
+        await this.constructor._database.restore(this.constructor._configuration.getUrlRestore(this.constructor._table, this._originals[this.constructor._primaryKey]));
     }
 
     /**
      * @returns {void}
      */
     static async restoreTrash() {
-        await this._database.restore(this._table + '/trash/restore');
+        await this._database.restore(this._configuration.getUrlRestore(this._table));
     }
 
     /**

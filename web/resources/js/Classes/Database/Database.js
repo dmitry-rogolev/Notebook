@@ -111,7 +111,7 @@ class Database
         if (this._isKey(key)) {
             this._setDriver(key);
 
-            await this._driver.patch(key, {});
+            await this._driver.restore(key);
         }
     }
 

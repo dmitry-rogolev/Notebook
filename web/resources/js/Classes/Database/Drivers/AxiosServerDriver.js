@@ -100,6 +100,26 @@ class AxiosServerDriver extends DriverInterface
 
     /**
      * 
+     * @param {String} path 
+     * @returns {any}
+     */
+    async restore(path) {
+        if (this._isPath(path)) {
+            let response = await axios.post(this._configuration.getUrl() + '/' + this._parsePath(path));
+            let responseData = response?.data?.data;
+
+            if (Array.isArray(responseData) && ! responseData.length) {
+                return null;
+            } 
+
+            return responseData;
+        }
+
+        return null;
+    }
+
+    /**
+     * 
      * @param {any} path 
      * @returns {Boolean}
      */

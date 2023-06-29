@@ -43,13 +43,13 @@ Route::middleware(['auth:sanctum', config('jetstream.auth_session')])->group(fun
                 ->can('viewAny', Note::class)
                 ->name('index');
 
-            Route::patch('trash/{id}/restore', NoteTrashRestoreController::class)
+            Route::post('trash/{id}/restore', NoteTrashRestoreController::class)
                 ->name('restore');
 
             Route::delete('trash/{id}', NoteTrashDeleteController::class)
                 ->name('delete');
 
-            Route::patch('trash/restore', NoteTrashRestoreAllController::class)
+            Route::post('trash/restore', NoteTrashRestoreAllController::class)
                 ->name('restore.all');
 
             Route::delete('trash', NoteTrashDeleteAllController::class)

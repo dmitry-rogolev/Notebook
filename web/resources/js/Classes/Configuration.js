@@ -31,6 +31,46 @@ class Configuration extends Base
 
     /**
      * 
+     * @param {String} table 
+     * @param {Number|String} model 
+     * @returns {Url}
+     */
+    getUrlTrash(table, model = null) {
+        if (typeof table !== 'string') {
+            throw new Error('The "table" parameter must be a string.');
+        }
+
+        let path = table + '/' + this.configurations.url.trash;
+
+        if (typeof model === 'number' || typeof model === 'string') {
+            path += '/' + model;
+        }
+        
+        return path;
+    }
+
+    /**
+     * 
+     * @param {String} table 
+     * @param {Number|String} model 
+     * @returns {Url}
+     */
+    getUrlRestore(table, model = null) {
+        if (typeof table !== 'string') {
+            throw new Error('The "table" parameter must be a string.');
+        }
+
+        let path = table + '/' + this.configurations.url.trash + '/';
+
+        if (typeof model === 'number' || typeof model === 'string') {
+            path += model + '/';
+        }
+        
+        return path += this.configurations.url.restore;
+    }
+
+    /**
+     * 
      * @returns {Boolean}
      */
     getIsOpenWindowAfterInit() {
