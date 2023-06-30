@@ -7,7 +7,7 @@
             <ModalComponent ref="modal" @close="modal.hide()">
                 <template #header>
                     <div class="px-4 py-2">
-                        Insert emoticons
+                        {{ $t('Insert emoticons') }}
                     </div>
                 </template>
                 <template #content>
@@ -16,7 +16,7 @@
                         <ul role="menubar" class="flex flex-nowrap border-b border-gray-300 dark:border-gray-600 mb-3">
                             
                             <li role="menuitem" class="mr-2">
-                                <TabLinkComponent @click="isOpenEmoticons = true" :active="isOpenEmoticons" :aria-controls="emoticonsToken" title="Emoticons">
+                                <TabLinkComponent @click="isOpenEmoticons = true" :active="isOpenEmoticons" :aria-controls="emoticonsToken" :title="$t('Emoticons')">
                                     <i class="fa-solid fa-face-grin-wink text-center px-3 text-xl mb-3"></i>
                                 </TabLinkComponent>
                             </li>

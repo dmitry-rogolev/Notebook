@@ -26,14 +26,14 @@ export default {
     data() {
         return {
             formats: {
-                'Header 1': 'h1', 
-                'Header 2': 'h2', 
-                'Header 3': 'h3', 
-                'Header 4': 'h4', 
-                'Header 5': 'h5', 
-                'Header 6': 'h6', 
-                'Paragraph': 'p', 
-                'Blockquote': 'blockquote', 
+                [this.$t('Header', [1])]: 'h1', 
+                [this.$t('Header', [2])]: 'h2', 
+                [this.$t('Header', [3])]: 'h3', 
+                [this.$t('Header', [4])]: 'h4', 
+                [this.$t('Header', [5])]: 'h5', 
+                [this.$t('Header', [6])]: 'h6', 
+                [this.$t('Paragraph')]: 'p', 
+                [this.$t('Block quote')]: 'blockquote', 
             }, 
         };
     },

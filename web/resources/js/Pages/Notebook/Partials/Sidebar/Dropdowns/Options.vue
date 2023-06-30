@@ -1,33 +1,33 @@
 <template>
-    <DropdownComponent ref="dropdown" title="Options" triggerClass="hover:bg-gray-200 dark:hover:bg-gray-700 px-2 text-gray-700 dark:text-gray-300">
+    <DropdownComponent ref="dropdown" :title="$t('Options')" triggerClass="hover:bg-gray-200 dark:hover:bg-gray-700 px-2 text-gray-700 dark:text-gray-300">
         <template #trigger>
             <i class="fa-solid fa-ellipsis"></i>
         </template>
         <template #content>
             <div class="block px-4 py-2 text-xs text-gray-500 select-none">
-                Sort
+                {{ $t('Sort') }}
             </div>
             <DropdownItemComponent @click="$sort.column = 'title'; dropdown.hide();" :active="$sort.column == 'title'">
-                By title
+                {{ $t('By title') }}
             </DropdownItemComponent>
             <DropdownItemComponent @click="$sort.column = 'updated_at'; dropdown.hide();" :active="$sort.column == 'updated_at'">
-                By date
+                {{ $t('By date') }}
             </DropdownItemComponent>
             <div class="block px-4 py-2 text-xs text-gray-500 select-none">
-                View
+                {{ $t('View') }}
             </div>
             <DropdownItemComponent @click="$sidebar.isDetailed = false; dropdown.hide();" :active="! detailed">
-                Brief
+                {{ $t('Brief') }}
             </DropdownItemComponent>
             <DropdownItemComponent @click="$sidebar.isDetailed = true; dropdown.hide();" :active="detailed">
-                Detailed
+                {{ $t('Detailed') }}
             </DropdownItemComponent>
             <div class="block px-4 py-2 text-xs text-gray-500 select-none">
-                Notes
+                {{ $t('Notes') }}
             </div>
             <ConfirmClearModalSidebarPartial @click="dropdown.hide()" />
             <DropdownItemComponent v-if="showTrash" @click="$notebook.restoreAll(); dropdown.hide();">
-                Restore all
+                {{ $t('Restore all') }}
             </DropdownItemComponent>
         </template>
     </DropdownComponent>

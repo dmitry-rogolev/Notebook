@@ -1,17 +1,17 @@
 <template>
     <WindowToolbarComponent class="flex flex-wrap px-2 sm:px-4 py-1 bg-gray-50 dark:bg-slate-800 border-gray-300 dark:border-gray-600 border-b text-gray-700 dark:text-gray-300">
         <div role="menuitem">
-            <ToolbarButtonComponent @click="$notebook.create();" title="New note">
+            <ToolbarButtonComponent @click="$notebook.create();" :title="$t('New note')">
                 <i class="fa-solid fa-file"></i>
             </ToolbarButtonComponent>
         </div>
         <div role="menuitem">
-            <ToolbarButtonComponent @click="$notebook.openFile();" title="Open file">
+            <ToolbarButtonComponent @click="$notebook.openFile();" :title="$t('Open the file')">
                 <i class="fa-solid fa-folder-open"></i>
             </ToolbarButtonComponent>
         </div>
         <div role="menuitem">
-            <ToolbarButtonComponent @click="$notebook.update();" title="Save">
+            <ToolbarButtonComponent @click="$notebook.update();" :title="$t('Save')">
                 <i class="fa-solid fa-floppy-disk"></i>
             </ToolbarButtonComponent>
         </div>
@@ -19,57 +19,57 @@
             <SaveAsPartial />
         </div>
         <div role="menuitem">
-            <ToolbarButtonComponent @click="$window.print();" title="Print">
+            <ToolbarButtonComponent @click="$window.print();" :title="$t('Print')">
                 <i class="fa-solid fa-print"></i>
             </ToolbarButtonComponent>
         </div>
         <div role="menuitem">
-            <ToolbarButtonComponent @click="$editable.execCommand('undo');" title="Undo">
+            <ToolbarButtonComponent @click="$editable.execCommand('undo');" :title="$t('Undo')">
                 <i class="fa-solid fa-rotate-left"></i>
             </ToolbarButtonComponent>
         </div>
         <div role="menuitem">
-            <ToolbarButtonComponent @click="$editable.execCommand('redo');" title="Redo">
+            <ToolbarButtonComponent @click="$editable.execCommand('redo');" :title="$t('Redo')">
                 <i class="fa-solid fa-rotate-right"></i>
             </ToolbarButtonComponent>
         </div>
         <div role="menuitem">
-            <ToolbarButtonComponent @click="$editable.execCommand('cut');" title="Cut">
+            <ToolbarButtonComponent @click="$editable.execCommand('cut');" :title="$t('Cut')">
                 <i class="fa-solid fa-scissors"></i>
             </ToolbarButtonComponent>
         </div>
         <div role="menuitem">
-            <ToolbarButtonComponent @click="$editable.execCommand('copy');" title="Copy">
+            <ToolbarButtonComponent @click="$editable.execCommand('copy');" :title="$t('Copy')">
                 <i class="fa-solid fa-copy"></i>
             </ToolbarButtonComponent>
         </div>
         <div role="menuitem">
-            <ToolbarButtonComponent @click="$editable.execCommand('delete');" title="Delete">
+            <ToolbarButtonComponent @click="$editable.execCommand('delete');" :title="$t('Delete')">
                 <i class="fa-solid fa-trash"></i>
             </ToolbarButtonComponent>
         </div>
         <div role="menuitem">
-            <ToolbarButtonComponent @click="$editable.execCommand('selectAll');" title="Select all">
+            <ToolbarButtonComponent @click="$editable.execCommand('selectAll');" :title="$t('Select all')">
                 <i class="fa-solid fa-object-group"></i>
             </ToolbarButtonComponent>
         </div>
         <div role="menuitem">
-            <ToolbarButtonComponent @click="$mark.show();" title="Find">
+            <ToolbarButtonComponent @click="$mark.show();" :title="$t('Find')">
                 <i class="fa-solid fa-magnifying-glass"></i>
             </ToolbarButtonComponent>
         </div>
         <div role="menuitem">
-            <ToolbarButtonComponent @click="$mark.showReplace();" title="Replace">
+            <ToolbarButtonComponent @click="$mark.showReplace();" :title="$t('Replace')">
                 <i class="fa-solid fa-right-left"></i>
             </ToolbarButtonComponent>
         </div>
         <div role="menuitem">
-            <ToolbarButtonComponent @click="$editable.execCommand('insertUnorderedList')" title="Unordered list">
+            <ToolbarButtonComponent @click="$editable.execCommand('insertUnorderedList')" :title="$t('Unordered list')">
                 <i class="fa-solid fa-list-ul"></i>
             </ToolbarButtonComponent>
         </div>
         <div role="menuitem">
-            <ToolbarButtonComponent @click="$editable.execCommand('insertOrderedList')" title="Ordered list">
+            <ToolbarButtonComponent @click="$editable.execCommand('insertOrderedList')" :title="$t('Ordered list')">
                 <i class="fa-solid fa-list-ol"></i>
             </ToolbarButtonComponent>
         </div>
@@ -80,7 +80,7 @@
             <CreateLinkWindowToolbarModalPartial />
         </div>
         <div role="menuitem">
-            <ToolbarButtonComponent @click="$editable.execCommand('unlink')" title="Unlink">
+            <ToolbarButtonComponent @click="$editable.execCommand('unlink')" :title="$t('Unlink')">
                 <i class="fa-solid fa-unlink"></i>
             </ToolbarButtonComponent>
         </div>
@@ -100,7 +100,7 @@
             <FontSizePartial />
         </div>
         <div role="menuitem">
-            <ToolbarButtonComponent class="relative" title="Color">
+            <ToolbarButtonComponent class="relative" :title="$t('Color')">
                 <div class="-mt-2 -mx-2">
                     <i class="block fa-solid fa-font text-xs"></i>
                     <label class="absolute top-0 bottom-0 left-0 right-0 cursor-pointer" :for="foreColorToken"></label>
@@ -109,7 +109,7 @@
             </ToolbarButtonComponent>
         </div>
         <div role="menuitem">
-            <ToolbarButtonComponent class="relative" title="Background">
+            <ToolbarButtonComponent class="relative" :title="$t('Background')">
                 <div class="-mt-2 -mx-2">
                     <i class="block fa-solid fa-font text-xs bg-yellow-400 dark:bg-yellow-600 px-1 py-1 text-gray-700 dark:text-gray-300"></i>
                     <label class="absolute top-0 bottom-0 left-0 right-0 cursor-pointer" :for="hiliteColorToken"></label>
@@ -118,62 +118,62 @@
             </ToolbarButtonComponent>
         </div>
         <div role="menuitem">
-            <ToolbarButtonComponent @click="$editable.execCommand('bold')" title="Bold">
+            <ToolbarButtonComponent @click="$editable.execCommand('bold')" :title="$t('Bold')">
                 <i class="fa-solid fa-bold"></i>
             </ToolbarButtonComponent>
         </div>
         <div role="menuitem">
-            <ToolbarButtonComponent @click="$editable.execCommand('italic')" title="Italic">
+            <ToolbarButtonComponent @click="$editable.execCommand('italic')" :title="$t('Italic')">
                 <i class="fa-solid fa-italic"></i>
             </ToolbarButtonComponent>
         </div>
         <div role="menuitem">
-            <ToolbarButtonComponent @click="$editable.execCommand('underline')" title="Underline">
+            <ToolbarButtonComponent @click="$editable.execCommand('underline')" :title="$t('Underline')">
                 <i class="fa-solid fa-underline"></i>
             </ToolbarButtonComponent>
         </div>
         <div role="menuitem">
-            <ToolbarButtonComponent @click="$editable.execCommand('strikethrough')" title="Strikethrough">
+            <ToolbarButtonComponent @click="$editable.execCommand('strikethrough')" :title="$t('Strikethrough')">
                 <i class="fa-solid fa-strikethrough"></i>
             </ToolbarButtonComponent>
         </div>
         <div role="menuitem">
-            <ToolbarButtonComponent @click="$editable.execCommand('superscript')" title="Superscript">
+            <ToolbarButtonComponent @click="$editable.execCommand('superscript')" :title="$t('Superscript')">
                 <i class="fa-solid fa-superscript"></i>
             </ToolbarButtonComponent>
         </div>
         <div role="menuitem">
-            <ToolbarButtonComponent @click="$editable.execCommand('subscript')" title="Subscript">
+            <ToolbarButtonComponent @click="$editable.execCommand('subscript')" :title="$t('Subscript')">
                 <i class="fa-solid fa-subscript"></i>
             </ToolbarButtonComponent>
         </div>
         <div role="menuitem">
-            <ToolbarButtonComponent @click="$editable.execCommand('insertHorizontalRule')" title="Horizontal rule">
+            <ToolbarButtonComponent @click="$editable.execCommand('insertHorizontalRule')" :title="$t('Horizontal rule')">
                 <i class="fa-solid fa-window-minimize"></i>
             </ToolbarButtonComponent>
         </div>
         <div role="menuitem">
-            <ToolbarButtonComponent @click="$editable.execCommand('justifyLeft')" title="Align left">
+            <ToolbarButtonComponent @click="$editable.execCommand('justifyLeft')" :title="$t('Align left')">
                 <i class="fa-solid fa-align-left"></i>
             </ToolbarButtonComponent>
         </div>
         <div role="menuitem">
-            <ToolbarButtonComponent @click="$editable.execCommand('justifyCenter')" title="Align center">
+            <ToolbarButtonComponent @click="$editable.execCommand('justifyCenter')" :title="$t('Align center')">
                 <i class="fa-solid fa-align-center"></i>
             </ToolbarButtonComponent>
         </div>
         <div role="menuitem">
-            <ToolbarButtonComponent @click="$editable.execCommand('justifyRight')" title="Align right">
+            <ToolbarButtonComponent @click="$editable.execCommand('justifyRight')" :title="$t('Align right')">
                 <i class="fa-solid fa-align-right"></i>
             </ToolbarButtonComponent>
         </div>
         <div role="menuitem">
-            <ToolbarButtonComponent @click="$editable.execCommand('justifyFull')" title="Align justify">
+            <ToolbarButtonComponent @click="$editable.execCommand('justifyFull')" :title="$t('Align justify')">
                 <i class="fa-solid fa-align-justify"></i>
             </ToolbarButtonComponent>
         </div>
         <div role="menuitem">
-            <ToolbarButtonComponent @click="$editable.execCommand('removeFormat')" title="Remove format">
+            <ToolbarButtonComponent @click="$editable.execCommand('removeFormat')" :title="$t('Remove format')">
                 <i class="fa-solid fa-eraser"></i>
             </ToolbarButtonComponent>
         </div>
@@ -215,14 +215,14 @@ export default {
         return {
             fonts: fonts, 
             formats: {
-                'Header 1': 'h1', 
-                'Header 2': 'h2', 
-                'Header 3': 'h3', 
-                'Header 4': 'h4', 
-                'Header 5': 'h5', 
-                'Header 6': 'h6', 
-                'Paragraph': 'p', 
-                'Block quote': 'blockquote', 
+                [this.$t('Header', [1])]: 'h1', 
+                [this.$t('Header', [2])]: 'h2', 
+                [this.$t('Header', [3])]: 'h3', 
+                [this.$t('Header', [4])]: 'h4', 
+                [this.$t('Header', [5])]: 'h5', 
+                [this.$t('Header', [6])]: 'h6', 
+                [this.$t('Paragraph')]: 'p', 
+                [this.$t('Block quote')]: 'blockquote', 
             }, 
             sizes: [ 8, 9, 10, 11, 12, 14, 16, 18, 20, 22, 24, 30, 36, 48, 62, 72 ], 
             foreColorToken: token(), 

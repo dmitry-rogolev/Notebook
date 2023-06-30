@@ -3,7 +3,7 @@
         <div class="flex flex-nowrap items-center">
             <div class="flex-auto">
                 <i class="fa-solid fa-icons w-6 text-center mr-2"></i>
-                <span>Symbols</span>
+                <span>{{ $t('Symbols') }}</span>
             </div>
             <div class="text-xs font-bold">Alt + Y</div>
         </div>

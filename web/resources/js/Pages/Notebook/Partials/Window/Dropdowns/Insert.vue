@@ -1,18 +1,18 @@
 <template>
-    <DropdownComponent ref="dropdown" triggerClass="px-1 sm:px-2 md:px-3 py-1 text-base lg:text-lg text-gray-700 dark:text-gray-300 bg-gray-100 hover:bg-gray-200 dark:bg-slate-700 dark:hover:bg-slate-600 focus:bg-gray-200 dark:focus:bg-slate-600 text-gray-700 dark:text-gray-300">
+    <DropdownComponent ref="dropdown" triggerClass="px-1 md:px-2 lg:px-3 py-1 text-xs md:text-sm lg:text-base text-gray-700 dark:text-gray-300 bg-gray-100 hover:bg-gray-200 dark:bg-slate-700 dark:hover:bg-slate-600 focus:bg-gray-200 dark:focus:bg-slate-600 text-gray-700 dark:text-gray-300">
         <template #trigger>
-            Insert
+            {{ $t('Insert') }}
         </template>
         <template #content>
 
             <DropdownItemComponent @click="$editable.execCommand('insertUnorderedList'); dropdown.hide();">
                 <i class="fa-solid fa-list-ul w-6 text-center mr-2"></i>
-                <span>Unordered list</span>
+                <span>{{ $t('Unordered list') }}</span>
             </DropdownItemComponent>
 
             <DropdownItemComponent @click="$editable.execCommand('insertOrderedList'); dropdown.hide();">
                 <i class="fa-solid fa-list-ol w-6 text-center mr-2"></i>
-                <span>Ordered list</span>
+                <span>{{ $t('Ordered list') }}</span>
             </DropdownItemComponent>
 
             <UploadImageWindowMenuModalPartial @click="dropdown.hide()" />
@@ -21,7 +21,7 @@
 
             <DropdownItemComponent @click="$editable.execCommand('unlink'); dropdown.hide();">
                 <i class="fa-solid fa-unlink w-6 text-center mr-2"></i>
-                <span>Unlink</span>
+                <span>{{ $t('Unlink') }}</span>
             </DropdownItemComponent>
 
             <InsertSymbolsWindowMenuModalPartial @click="dropdown.hide()" />

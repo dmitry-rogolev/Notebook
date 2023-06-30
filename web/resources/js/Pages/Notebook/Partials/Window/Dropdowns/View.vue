@@ -1,7 +1,7 @@
 <template>
-    <DropdownComponent ref="dropdown" triggerClass="px-1 sm:px-2 md:px-3 py-1 text-base lg:text-lg text-gray-700 dark:text-gray-300 bg-gray-100 hover:bg-gray-200 dark:bg-slate-700 dark:hover:bg-slate-600 focus:bg-gray-200 dark:focus:bg-slate-600 text-gray-700 dark:text-gray-300">
+    <DropdownComponent ref="dropdown" triggerClass="px-1 md:px-2 lg:px-3 py-1 text-xs md:text-sm lg:text-base text-gray-700 dark:text-gray-300 bg-gray-100 hover:bg-gray-200 dark:bg-slate-700 dark:hover:bg-slate-600 focus:bg-gray-200 dark:focus:bg-slate-600 text-gray-700 dark:text-gray-300">
         <template #trigger>
-            View
+            {{ $t('View') }}
         </template>
         <template #content>
 
@@ -11,7 +11,7 @@
                         <i v-if="tabs" class="fa-solid fa-check w-6 text-center mr-2"></i>
                         <div v-else class="w-6 mr-2"></div>
                     </div>
-                    <div class="flex-auto">Tabs</div>
+                    <div class="flex-auto">{{ $t('Tabs') }}</div>
                 </div>
             </DropdownItemComponent>
 
@@ -21,7 +21,7 @@
                         <i v-if="toolbar" class="fa-solid fa-check w-6 text-center mr-2"></i>
                         <div v-else class="w-6 mr-2"></div>
                     </div>
-                    <div class="flex-auto">Toolbar</div>
+                    <div class="flex-auto">{{ $t('Toolbar') }}</div>
                 </div>
             </DropdownItemComponent>
 
@@ -31,7 +31,7 @@
                         <i v-if="statusbar" class="fa-solid fa-check w-6 text-center mr-2"></i>
                         <div v-else class="w-6 mr-2"></div>
                     </div>
-                    <div class="flex-auto">Statusbar</div>
+                    <div class="flex-auto">{{ $t('Statusbar') }}</div>
                 </div>
             </DropdownItemComponent>
 
@@ -41,7 +41,7 @@
                         <i v-if="fullscreen" class="fa-solid fa-check w-6 text-center mr-2"></i>
                         <div v-else class="w-6 mr-2"></div>
                     </div>
-                    <div class="flex-auto">In full screen</div>
+                    <div class="flex-auto">{{ $t('In full screen') }}</div>
                     <div class="text-xs font-bold">Alt + Z</div>
                 </div>
             </DropdownItemComponent>

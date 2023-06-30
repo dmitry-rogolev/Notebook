@@ -7,7 +7,7 @@
             <ModalComponent ref="modal" @close="close">
                 <template #header>
                     <div class="px-4 py-2">
-                        Create link
+                        {{ $t('Create link') }}
                     </div>
                 </template>
                 <template #content>
@@ -24,7 +24,7 @@
                             type="button" 
                             class="block px-6 py-2 bg-indigo-500 dark:bg-indigo-600 hover:bg-indigo-600 dark:hover:bg-indigo-500 border-indigo-500 dark:border-indigo-600 border text-gray-100 transition duration-200 ease-in-out rounded-r-md focus-visible:outline-none focus:ring-2 focus:ring-indigo-500 dark:focus:ring-indigo-600"
                             >
-                            Add
+                            {{ $t('Add') }}
                         </button>
                     </div>
                 </template>

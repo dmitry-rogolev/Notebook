@@ -1,5 +1,5 @@
 <template>
-    <AppLayout title="Notebook">
+    <AppLayout :title="$t('Main')">
         <main class="flex-auto flex flex-col">
             <div class="flex-auto flex">
 

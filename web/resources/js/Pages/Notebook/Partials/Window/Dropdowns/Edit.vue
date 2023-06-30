@@ -1,7 +1,7 @@
 <template>
-    <DropdownComponent ref="dropdown" triggerClass="px-1 sm:px-2 md:px-3 py-1 text-base lg:text-lg text-gray-700 dark:text-gray-300 bg-gray-100 hover:bg-gray-200 dark:bg-slate-700 dark:hover:bg-slate-600 focus:bg-gray-200 dark:focus:bg-slate-600 text-gray-700 dark:text-gray-300">
+    <DropdownComponent ref="dropdown" triggerClass="px-1 md:px-2 lg:px-3 py-1 text-xs md:text-sm lg:text-base text-gray-700 dark:text-gray-300 bg-gray-100 hover:bg-gray-200 dark:bg-slate-700 dark:hover:bg-slate-600 focus:bg-gray-200 dark:focus:bg-slate-600 text-gray-700 dark:text-gray-300">
         <template #trigger>
-            Edit
+            {{ $t('Edit') }}
         </template>
         <template #content>
 
@@ -9,7 +9,7 @@
                 <div class="flex flex-nowrap items-center">
                     <div class="flex-auto">
                         <i class="fa-solid fa-rotate-left w-6 text-center mr-2"></i>
-                        <span>Undo</span>
+                        <span>{{ $t('Undo') }}</span>
                     </div>
                     <div class="text-xs font-bold">Ctrl + Z</div>
                 </div>
@@ -19,7 +19,7 @@
                 <div class="flex flex-nowrap items-center">
                     <div class="flex-auto">
                         <i class="fa-solid fa-rotate-right w-6 text-center mr-2"></i>
-                        <span>Redo</span>
+                        <span>{{ $t('Redo') }}</span>
                     </div>
                     <div class="text-xs font-bold">Ctrl + Y</div>
                 </div>
@@ -29,7 +29,7 @@
                 <div class="flex flex-nowrap items-center">
                     <div class="flex-auto">
                         <i class="fa-solid fa-scissors w-6 text-center mr-2"></i>
-                        <span>Cut</span>
+                        <span>{{ $t('Cut') }}</span>
                     </div>
                     <div class="text-xs font-bold">Ctrl + X</div>
                 </div>
@@ -39,7 +39,7 @@
                 <div class="flex flex-nowrap items-center">
                     <div class="flex-auto">
                         <i class="fa-solid fa-copy w-6 text-center mr-2"></i>
-                        <span>Copy</span>
+                        <span>{{ $t('Copy') }}</span>
                     </div>
                     <div class="text-xs font-bold">Ctrl + C</div>
                 </div>
@@ -49,9 +49,9 @@
                 <div class="flex flex-nowrap items-center">
                     <div class="flex-auto">
                         <i class="fa-solid fa-trash w-6 text-center mr-2"></i>
-                        <span>Delete</span>
+                        <span></span>
                     </div>
-                    <div class="text-xs font-bold">Delete</div>
+                    <div class="text-xs font-bold">{{ $t('Delete') }}</div>
                 </div>
             </DropdownItemComponent>
 
@@ -61,7 +61,7 @@
                 <div class="flex flex-nowrap items-center">
                     <div class="flex-auto">
                         <i class="fa-solid fa-object-group w-6 text-center mr-2"></i>
-                        <span>Select all</span>
+                        <span>{{ $t('Select all') }}</span>
                     </div>
                     <div class="text-xs font-bold">Ctrl + A</div>
                 </div>
@@ -73,7 +73,7 @@
                 <div class="flex flex-nowrap items-center">
                     <div class="flex-auto">
                         <i class="fa-solid fa-magnifying-glass w-6 text-center mr-2"></i>
-                        <span>Find</span>
+                        <span>{{ $t('Find') }}</span>
                     </div>
                     <div class="text-xs font-bold">Alt + F</div>
                 </div>
@@ -83,7 +83,7 @@
                 <div class="flex flex-nowrap items-center">
                     <div class="flex-auto">
                         <i class="fa-solid fa-right-left w-6 text-center mr-2"></i>
-                        <span>Replace</span>
+                        <span>{{ $t('Replace') }}</span>
                     </div>
                     <div class="text-xs font-bold">Alt + R</div>
                 </div>

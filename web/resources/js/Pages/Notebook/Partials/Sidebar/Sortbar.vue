@@ -6,7 +6,7 @@
             role="button"
             class="hover:bg-gray-200 dark:hover:bg-gray-700 px-2 text-gray-700 dark:text-gray-300"
             @click="$sort.toggleDirection();"
-            :title="direction == 'asc' ? 'in ascending order' : 'in descending order'"
+            :title="direction == 'asc' ? $t('in ascending order') : $t('in descending order')"
             >
             <i v-if="direction == 'asc'" class="fa-solid fa-arrow-down-short-wide"></i>
             <i v-else class="fa-solid fa-arrow-down-wide-short"></i>

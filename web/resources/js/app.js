@@ -8,6 +8,7 @@ import { createInertiaApp } from '@inertiajs/vue3';
 import { resolvePageComponent } from 'laravel-vite-plugin/inertia-helpers';
 import { ZiggyVue } from '../../vendor/tightenco/ziggy/dist/vue.m';
 
+import i18n from './i18n';
 import store from './store'; 
 import VueApp from './Plugins/App/plugin';
 import notifier from './Plugins/Notification/plugin';
@@ -27,6 +28,7 @@ createInertiaApp({
         return createApp({ render: () => h(App, props) })
             .use(plugin)
             .use(ZiggyVue, Ziggy)
+            .use(i18n)
             .use(store)
             .use(VueApp)
             .use(Sort)

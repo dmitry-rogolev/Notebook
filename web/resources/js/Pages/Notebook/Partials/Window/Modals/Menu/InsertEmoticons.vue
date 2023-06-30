@@ -3,7 +3,7 @@
         <div class="flex flex-nowrap items-center">
             <div class="flex-auto">
                 <i class="fa-solid fa-face-grin-wink w-6 text-center mr-2"></i>
-                <span>Emoticons</span>
+                <span>{{ $t('Emoticons') }}</span>
             </div>
             <div class="text-xs font-bold">Alt + E</div>
         </div>

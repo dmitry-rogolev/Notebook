@@ -7,7 +7,7 @@
             <ModalComponent ref="modal" @close="modal.hide()">
                 <template #header>
                     <div class="px-4 py-2">
-                        Add image
+                        {{ $t('Add image') }}
                     </div>
                 </template>
                 <template #content>
@@ -20,13 +20,13 @@
                             <TabComponent class="px-3 py-2 mr-2 border-b-2">
                                 <div class="flex flex-nowrap items-center">
                                     <i class="fa-solid fa-link mr-2 block"></i>
-                                    <div class="flex-auto">Link</div>
+                                    <div class="flex-auto">{{ $t('Link') }}</div>
                                 </div>
                             </TabComponent>
                             <TabComponent class="px-3 py-2 border-b-2">
                                 <div class="flex flex-nowrap items-center">
                                     <i class="fa-solid fa-file mr-2 block"></i>
-                                    <div class="flex-auto">File</div>
+                                    <div class="flex-auto">{{ $t('File') }}</div>
                                 </div>
                             </TabComponent>
                         </template>
@@ -46,7 +46,7 @@
                                         type="button" 
                                         class="block px-6 py-2 bg-indigo-500 dark:bg-indigo-600 hover:bg-indigo-600 dark:hover:bg-indigo-500 border-indigo-500 dark:border-indigo-600 border text-gray-100 transition duration-200 ease-in-out rounded-r-md focus-visible:outline-none focus:ring-2 focus:ring-indigo-500 dark:focus:ring-indigo-600"
                                         >
-                                        Add
+                                        {{ $t('Add') }}
                                     </button>
                                 </div>
                             </TargetComponent>

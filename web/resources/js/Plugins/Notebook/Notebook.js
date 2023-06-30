@@ -18,6 +18,7 @@ class Notebook
     _configuration = null;
     _$window = null;
     _$notifier = null;
+    _$t = null;
 
     _isInit = false;
     _autosave = false;
@@ -67,6 +68,7 @@ class Notebook
         this._configuration = Configuration.getInstance();
         this._$window = window.app.config.globalProperties.$window;
         this._$notifier = window.app.config.globalProperties.$notifier;
+        this._$t = window.app.config.globalProperties.$t;
         this._$window.setDefaultFile({
             title: '', 
             text: '', 
@@ -78,6 +80,10 @@ class Notebook
             this._getNotes().then((notes) => {
                 this._notes = notes;
 
+                this._getTrash().then(trash => {
+                    this._trash = trash;
+                });
+
                 this._openWindow();
 
                 this._autosave = this._getAutosave();
@@ -85,9 +91,6 @@ class Notebook
                 this._addKeyUpEventListener();
 
                 this._isInit = true;
-            });
-            this._getTrash().then(trash => {
-                this._trash = trash;
             });
         }
     }
@@ -111,7 +114,7 @@ class Notebook
             this._notes.push(note);
             this._$window.open(note);
             this._$notifier.push({
-                message: 'Created', 
+                message: this._$t('Created'), 
                 success: true, 
             });
         });
@@ -138,7 +141,7 @@ class Notebook
         if (this._$window.file.isDirty) {
             UpdateController.update(this._$window.file).then(() => {
                 this._$notifier.push({
-                    message: 'Saved', 
+                    message: this._$t('Saved'), 
                     success: true, 
                 });
             });
@@ -154,7 +157,7 @@ class Notebook
                 this.find(this._search);
                 this._openWindow();
                 this._$notifier.push({
-                    message: 'Deleted', 
+                    message: this._$t('Deleted'), 
                     success: true, 
                 });
                 this._getTrash().then(trash => {
@@ -175,7 +178,7 @@ class Notebook
                     this._trash = trash;
                     this._openWindowTrash();
                     this._$notifier.push({
-                        message: 'Restored', 
+                        message: this._$t('Restored'), 
                         success: true, 
                     });
                 });
@@ -191,7 +194,7 @@ class Notebook
                     this._trash = trash;
                     this._openWindowTrash();
                     this._$notifier.push({
-                        message: 'Deleted', 
+                        message: this._$t('Deleted'), 
                         success: true, 
                     });
                 });
@@ -205,7 +208,7 @@ class Notebook
                 this._notes = [];
                 this._openWindowTrash();
                 this._$notifier.push({
-                    message: 'Cleared', 
+                    message: this._$t('Cleared'), 
                     success: true, 
                 });
                 this._getTrash().then(trash => {
@@ -224,7 +227,7 @@ class Notebook
                     this._notes = notes;
                     this._openWindow();
                     this._$notifier.push({
-                        message: 'Restored', 
+                        message: this._$t('Restored'), 
                         success: true, 
                     });
                 });
@@ -238,7 +241,7 @@ class Notebook
                 this._trash = [];
                 this._openWindow();
                 this._$notifier.push({
-                    message: 'Cleared', 
+                    message: this._$t('Cleared'), 
                     success: true, 
                 });
             });
@@ -353,7 +356,7 @@ class Notebook
             this._timerAutosave = setInterval(() => this.update(), this._configuration.getAutosaveInterval());
 
             this._$notifier.push({
-                message: 'Auto save mod on', 
+                message: this._$t('Auto save mod on'), 
                 success: true, 
             });
         }
@@ -365,7 +368,7 @@ class Notebook
             this._timerAutosave = null;
 
             this._$notifier.push({
-                message: 'Auto save mod off', 
+                message: this._$t('Auto save mod off'), 
                 success: true, 
             });
         }

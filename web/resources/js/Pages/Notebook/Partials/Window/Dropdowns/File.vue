@@ -1,14 +1,14 @@
 <template>
-    <DropdownComponent ref="dropdown" triggerClass="px-1 sm:px-2 md:px-3 py-1 text-base lg:text-lg text-gray-700 dark:text-gray-300 bg-gray-100 hover:bg-gray-200 dark:bg-slate-700 dark:hover:bg-slate-600 focus:bg-gray-200 dark:focus:bg-slate-600 text-gray-700 dark:text-gray-300">
+    <DropdownComponent ref="dropdown" triggerClass="px-1 md:px-2 lg:px-3 py-1 text-xs md:text-sm lg:text-base text-gray-700 dark:text-gray-300 bg-gray-100 hover:bg-gray-200 dark:bg-slate-700 dark:hover:bg-slate-600 focus:bg-gray-200 dark:focus:bg-slate-600 text-gray-700 dark:text-gray-300">
         <template #trigger>
-            File
+            {{ $t('File') }}
         </template>
         <template #content>
             <DropdownItemComponent @click="$notebook.create(); dropdown.hide();">
                 <div class="flex flex-nowrap items-center">
                     <div class="flex-auto">
                         <i class="fa-solid fa-file block mr-2 w-6 text-center"></i>
-                        <span>New</span>
+                        <span>{{ $t('New') }}</span>
                     </div>
                     <div class="text-xs font-bold">Alt + N</div>
                 </div>
@@ -18,7 +18,7 @@
                 <div class="flex flex-nowrap items-center">
                     <div class="flex-auto">
                         <i class="fa-solid fa-folder-open w-6 text-center mr-2"></i>
-                        <span>Open</span>
+                        <span>{{ $t('Open') }}</span>
                     </div>
                     <div class="text-xs font-bold">Alt + O</div>
                 </div>
@@ -30,7 +30,7 @@
                 <div class="flex flex-nowrap items-center">
                     <div class="flex-auto">
                         <i class="fa-solid fa-floppy-disk w-6 text-center mr-2"></i>
-                        <span>Save</span>
+                        <span>{{ $t('Save') }}</span>
                     </div>
                     <div class="text-xs font-bold">Alt + S</div>
                 </div>
@@ -44,7 +44,7 @@
                         <i v-if="autosave" class="fa-solid fa-check w-6 text-center mr-2"></i>
                         <div v-else class="w-6 mr-2"></div>
                     </div>
-                    <div class="flex-auto">Auto Save</div>
+                    <div class="flex-auto">{{ $t('Auto save') }}</div>
                 </div>
             </DropdownItemComponent>
 
@@ -54,7 +54,7 @@
                 <div class="flex flex-nowrap items-center">
                     <div class="flex-auto">
                         <i class="fa-solid fa-print w-6 text-center mr-2"></i>
-                        <span>Print</span>
+                        <span>{{ $t('Print') }}</span>
                     </div>
                     <div class="text-xs font-bold">Ctrl + P</div>
                 </div>
@@ -66,7 +66,7 @@
                 <div class="flex flex-nowrap items-center">
                     <div class="flex-auto">
                         <i class="fa-solid fa-door-open w-6 text-center mr-2"></i>
-                        <span>Exit</span>
+                        <span>{{ $t('Exit') }}</span>
                     </div>
                     <div class="text-xs font-bold">Alt + Q</div>
                 </div>

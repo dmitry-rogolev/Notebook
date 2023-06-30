@@ -3,7 +3,7 @@
         <div class="flex flex-nowrap items-center">
             <div class="flex-auto">
                 <i class="fa-solid fa-link w-6 text-center mr-2"></i>
-                <span>Link</span>
+                <span>{{ $t('Link') }}</span>
             </div>
             <div class="text-xs font-bold">Alt + L</div>
         </div>

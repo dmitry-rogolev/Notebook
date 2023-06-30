@@ -5,25 +5,26 @@
         targetsContainerClass="bg-white dark:bg-gray-800 border-gray-300 dark:border-gray-600 border-r h-full min-w-[8rem] w-32 md:w-40 lg:w-52 xl:w-64 overflow-auto resize-x focus-visible:outline-none"
         >
         <template #triggers>
-            <TriggerSidebarPartial @click="$sidebar.showNotes();" :active="showNotes" title="Notes">
+            <TriggerSidebarPartial @click="$sidebar.showNotes();" :active="showNotes" :title="$t('Notes')">
                 <i class="fa-solid fa-note-sticky"></i>
             </TriggerSidebarPartial>
-            <TriggerSidebarPartial @click="$sidebar.showSearch();" :active="showSearch" title="Search">
+            <TriggerSidebarPartial @click="$sidebar.showSearch();" :active="showSearch" :title="$t('Search')">
                 <i class="fa-sharp fa-solid fa-magnifying-glass"></i>
             </TriggerSidebarPartial>
-            <TriggerSidebarPartial @click="$sidebar.showTrash();" :active="showTrash" title="Archive">
+            <TriggerSidebarPartial @click="$sidebar.showTrash();" :active="showTrash" :title="$t('Archive')">
                 <i class="fa-solid fa-box-archive"></i>
             </TriggerSidebarPartial>
-            <TriggerSidebarPartial @click="$notebook.openFile();" title="Open the file">
+            <TriggerSidebarPartial @click="$notebook.openFile();" :title="$t('Open the file')">
                 <i class="fa-solid fa-folder-open"></i>
             </TriggerSidebarPartial>
-            <TriggerSidebarPartial @click="$notebook.create()" title="Add note">
+            <TriggerSidebarPartial @click="$notebook.create()" :title="$t('Add note')">
                 <i class="fa-solid fa-plus"></i>
             </TriggerSidebarPartial>
-            <TriggerSidebarPartial @click="toggleDark" :title="dark ? 'Bright theme' : 'Dark theme'">
+            <TriggerSidebarPartial @click="toggleDark" :title="dark ? $t('Bright theme') : $t('Dark theme')">
                 <i v-if="dark" class="fa-solid fa-sun"></i>
                 <i v-else class="fa-solid fa-moon"></i>
             </TriggerSidebarPartial>
+            <LocalesPartial />
             <ProfilePartial />
         </template>
         <template #targets>
@@ -86,6 +87,7 @@ import TriggerSidebarPartial from './Sidebar/Trigger.vue';
 import NotePartial from './Sidebar/Note.vue';
 import SortbarPartial from './Sidebar/Sortbar.vue';
 import ProfilePartial from './Sidebar/Dropdowns/Profile.vue';
+import LocalesPartial from './Sidebar/Dropdowns/Locales.vue';
 import { Sortable } from "sortablejs-vue3";
 
 export default {
@@ -100,6 +102,7 @@ export default {
         SortbarPartial, 
         Sortable, 
         ProfilePartial, 
+        LocalesPartial, 
     }, 
 
     computed: {
