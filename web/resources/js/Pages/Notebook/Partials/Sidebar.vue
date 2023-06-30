@@ -20,7 +20,7 @@
             <TriggerSidebarPartial @click="$notebook.create()" :title="$t('Add note')">
                 <i class="fa-solid fa-plus"></i>
             </TriggerSidebarPartial>
-            <TriggerSidebarPartial @click="toggleDark" :title="dark ? $t('Bright theme') : $t('Dark theme')">
+            <TriggerSidebarPartial class="mt-auto" @click="toggleDark" :title="dark ? $t('Bright theme') : $t('Dark theme')">
                 <i v-if="dark" class="fa-solid fa-sun"></i>
                 <i v-else class="fa-solid fa-moon"></i>
             </TriggerSidebarPartial>

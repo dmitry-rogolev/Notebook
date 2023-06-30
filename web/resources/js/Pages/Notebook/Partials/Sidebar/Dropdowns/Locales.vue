@@ -5,7 +5,7 @@
         @show="show = true"
         @hide="show = false"
         :title="$t('Language')"
-        class="mt-auto w-full" 
+        class="w-full" 
         heightClass="h-auto"
         triggerClass="py-3 px-3 text-2xl border-0 block transition duration-300 ease-in-out focus-visible:outline-none"
         >
