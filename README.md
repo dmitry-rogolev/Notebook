@@ -15,7 +15,7 @@
 - Axios;
 - Vite;
 - PHP;
-- Laravel.
+- Laravel;
 
 ## Разработчик
 
