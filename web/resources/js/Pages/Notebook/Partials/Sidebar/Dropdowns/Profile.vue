@@ -6,15 +6,17 @@
         @hide="show = false"
         :title="$t('User')"
         class="w-full" 
-        triggerClass="py-3 px-3 text-2xl border-0 block transition duration-300 ease-in-out focus-visible:outline-none"
+        triggerClass="py-3 px-2 text-2xl border-0 block transition duration-300 ease-in-out focus-visible:outline-none"
         >
         <template #trigger>
-            <div v-if="$page.props.auth.user" class="mx-auto rounded-full border-2 transition duration-300 ease-in-out focus-visible:outline-none focus:border-indigo-500 dark:focus:border-indigo-600 focus-visible:border-indigo-500 dark:focus-visible:border-indigo-600" :class="{'border-indigo-500 dark:border-indigo-600': show, 'border-gray-500 dark:border-gray-400 hover:border-gray-600 dark:hover:border-gray-300': ! show}">
-                <img class="h-8 w-8 rounded-full object-cover" :src="$page.props.auth.user.profile_photo_url" :alt="$page.props.auth.user.name">
-            </div>
-            <div v-else class="mx-auto transition duration-300 ease-in-out focus:text-indigo-500 dark:focus:text-indigo-600" :class="{'text-indigo-500 dark:text-indigo-600': show, 'text-gray-500 dark:text-gray-400 hover:text-gray-600 dark:hover:text-gray-300': ! show}">
-                <i class="fa-solid fa-circle-user text-3xl"></i>
-            </div>
+            <img 
+                v-if="$page.props.auth.user"
+                class="h-8 w-8 mx-auto rounded-full object-cover border-2 transition duration-300 ease-in-out focus-visible:outline-none focus:border-indigo-500 dark:focus:border-indigo-600 focus-visible:border-indigo-500 dark:focus-visible:border-indigo-600" 
+                :class="{'border-indigo-500 dark:border-indigo-600': show, 'border-gray-500 dark:border-gray-400 hover:border-gray-600 dark:hover:border-gray-300': ! show}"
+                :src="$page.props.auth.user.profile_photo_url" 
+                :alt="$page.props.auth.user.name"
+                >
+            <div v-else class="fa-solid fa-circle-user text-3xl transition duration-300 ease-in-out focus:text-indigo-500 dark:focus:text-indigo-600" :class="{'text-indigo-500 dark:text-indigo-600': show, 'text-gray-500 dark:text-gray-400 hover:text-gray-600 dark:hover:text-gray-300': ! show}"></div>
         </template>
         <template #content>
             <template v-if="$page.props.auth.user">

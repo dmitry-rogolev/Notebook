@@ -39,6 +39,10 @@ export default {
         this.$notebook.init();
     }, 
 
+    mounted() {
+        this.$store.dispatch('dark');
+    }, 
+
     unmounted() {
         this.$notebook.dispose();
     }, 

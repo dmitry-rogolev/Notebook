@@ -2,7 +2,7 @@
     <div>
         <Head :title="title" />
         
-        <div class="min-h-screen bg-gray-100 dark:bg-gray-900 flex flex-col">
+        <div class="min-h-screen bg-gray-200 dark:bg-gray-900 flex flex-col">
             <slot></slot>
         </div>
 

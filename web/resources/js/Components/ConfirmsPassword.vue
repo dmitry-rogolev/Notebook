@@ -39,8 +39,6 @@ const startConfirmingPassword = () => {
             emit('confirmed');
         } else {
             confirmingPassword.value = true;
-
-            setTimeout(() => passwordInput.value.focus(), 250);
         }
     });
 };
@@ -59,7 +57,6 @@ const confirmPassword = () => {
     }).catch(error => {
         form.processing = false;
         form.error = error.response.data.errors.password[0];
-        passwordInput.value.focus();
     });
 };
 
@@ -89,7 +86,7 @@ const closeModal = () => {
                         ref="passwordInput"
                         v-model="form.password"
                         type="password"
-                        class="mt-1 block w-3/4"
+                        class="mt-1 block w-full"
                         placeholder="Password"
                         autocomplete="current-password"
                         @keyup.enter="confirmPassword"

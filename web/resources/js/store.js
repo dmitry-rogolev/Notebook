@@ -4,12 +4,6 @@ const store = createStore({
     state() {
         return {
             dark: false, 
-            autosave: true, 
-            windowHeight: 0, 
-            sidebarWidth: 0, 
-            windowWidth: 0, 
-            statusbar: true, 
-            fullscreen: false, 
         };
     }, 
 
@@ -17,32 +11,11 @@ const store = createStore({
         getDark() {
             return localStorage.getItem('dark') == 'true' ? true : false;
         }, 
-        getAutosave() {
-            return localStorage.getItem('autosave') == 'true' ? true : false;
-        }, 
     }, 
 
     mutations: {
         dark(state, dark) {
             state.dark = dark;
-        }, 
-        autosave(state, autosave) {
-            state.autosave = autosave;
-        }, 
-        windowHeight(state, windowHeight) {
-            state.windowHeight = windowHeight;
-        }, 
-        sidebarWidth(state, sidebarWidth) {
-            state.sidebarWidth = sidebarWidth;
-        }, 
-        windowWidth(state, windowWidth) {
-            state.windowWidth = windowWidth;
-        }, 
-        statusbar(state, statusbar) {
-            state.statusbar = statusbar;
-        }, 
-        fullscreen(state, fullscreen) {
-            state.fullscreen = fullscreen;
         }, 
     }, 
 
@@ -65,14 +38,6 @@ const store = createStore({
                 } else {
                     document.body.classList.remove('dark');
                 }
-            }
-        }, 
-        autosave(context, autosave) {
-            if (autosave != undefined) {
-                context.commit('autosave', autosave);
-                localStorage.setItem('autosave', autosave);
-            } else {
-                context.commit('autosave', context.getters.getAutosave);
             }
         }, 
     }, 

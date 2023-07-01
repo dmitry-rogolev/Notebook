@@ -7,6 +7,8 @@ import InputError from '@/Components/InputError.vue';
 import InputLabel from '@/Components/InputLabel.vue';
 import PrimaryButton from '@/Components/PrimaryButton.vue';
 import TextInput from '@/Components/TextInput.vue';
+import { onMounted } from 'vue';
+import { useStore } from 'vuex';
 
 const form = useForm({
     name: '',
@@ -21,6 +23,10 @@ const submit = () => {
         onFinish: () => form.reset('password', 'password_confirmation'),
     });
 };
+
+onMounted(() => {
+    useStore().dispatch('dark');
+});
 </script>
 
 <template>
