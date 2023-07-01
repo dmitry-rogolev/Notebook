@@ -49,7 +49,7 @@ onMounted(() => {
 
         <form @submit.prevent="submit">
             <div>
-                <InputLabel for="email" value="Email" />
+                <InputLabel for="email" :value="$t('Email')" />
                 <TextInput
                     id="email"
                     v-model="form.email"
@@ -63,7 +63,7 @@ onMounted(() => {
             </div>
 
             <div class="mt-4">
-                <InputLabel for="password" value="Password" />
+                <InputLabel for="password" :value="$t('Password')" />
                 <TextInput
                     id="password"
                     v-model="form.password"
@@ -78,7 +78,7 @@ onMounted(() => {
             <div class="block mt-4">
                 <label class="flex items-center">
                     <Checkbox v-model:checked="form.remember" name="remember" />
-                    <span class="ml-2 text-sm text-gray-600 dark:text-gray-400">Remember me</span>
+                    <span class="ml-2 text-sm text-gray-600 dark:text-gray-400">{{ $t('Remember me') }}</span>
                 </label>
             </div>
 
@@ -88,7 +88,7 @@ onMounted(() => {
                 </Link> -->
 
                 <PrimaryButton class="ml-4" :class="{ 'opacity-25': form.processing }" :disabled="form.processing">
-                    Log in
+                    {{ $t('Log in') }}
                 </PrimaryButton>
             </div>
         </form>
