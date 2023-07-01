@@ -6,13 +6,25 @@
         <template #content>
 
             <DropdownItemComponent @click="$editable.execCommand('insertUnorderedList'); dropdown.hide();">
-                <i class="fa-solid fa-list-ul w-6 text-center mr-2"></i>
-                <span>{{ $t('Unordered list') }}</span>
+                <div class="flex flex-nowrap">
+                    <div>
+                        <i class="fa-solid fa-list-ul w-6 text-center mr-2"></i>
+                    </div>
+                    <div class="flex-auto">
+                        {{ $t('Unordered list') }}
+                    </div>
+                </div>
             </DropdownItemComponent>
 
             <DropdownItemComponent @click="$editable.execCommand('insertOrderedList'); dropdown.hide();">
-                <i class="fa-solid fa-list-ol w-6 text-center mr-2"></i>
-                <span>{{ $t('Ordered list') }}</span>
+                <div class="flex flex-nowrap">
+                    <div>
+                        <i class="fa-solid fa-list-ol w-6 text-center mr-2"></i>
+                    </div>
+                    <div class="flex-auto">
+                        {{ $t('Ordered list') }}
+                    </div>
+                </div>
             </DropdownItemComponent>
 
             <UploadImageWindowMenuModalPartial @click="dropdown.hide()" />

@@ -8,7 +8,7 @@
                 type="text" 
                 v-model="keyword"
                 :placeholder="$t('Find')" 
-                class="w-full focus-visible:outline-none border-0 rounded-l-lg text-gray-700 dark:text-gray-300 focus:ring-0"
+                class="w-full focus-visible:outline-none border-0 rounded-l-lg text-gray-700 dark:text-gray-300 focus:ring-0 bg-white dark:bg-gray-800"
                 />
 
             <button 
@@ -37,7 +37,7 @@
                 type="text" 
                 v-model="replace"
                 :placeholder="$t('Replace')" 
-                class="w-full focus-visible:outline-none focus:outline-none rounded-l-lg border-0 text-gray-700 dark:text-gray-300 focus:border-gray-300 dark:focus:border-gray-600 focus:ring-0"
+                class="w-full focus-visible:outline-none focus:outline-none rounded-bl-lg border-0 text-gray-700 dark:text-gray-300 focus:border-gray-300 dark:focus:border-gray-600 focus:ring-0 bg-white dark:bg-gray-800"
                 />
 
             <button 

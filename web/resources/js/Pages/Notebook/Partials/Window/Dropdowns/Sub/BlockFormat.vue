@@ -1,5 +1,5 @@
 <template>
-    <DropdownComponent @show="$emit('show')" @hide="$emit('hide')" ref="dropdown" :triggerClass="[triggerClass]" :options="options" :heightClass="[heightClass]" widthClass="w-60">
+    <DropdownComponent @show="$emit('show')" @hide="$emit('hide')" ref="dropdown" :triggerClass="[triggerClass]" :options="options" :heightClass="[heightClass]" widthClass="w-80">
         <template #trigger>
             <slot></slot>
         </template>

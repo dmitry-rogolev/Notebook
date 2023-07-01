@@ -23,12 +23,12 @@
                                     <div class="flex-auto">{{ $t('Link') }}</div>
                                 </div>
                             </TabComponent>
-                            <TabComponent class="px-3 py-2 border-b-2">
+                            <!-- <TabComponent class="px-3 py-2 border-b-2">
                                 <div class="flex flex-nowrap items-center">
                                     <i class="fa-solid fa-file mr-2 block"></i>
                                     <div class="flex-auto">{{ $t('File') }}</div>
                                 </div>
-                            </TabComponent>
+                            </TabComponent> -->
                         </template>
                         <template #targets>
                             <TargetComponent>
@@ -50,14 +50,14 @@
                                     </button>
                                 </div>
                             </TargetComponent>
-                            <TargetComponent>
+                            <!-- <TargetComponent v-if="$page.props.auth.user">
                                 <div class="px-4 py-4 flex">
                                     <form 
                                         :id="dropzoneToken"
                                         class="dropzone w-full h-52 px-4 py-2 bg-white dark:bg-gray-800 border-gray-300 dark:border-gray-700 border-2 border-dashed text-gray-600 dark:text-gray-400 rounded-lg flex items-center justify-center"
                                         ></form>
                                 </div>
-                            </TargetComponent>
+                            </TargetComponent> -->
                         </template>
                     </TabsComponent>
                 </template>
@@ -185,11 +185,11 @@ export default {
 
     mounted() {
         this.initModal();
-        this.createDropzone();
+        // this.createDropzone();
     }, 
 
     unmounted() {
-        this.dropzone = null;
+        // this.dropzone = null;
     }, 
 }
 </script>

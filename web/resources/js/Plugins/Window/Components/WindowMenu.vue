@@ -1,6 +1,6 @@
 <template>
     <transition name="menu">
-        <div v-show="show" class="flex z-[2] print:hidden">
+        <div v-show="show && ! note.isTrashed" class="flex z-[2] print:hidden">
             <slot></slot>
         </div>
     </transition>
@@ -13,6 +13,9 @@ export default {
     computed: {
         show() {
             return this.$window.standard;
+        }, 
+        note() {
+            return this.$window.file;
         }, 
     },
 }

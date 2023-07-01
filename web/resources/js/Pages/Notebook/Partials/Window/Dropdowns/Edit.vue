@@ -49,7 +49,7 @@
                 <div class="flex flex-nowrap items-center">
                     <div class="flex-auto">
                         <i class="fa-solid fa-trash w-6 text-center mr-2"></i>
-                        <span></span>
+                        <span>{{ $t('Delete') }}</span>
                     </div>
                     <div class="text-xs font-bold">{{ $t('Delete') }}</div>
                 </div>
