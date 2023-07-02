@@ -2,35 +2,37 @@
     <AppLayout :title="$t('Profile')">
         <div class="flex flex-nowrap">
             <SidebarPartial />
-            <div class="py-10 sm:px-6 lg:px-8 max-h-screen min-h-screen overflow-auto w-full">
-                <div>
-                    <UpdateProfileInformationForm :user="$page.props.auth.user" />
-
-                    <SectionBorder />
+            <div class="overflow-auto flex-auto">
+                <div class="py-10 sm:px-6 lg:px-8 max-h-screen min-h-screen">
+                    <div>
+                        <UpdateProfileInformationForm :user="$page.props.auth.user" />
+    
+                        <SectionBorder />
+                    </div>
+    
+                    <div>
+                        <UpdatePasswordForm class="mt-10 sm:mt-0" />
+    
+                        <SectionBorder />
+                    </div>
+    
+                    <div>
+                        <TwoFactorAuthenticationForm
+                            :requires-confirmation="confirmsTwoFactorAuthentication"
+                            class="mt-10 sm:mt-0"
+                        />
+    
+                        <SectionBorder />
+                    </div>
+    
+                    <LogoutOtherBrowserSessionsForm :sessions="sessions" class="mt-10 sm:mt-0" />
+    
+                    <template v-if="$page.props.jetstream.hasAccountDeletionFeatures">
+                        <SectionBorder />
+    
+                        <DeleteUserForm class="mt-10 sm:mt-0" />
+                    </template>
                 </div>
-
-                <div>
-                    <UpdatePasswordForm class="mt-10 sm:mt-0" />
-
-                    <SectionBorder />
-                </div>
-
-                <div>
-                    <TwoFactorAuthenticationForm
-                        :requires-confirmation="confirmsTwoFactorAuthentication"
-                        class="mt-10 sm:mt-0"
-                    />
-
-                    <SectionBorder />
-                </div>
-
-                <LogoutOtherBrowserSessionsForm :sessions="sessions" class="mt-10 sm:mt-0" />
-
-                <template v-if="$page.props.jetstream.hasAccountDeletionFeatures">
-                    <SectionBorder />
-
-                    <DeleteUserForm class="mt-10 sm:mt-0" />
-                </template>
             </div>
         </div>
     </AppLayout>
