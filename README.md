@@ -6,6 +6,20 @@
 
 **Notebook** разработан в качестве учебного проекта.
 
+## Демонстрация
+
+[notebook.dmitryrogolev.ru](https://notebook.dmitryrogolev.ru)
+
+## Скриншоты
+
+### Светлая тема
+
+![Light theme](light.png)
+
+### Темная тема
+
+![Dark theme](dark.png)
+
 ## Использованные технологии
 
 - HTML&CSS;
