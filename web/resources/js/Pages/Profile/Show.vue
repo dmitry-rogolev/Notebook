@@ -2,7 +2,7 @@
     <AppLayout :title="$t('Profile')">
         <div class="flex flex-nowrap">
             <SidebarPartial />
-            <div class="py-10 sm:px-6 lg:px-8 max-h-screen min-h-screen overflow-auto">
+            <div class="py-10 sm:px-6 lg:px-8 max-h-screen min-h-screen overflow-auto w-full">
                 <div>
                     <UpdateProfileInformationForm :user="$page.props.auth.user" />
 
