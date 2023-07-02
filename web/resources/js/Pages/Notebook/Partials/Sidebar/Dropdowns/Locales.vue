@@ -15,10 +15,10 @@
             </div>
         </template>
         <template #content>
-            <DropdownItemComponent @click="$i18n.locale = 'en'; dropdown.hide();">
+            <DropdownItemComponent @click="$i18n.locale = 'en'; $store.dispatch('locale', 'en'); dropdown.hide();">
                 {{ $t('English') }}
             </DropdownItemComponent>
-            <DropdownItemComponent @click="$i18n.locale = 'ru'; dropdown.hide();">
+            <DropdownItemComponent @click="$i18n.locale = 'ru'; $store.dispatch('locale', 'ru'); dropdown.hide();">
                 {{ $t('Russian') }}
             </DropdownItemComponent>
         </template>
@@ -52,6 +52,11 @@ export default {
             return this.$refs.dropdown?.dropdown;
         }, 
     },
+
+    mounted() {
+        this.$store.dispatch('locale');
+        this.$i18n.locale = this.$store.state.locale;
+    }, 
 }
 </script>
 

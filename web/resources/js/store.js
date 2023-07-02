@@ -4,6 +4,7 @@ const store = createStore({
     state() {
         return {
             dark: false, 
+            locale: 'ru', 
         };
     }, 
 
@@ -11,11 +12,17 @@ const store = createStore({
         getDark() {
             return localStorage.getItem('dark') == 'true' ? true : false;
         }, 
+        getLocale() {
+            return localStorage.getItem('locale');
+        }, 
     }, 
 
     mutations: {
         dark(state, dark) {
             state.dark = dark;
+        }, 
+        locale(state, locale) {
+            state.locale = locale;
         }, 
     }, 
 
@@ -38,6 +45,14 @@ const store = createStore({
                 } else {
                     document.body.classList.remove('dark');
                 }
+            }
+        }, 
+        locale(context, locale) {
+            if (locale != undefined) {
+                context.commit('locale', locale);
+                localStorage.setItem('locale', locale);
+            } else {
+                context.commit('locale', context.getters.getLocale);
             }
         }, 
     }, 
