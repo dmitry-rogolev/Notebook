@@ -52,11 +52,6 @@ export default {
             return this.$refs.dropdown?.dropdown;
         }, 
     },
-
-    mounted() {
-        this.$store.dispatch('locale');
-        this.$i18n.locale = this.$store.state.locale;
-    }, 
 }
 </script>
 

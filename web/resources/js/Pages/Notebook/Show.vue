@@ -41,6 +41,8 @@ export default {
 
     mounted() {
         this.$store.dispatch('dark');
+        this.$store.dispatch('locale');
+        this.$i18n.locale = this.$store.state.locale;
     }, 
 
     unmounted() {
