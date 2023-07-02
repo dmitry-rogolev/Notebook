@@ -59,7 +59,7 @@ export default {
         TwoFactorAuthenticationForm, 
         UpdatePasswordForm, 
     }, 
-
+    
     props: {
         confirmsTwoFactorAuthentication: {
             type: Boolean, 
@@ -74,7 +74,6 @@ export default {
     mounted() {
         this.$store.dispatch('dark');
         this.$store.dispatch('locale');
-        this.$i18n.locale = this.$store.state.locale;
     }, 
 }
 </script>

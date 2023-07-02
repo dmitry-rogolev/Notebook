@@ -1,4 +1,5 @@
-import { router, usePage } from "@inertiajs/vue3";
+import { router } from "@inertiajs/vue3";
+import { Inertia } from '@inertiajs/inertia';
 import Cache from "../../Classes/Cache";
 import Configuration from "../../Classes/Configuration";
 import DeleteAllController from "../../Classes/Controllers/Note/DeleteAllController";
@@ -77,6 +78,10 @@ class Notebook
 
     init() {
         if (! this._isInit) {
+            Inertia.on('success', (event) => {
+                window.app.config.globalProperties.$store.dispatch('locale');
+            });
+
             this._getNotes().then((notes) => {
                 this._notes = notes;
 

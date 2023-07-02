@@ -12,9 +12,6 @@ const store = createStore({
         getDark() {
             return localStorage.getItem('dark') == 'true' ? true : false;
         }, 
-        getLocale() {
-            return localStorage.getItem('locale');
-        }, 
     }, 
 
     mutations: {
@@ -51,8 +48,11 @@ const store = createStore({
             if (locale != undefined) {
                 context.commit('locale', locale);
                 localStorage.setItem('locale', locale);
+                window.app.config.globalProperties.$i18n.locale = locale;
             } else {
-                context.commit('locale', context.getters.getLocale);
+                let locale = localStorage.getItem('locale');
+                context.commit('locale', locale);
+                window.app.config.globalProperties.$i18n.locale = locale;
             }
         }, 
     }, 
