@@ -35,9 +35,7 @@ Route::middleware('auth:sanctum')->get('/user', function (Request $request) {
 });
 
 Route::middleware(['auth:sanctum', config('jetstream.auth_session')])->group(function () {
-
     Route::name('notes.')->group(function () {
-
         Route::name('trash.')->prefix('notes')->group(function () {
 
             Route::get('trash', NoteTrashIndexController::class)
@@ -58,17 +56,6 @@ Route::middleware(['auth:sanctum', config('jetstream.auth_session')])->group(fun
     
             Route::post('trash/export', NoteTrashExportController::class)
                 ->name('export');
-        });
-
-        Route::name('images.')->prefix('notes/{note}')->group(function () {
-
-            Route::get('images/{name}', ImageShowController::class)
-                ->name('show');
-
-            Route::post('images', ImageStoreController::class)
-                ->can('update', 'note')
-                ->name('store');
-    
         });
 
         Route::get('notes', NoteIndexController::class)
@@ -97,12 +84,4 @@ Route::middleware(['auth:sanctum', config('jetstream.auth_session')])->group(fun
         Route::post('notes/export', NoteExportController::class)
             ->name('export');
     });
-
-});
-
-Route::name('notes.images.')->prefix('notes/{note}')->group(function () {
-
-    Route::get('images/{name}', ImageShowController::class)
-        ->name('show');
-
 });
