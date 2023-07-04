@@ -6,7 +6,6 @@ use App\Traits\Filterable;
 use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Database\Eloquent\Model;
 use Illuminate\Database\Eloquent\SoftDeletes;
-use Laravel\Scout\Searchable;
 
 /**
  * App\Models\Note
@@ -35,7 +34,6 @@ class Note extends Model
 {
     use HasFactory;
     use Filterable;
-    use Searchable;
     use SoftDeletes;
 
     protected $fillable = [
@@ -51,13 +49,5 @@ class Note extends Model
 
     public function user() {
         return $this->belongsTo(User::class);
-    }
-
-    public function toSearchableArray()
-    {
-        return [
-            'title' => $this->title, 
-            'text' => $this->text, 
-        ];
     }
 }
