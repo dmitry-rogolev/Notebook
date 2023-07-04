@@ -2,12 +2,15 @@
 
 namespace App\Http\Controllers\Note;
 
+use Illuminate\Http\Response;
+
 class DeleteAllController extends BaseController
 {
     /**
-     * Handle the incoming request.
+     *
+     * @return \Illuminate\Http\Response
      */
-    public function __invoke()
+    public function __invoke(): Response
     {
         $this->service->deleteAll();
 

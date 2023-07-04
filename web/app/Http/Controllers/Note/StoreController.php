@@ -8,9 +8,11 @@ use App\Http\Resources\NoteResource;
 class StoreController extends BaseController
 {
     /**
-     * Handle the incoming request.
+     *
+     * @param \App\Http\Requests\Note\StoreRequest $request
+     * @return \App\Http\Resources\NoteResource
      */
-    public function __invoke(StoreRequest $request)
+    public function __invoke(StoreRequest $request): NoteResource
     {
         $validated = $request->validated();
 

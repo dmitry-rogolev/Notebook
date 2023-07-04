@@ -9,13 +9,18 @@ use App\Models\Note;
 class UpdateController extends BaseController
 {
     /**
-     * Handle the incoming request.
+     *
+     * @param \App\Http\Requests\Note\UpdateRequest $request
+     * @param \App\Models\Note $note
+     * @return \App\Http\Resources\NoteResource
      */
-    public function __invoke(UpdateRequest $request, Note $note)
+    public function __invoke(UpdateRequest $request, Note $note): NoteResource
     {
         $validated = $request->validated();
 
-        $note = $this->service->update($note, $validated);
+        $this->service->update($note, $validated);
+
+        $note->refresh();
 
         return new NoteResource($note);
     }

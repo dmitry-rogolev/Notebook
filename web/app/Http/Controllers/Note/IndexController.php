@@ -3,15 +3,16 @@
 namespace App\Http\Controllers\Note;
 
 use App\Http\Resources\NoteResource;
-use Illuminate\Http\Request;
+use Illuminate\Http\Resources\Json\AnonymousResourceCollection;
 
 class IndexController extends BaseController
 {
     /**
-     * Handle the incoming request.
+     *
+     * @return \Illuminate\Http\Resources\Json\AnonymousResourceCollection
      */
-    public function __invoke(Request $request)
+    public function __invoke(): AnonymousResourceCollection
     {
-        return NoteResource::collection($request->user()->notes);
+        return NoteResource::collection($this->service->index());
     }
 }

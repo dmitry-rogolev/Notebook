@@ -3,13 +3,23 @@
 namespace App\Http\Controllers\Note\Trash;
 
 use App\Http\Controllers\Note\Trash\BaseController as Controller;
-use Illuminate\Http\Request;
+use App\Http\Resources\NoteResource;
+use Illuminate\Http\Resources\Json\AnonymousResourceCollection;
 
 class RestoreAllController extends Controller
 {
-    public function __invoke() {
+    /**
+     *
+     * @return \Illuminate\Http\Resources\Json\AnonymousResourceCollection
+     */
+    public function __invoke(): AnonymousResourceCollection
+    {
+        $collection = $this->service->indexOnlyTrashed();
+
         $this->service->restoreAll();
 
-        return response()->noContent();
+        $collection = $collection->fresh();
+
+        return NoteResource::collection($collection);
     }
 }

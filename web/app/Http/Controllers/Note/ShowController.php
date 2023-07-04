@@ -8,10 +8,12 @@ use App\Models\Note;
 class ShowController extends BaseController
 {
     /**
-     * Handle the incoming request.
+     *
+     * @param \App\Models\Note $note
+     * @return \App\Http\Resources\NoteResource
      */
-    public function __invoke(Note $note)
+    public function __invoke(Note $note): NoteResource
     {
-        return new NoteResource($note);
+        return new NoteResource($this->service->show($note));
     }
 }

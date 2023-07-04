@@ -3,13 +3,16 @@
 namespace App\Http\Controllers\Note;
 
 use App\Models\Note;
+use Illuminate\Http\Response;
 
 class DeleteController extends BaseController
 {
     /**
-     * Handle the incoming request.
+     *
+     * @param \App\Models\Note $note
+     * @return \Illuminate\Http\Response
      */
-    public function __invoke(Note $note)
+    public function __invoke(Note $note): Response
     {
         $this->service->delete($note);
 

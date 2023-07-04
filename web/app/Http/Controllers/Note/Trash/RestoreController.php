@@ -3,18 +3,25 @@
 namespace App\Http\Controllers\Note\Trash;
 
 use App\Http\Controllers\Note\Trash\BaseController as Controller;
-use App\Models\Note;
-use Illuminate\Http\Request;
+use App\Http\Resources\NoteResource;
 
 class RestoreController extends Controller
 {
-    public function __invoke(Request $request, int $id) {
-        $note = Note::withTrashed()->whereId($id)->whereUserId($request->user()->id)->first();
+    /**
+     *
+     * @param integer $id
+     * @return \App\Http\Resources\NoteResource
+     */
+    public function __invoke(int $id): NoteResource
+    {
+        $note = $this->service->showOnlyTrashed($id);
 
         if ($note) {
             $this->service->restore($note);
+
+            $note->refresh();
         }
 
-        return response()->noContent();
+        return new NoteResource($note);
     }
 }

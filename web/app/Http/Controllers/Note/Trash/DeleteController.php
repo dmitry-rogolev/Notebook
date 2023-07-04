@@ -3,13 +3,18 @@
 namespace App\Http\Controllers\Note\Trash;
 
 use App\Http\Controllers\Note\Trash\BaseController as Controller;
-use App\Models\Note;
-use Illuminate\Http\Request;
+use Illuminate\Http\Response;
 
 class DeleteController extends Controller
 {
-    public function __invoke(Request $request, int $id) {
-        $note = Note::withTrashed()->whereId($id)->whereUserId($request->user()->id)->first();
+    /**
+     *
+     * @param integer $id
+     * @return \Illuminate\Http\Response
+     */
+    public function __invoke(int $id): Response
+    {
+        $note = $this->service->showOnlyTrashed($id);
 
         if ($note) {
             $this->service->forceDelete($note);

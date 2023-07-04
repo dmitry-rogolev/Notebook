@@ -4,14 +4,22 @@ namespace App\Http\Controllers\Note;
 
 use App\Http\Controllers\Note\BaseController as Controller;
 use App\Http\Requests\Note\ExportRequest;
+use Illuminate\Http\Response;
 
 class ExportController extends Controller
 {
-    public function __invoke(ExportRequest $request) 
+    /**
+     *
+     * @param \App\Http\Requests\Note\ExportRequest $request
+     * @return \Illuminate\Http\Response
+     */
+    public function __invoke(ExportRequest $request): Response
     {
-        $notes = $request->validated()['notes'];
+        $validated = $request->validated();
 
-        $this->service->export($notes);
+        if (isset($validated['notes']) && is_array($validated['notes'])) {
+            $this->service->export($validated['notes']);
+        }
 
         return response()->noContent();
     }
