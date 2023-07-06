@@ -1,15 +1,23 @@
 import ConfigurationFactory from "./ConfigurationFactory";
+import { isObject, isString } from "../helpers";
 
 class Configuration 
 {
     _configurations = {};
 
+    /**
+     * @property {Object}
+     */
     get configurations() {
         return this._configurations;
     }
 
+    /**
+     * 
+     * @param {Object|null} configuration 
+     */
     constructor(configuration = null) {
-        if (configuration && typeof configuration === 'object') {
+        if (isObject(configuration)) {
             this._configurations = configuration;
         }
     }
@@ -20,8 +28,8 @@ class Configuration
      * @param {any} value 
      * @returns {this}
      */
-    add(key, value) {
-        if (this._isKey(key)) {
+    set(key, value) {
+        if (key && isString(value)) {
             this._configurations[key] = value;
         }
 
@@ -31,7 +39,7 @@ class Configuration
     /**
      * 
      * @param {String} key 
-     * @returns {String|null}
+     * @returns {any|null}
      */
     get(key) {
         if (this.has(key)) {
@@ -47,7 +55,7 @@ class Configuration
      * @returns {Boolean}
      */
     has(key) {
-        if (this._isKey(key)) {
+        if (key && isString(key)) {
             return key in this._configurations;
         }
 
@@ -58,17 +66,8 @@ class Configuration
      * 
      * @returns {ConfigurationFactory}
      */
-    static factory() {
-        return new ConfigurationFactory();
-    }
-
-    /**
-     * 
-     * @param {any} key 
-     * @returns {Boolean}
-     */
-    _isKey(key) {
-        return key && typeof key === 'string';
+    static factory(configuration = null) {
+        return new ConfigurationFactory(configuration);
     }
 }
 

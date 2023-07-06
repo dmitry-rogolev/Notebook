@@ -5,6 +5,7 @@ import Hostname from "./Components/Hostname";
 import Port from "./Components/Port";
 import Pathname from "./Components/Pathname";
 import Search from "./Components/Search";
+import { isString } from "../../helpers";
 
 class UrlBuilder extends BuilderInterface
 {
@@ -59,9 +60,15 @@ class UrlBuilder extends BuilderInterface
         return this;
     }
 
+    /**
+     * 
+     * @param {String} host 
+     * @returns {this}
+     */
     addHost(host) {
-        if (host && typeof host === 'string') {
+        if (host && isString(host)) {
             let parts = host.split(':');
+
             if (parts.length === 2) {
                 this.addHostname(parts[0]);
                 this.addHost(parts[1]);
@@ -71,9 +78,15 @@ class UrlBuilder extends BuilderInterface
         return this;
     }
 
+    /**
+     * 
+     * @param {String} origin 
+     * @returns {this}
+     */
     addOrigin(origin) {
-        if (origin && typeof origin === 'string') {
+        if (origin && isString(origin)) {
             let parts = origin.split('//');
+
             if (parts.length === 2) {
                 this.addProtocol(parts[0]);
                 this.addHost(parts[1]);
@@ -83,6 +96,11 @@ class UrlBuilder extends BuilderInterface
         return this;
     }
 
+    /**
+     * 
+     * @param {String} search 
+     * @returns {this}
+     */
     addSearch(search) {
         this._url.search = new Search(search);
 

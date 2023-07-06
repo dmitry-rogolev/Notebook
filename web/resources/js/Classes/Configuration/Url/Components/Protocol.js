@@ -1,3 +1,4 @@
+import { isString } from "../../../helpers";
 import Component from "../Component";
 
 class Protocol extends Component
@@ -11,7 +12,7 @@ class Protocol extends Component
         
         let component = '';
 
-        if (protocol && typeof protocol === 'string') {
+        if (protocol && isString(protocol)) {
             component = protocol;
 
             if (! component.endsWith('//')) {

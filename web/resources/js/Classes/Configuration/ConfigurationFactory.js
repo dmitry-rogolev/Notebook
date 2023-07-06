@@ -1,3 +1,4 @@
+import { isObject } from "../helpers";
 import Configuration from "./Configuration";
 import FactoryInterface from "@/Interfaces/FactoryInterface";
 
@@ -7,9 +8,21 @@ class ConfigurationFactory extends FactoryInterface
 
     /**
      * 
+     * @param {Object|null} configuration 
+     */
+    constructor(configuration = null) {
+        super();
+        this.default(configuration);
+    }
+
+    /**
+     * 
+     * @param {Object|null} configuration 
      * @returns {Configuration}
      */
-    make() {
+    make(configuration = null) {
+        this.default(configuration);
+
         return new Configuration(this._default);
     }
 
@@ -19,7 +32,7 @@ class ConfigurationFactory extends FactoryInterface
      * @returns {this}
      */
     default(configuration) {
-        if (typeof configuration === 'object') {
+        if (isObject(configuration)) {
             this._default = configuration;
         }
 

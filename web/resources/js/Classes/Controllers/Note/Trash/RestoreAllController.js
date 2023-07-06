@@ -3,8 +3,12 @@ import Controller from "../../Controller";
 
 class RestoreAllController extends Controller
 {
+    /**
+     * 
+     * @returns {void}
+     */
     static async restore() {
-        return await Note.restoreTrash();
+        await Note.restoreTrash();
     }
 }
 

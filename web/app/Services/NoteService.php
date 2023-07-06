@@ -2,11 +2,12 @@
 
 namespace App\Services;
 
+use App\Contracts\Exportable;
 use App\Models\Note;
 use Illuminate\Database\Eloquent\Collection;
-use Illuminate\Support\Facades\Storage;
+use Illuminate\Database\Eloquent\Model;
 
-class NoteService extends Service
+class NoteService extends Service implements Exportable
 {
     /**
      *
@@ -19,34 +20,12 @@ class NoteService extends Service
 
     /**
      *
-     * @return \Illuminate\Database\Eloquent\Collection
-     */
-    public function indexOnlyTrashed(): Collection
-    {
-        return Note::onlyTrashed()->whereUserId(request()->user()->id)->get();
-    }
-
-    /**
-     *
-     * @param \App\Models\Note $note
+     * @param int $id
      * @return \App\Models\Note
      */
-    public function show(Note $note): Note
+    public function show(int $id): Note
     {
-        return $note;
-    }
-
-    /**
-     *
-     * @param integer $id
-     * @return \App\Models\Note|null
-     */
-    public function showOnlyTrashed(int $id): ?Note
-    {
-        return Note::onlyTrashed()
-            ->whereId($id)
-            ->whereUserId(request()->user()->id)
-            ->first();
+        return Note::find($id);
     }
 
     /**
@@ -61,11 +40,11 @@ class NoteService extends Service
 
     /**
      *
-     * @param \App\Models\Note $note
-     * @param array $data
+     * @param \Illuminate\Database\Eloquent\Model $note
+     * @param array $attributes
      * @return \App\Models\Note
      */
-    public function update(Note $note, array $attributes): void
+    public function update(Model $note, array $attributes): void
     {
         $note->fill($attributes);
         $note->save();
@@ -73,61 +52,21 @@ class NoteService extends Service
 
     /**
      *
-     * @param \App\Models\Note $note
+     * @param \Illuminate\Database\Eloquent\Model $note
      * @return void
      */
-    public function delete(Note $note): void
+    public function delete(Model $note): void
     {
         $note->delete();
     }
 
     /**
      *
-     * @param \App\Models\Note $note
      * @return void
      */
-    public function restore(Note $note): void
+    public function truncate(): void
     {
-        $note->restore();
-    }
-
-    /**
-     *
-     * @return void
-     */
-    public function deleteAll(): void
-    {
-        Note::whereUserId(request()->user()->id)->delete();
-    }
-
-    /**
-     * 
-     * @return void
-     */
-    public function restoreAll(): void
-    {
-        Note::onlyTrashed()->whereUserId(request()->user()->id)->restore();
-    }
-
-    /**
-     *
-     * @param \App\Models\Note $note
-     * @return void
-     */
-    public function forceDelete(Note $note): void
-    {
-        Storage::deleteDirectory('public/' . $note->user_id . '/' . $note->id);
-        $note->forceDelete();
-    }
-
-    /**
-     *
-     * @return void
-     */
-    public function forceDeleteAll(): void
-    {
-        Storage::deleteDirectory('public/' . request()->user()->id);
-        Note::onlyTrashed()->whereUserId(request()->user()->id)->forceDelete();
+        request()->user()->notes()->delete();
     }
 
     /**
@@ -143,26 +82,6 @@ class NoteService extends Service
         foreach ($notes as $note) {
             $note['user_id'] = $user->id;
             $collection->push(Note::create($note));
-        }
-
-        return $collection;
-    }
-
-    /**
-     *
-     * @param array $notes
-     * @return \Illuminate\Database\Eloquent\Collection
-     */
-    public function exportTrash(array $notes) 
-    {
-        $user = request()->user();
-        $collection = new Collection();
-
-        foreach ($notes as $note) {
-            $note['user_id'] = $user->id;
-            $trashed = Note::create($note);
-            $trashed->delete();
-            $collection->push($trashed);
         }
 
         return $collection;

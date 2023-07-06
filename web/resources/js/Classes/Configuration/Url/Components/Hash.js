@@ -1,13 +1,18 @@
+import { isString } from "../../../helpers";
 import Component from "../Component";
 
 class Hash extends Component
 {
-    constructor(hash) {
+    /**
+     * 
+     * @param {String} hash 
+     */
+    constructor(hash = '') {
         super();
         
         let component = '';
 
-        if (hash && typeof hash === 'string') {
+        if (hash && isString(hash)) {
             component = hash;
 
             if (component.startsWith('/')) {

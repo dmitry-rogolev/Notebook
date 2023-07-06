@@ -37,6 +37,7 @@
     }, 
     "database": {
         "cache": {
+            "separator": "_", 
             "prefix": "__cache_database_"
         }
     }

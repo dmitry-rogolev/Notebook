@@ -3,8 +3,12 @@ import Controller from "../../Controller";
 
 class DeleteAllController extends Controller
 {
+    /**
+     * 
+     * @returns {void}
+     */
     static async truncate() {
-        return await Note.truncateTrash();
+        await Note.truncateTrash();
     }
 }
 

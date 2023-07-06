@@ -143,6 +143,14 @@ class Configuration extends Base
 
     /**
      * 
+     * @returns {String}
+     */
+    getDatabaseCacheSeparator() {
+        return String(this.configurations.database.cache.separator);
+    }
+
+    /**
+     * 
      * @returns {Number}
      */
     getAutosaveInterval() {

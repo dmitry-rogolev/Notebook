@@ -1,3 +1,4 @@
+import { isString } from "../../../helpers";
 import Component from "../Component";
 
 class Search extends Component
@@ -7,7 +8,7 @@ class Search extends Component
         
         let component = '';
 
-        if (search && typeof search === 'string') {
+        if (search && isString(search)) {
             component = search;
 
             if (component.startsWith('/')) {

@@ -1,3 +1,4 @@
+import { isString } from "../../../helpers";
 import Component from "../Component";
 
 class Hostname extends Component
@@ -11,7 +12,7 @@ class Hostname extends Component
         
         let component = '';
 
-        if (hostname && typeof hostname === 'string') {
+        if (hostname && isString(hostname)) {
             component = hostname;
 
             if (component.endsWith('/')) {

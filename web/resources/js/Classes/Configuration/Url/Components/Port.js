@@ -1,3 +1,4 @@
+import { isString } from "../../../helpers";
 import Component from "../Component";
 
 class Port extends Component
@@ -11,7 +12,7 @@ class Port extends Component
         
         let component = '';
 
-        if (port && typeof port === 'string') {
+        if (port && isString(port)) {
             component = port;
 
             if (! component.startsWith(':')) {

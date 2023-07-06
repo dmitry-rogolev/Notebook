@@ -2,7 +2,9 @@
 
 namespace App\Services;
 
-class Service
+use App\Contracts\Servicable;
+
+abstract class Service implements Servicable
 {
     
 }

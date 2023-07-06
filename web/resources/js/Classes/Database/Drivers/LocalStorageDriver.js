@@ -1,5 +1,6 @@
 import DriverInterface from "../../../Interfaces/DriverInterface";
 import Configuration from "../../Configuration";
+import { isArray, parseJson, toJson } from "../../helpers";
 import AxiosServerDriver from "./AxiosServerDriver";
 import Server from "./LocalStorageDriver/Server";
 
@@ -19,7 +20,7 @@ class LocalStorageDriver extends DriverInterface
 
     /**
      * 
-     * @returns {this}
+     * @returns {LocalStorageDriver}
      */
     static getInstance() {
         if (this._instance === null) {
@@ -36,34 +37,22 @@ class LocalStorageDriver extends DriverInterface
      * @returns {any}
      */
     get(path, data = null) {
-        if (this._isPath(path)) {
+        if (path && isString(path)) {
             path = this._parsePath(path);
             let keys = path.split('/');
-
-            if (keys.length > 2) {
-                throw new Error('The path cannot contain more than 2 keys.');
-            }
 
             if (keys.length === 1) {
                 let table = this._getTable(keys[0]);
 
-                if (this._isJson(table)) {
-                    table = this._parseJson(table);
-                }
-    
-                if (table === null || ! Array.isArray(table) || Array.isArray(table) && ! table.length) {
+                if (table === null) {
                     return data;
                 }
     
                 return table;
             } else if (keys[1] === this._configuration.getPathTrash()) {
-                let table = this._getTable(keys[0] + '_' + keys[1]); 
+                let table = this._getTable(keys[0] + this._configuration.getDatabaseCacheSeparator() + keys[1]); 
 
-                if (this._isJson(table)) {
-                    table = this._parseJson(table);
-                }
-    
-                if (table === null || ! Array.isArray(table) || Array.isArray(table) && ! table.length) {
+                if (table === null) {
                     return data;
                 }
     
@@ -81,29 +70,19 @@ class LocalStorageDriver extends DriverInterface
      * @returns {any}
      */
     post(path, data) {
-        if (this._isPath(path)) {
+        if (path && isString(path)) {
             path = this._parsePath(path);
             let keys = path.split('/');
 
-            if (keys.length !== 1) {
-                throw new Error('The path must consist of one key.');
-            }
-
             let table = this._getTable(keys[0]);
 
-            if (this._isJson(table)) {
-                table = this._parseJson(table);
-            }
-
-            if (table === null || ! Array.isArray(table)) {
+            if (table === null || ! isArray(table)) {
                 table = [];
             }
 
             let model = this._server.store(path, data);
 
             table.push(model);
-
-            table = this._toJson(table);
 
             this._setTable(keys[0], table);
 
@@ -120,7 +99,7 @@ class LocalStorageDriver extends DriverInterface
      * @returns {any}
      */
     patch(path, data) {
-        if (this._isPath(path)) {
+        if (path && isString(path)) {
             path = this._parsePath(path);
             let keys = path.split('/');
 
@@ -134,11 +113,7 @@ class LocalStorageDriver extends DriverInterface
 
             let table = this._getTable(keys[0]);
 
-            if (this._isJson(table)) {
-                table = this._parseJson(table);
-            }
-
-            if (table === null || ! Array.isArray(table) || Array.isArray(table) && ! table.length) {
+            if (table === null) {
                 return null;
             }
 
@@ -151,8 +126,6 @@ class LocalStorageDriver extends DriverInterface
             let model = this._server.update(data);
 
             table[index] = model;
-
-            table = this._toJson(table);
 
             this._setTable(keys[0], table);
 
@@ -168,22 +141,14 @@ class LocalStorageDriver extends DriverInterface
      * @returns {void}
      */
     delete(path) {
-        if (this._isPath(path)) {
+        if (path && isString(path)) {
             path = this._parsePath(path);
             let keys = path.split('/');
 
-            if (keys.length > 3) {
-                throw new Error('The path cannot contain more than 3 keys.');
-            }
-
             if (keys.length === 3 && keys[1] === this._configuration.getPathTrash() && ! isNaN(Number(keys[2]))) {
-                let trash = this._getTable(keys[0] + '_' + this._configuration.getPathTrash());
-
-                if (this._isJson(trash)) {
-                    trash = this._parseJson(trash);
-                }
+                let trash = this._getTable(keys[0] + this._configuration.getDatabaseCacheSeparator() + this._configuration.getPathTrash());
     
-                if (trash === null || ! Array.isArray(trash) || Array.isArray(trash) && ! trash.length) {
+                if (trash === null) {
                     return;
                 }
 
@@ -195,26 +160,16 @@ class LocalStorageDriver extends DriverInterface
 
                 trash.splice(index, 1);
 
-                trash = this._toJson(trash);
-
-                this._setTable(keys[0] + '_' + this._configuration.getPathTrash(), trash);
+                this._setTable(keys[0] + this._configuration.getDatabaseCacheSeparator() + this._configuration.getPathTrash(), trash);
             } else if (keys.length === 2 && ! isNaN(Number(keys[1]))) {
                 let table = this._getTable(keys[0]);
-                let trash = this._getTable(keys[0] + '_' + this._configuration.getPathTrash());
+                let trash = this._getTable(keys[0] + this._configuration.getDatabaseCacheSeparator() + this._configuration.getPathTrash());
     
-                if (this._isJson(table)) {
-                    table = this._parseJson(table);
-                }
-    
-                if (this._isJson(trash)) {
-                    trash = this._parseJson(trash);
-                }
-    
-                if (table === null || ! Array.isArray(table) || Array.isArray(table) && ! table.length) {
+                if (table === null || ! isArray(trash)) {
                     return;
                 }
     
-                if (trash === null || ! Array.isArray(trash) || Array.isArray(trash) && ! trash.length) {
+                if (trash === null || ! isArray(trash)) {
                     trash = [];
                 }
     
@@ -226,13 +181,11 @@ class LocalStorageDriver extends DriverInterface
     
                 let trashedModel = table.splice(index, 1)[0];
     
-                table = this._toJson(table);
                 trashedModel = this._server.delete(trashedModel);
                 trash.push(trashedModel);
-                trash = this._toJson(trash);
     
                 this._setTable(keys[0], table);
-                this._setTable(keys[0] + '_' + this._configuration.getPathTrash(), trash);
+                this._setTable(keys[0] + this._configuration.getDatabaseCacheSeparator() + this._configuration.getPathTrash(), trash);
             }
         }
     }
@@ -243,31 +196,19 @@ class LocalStorageDriver extends DriverInterface
      * @returns {void}
      */
     truncate(path) {
-        if (this._isPath(path)) {
+        if (path && isString(path)) {
             path = this._parsePath(path);
             let keys = path.split('/');
 
-            if (keys.length > 2) {
-                throw new Error('The path cannot contain more than 2 keys.');
-            }
-
             if (keys.length === 1) {
                 let table = this._getTable(keys[0]);
-                let trash = this._getTable(keys[0] + '_' + this._configuration.getPathTrash());
+                let trash = this._getTable(keys[0] + this._configuration.getDatabaseCacheSeparator() + this._configuration.getPathTrash());
 
-                if (this._isJson(table)) {
-                    table = this._parseJson(table);
-                }
-
-                if (this._isJson(trash)) {
-                    trash = this._parseJson(trash);
-                }
-
-                if (table === null || ! Array.isArray(table) || Array.isArray(table) && ! table.length) {
+                if (table === null || ! isArray(trash)) {
                     table = [];
                 }
 
-                if (trash === null || ! Array.isArray(trash) || Array.isArray(trash) && ! trash.length) {
+                if (trash === null || ! isArray(trash)) {
                     trash = [];
                 }
 
@@ -279,41 +220,27 @@ class LocalStorageDriver extends DriverInterface
 
                 this._removeTable(keys[0]);
 
-                trash = this._toJson(trash);
-
-                this._setTable(keys[0] + '_' + this._configuration.getPathTrash(), trash);
+                this._setTable(keys[0] + this._configuration.getDatabaseCacheSeparator() + this._configuration.getPathTrash(), trash);
             } else if (keys[1] === this._configuration.getPathTrash()) {
-                this._removeTable(keys[0] + '_' + this._configuration.getPathTrash());
+                this._removeTable(keys[0] + this._configuration.getDatabaseCacheSeparator() + this._configuration.getPathTrash());
             }
         }
     }
 
     restore(path) {
-        if (this._isPath(path)) {
+        if (path && isString(path)) {
             path = this._parsePath(path);
             let keys = path.split('/');
 
-            if (keys.length > 4) {
-                throw new Error('The path cannot contain more than 4 keys.');
-            }
-
             if (keys.length === 4 && keys[1] === this._configuration.getPathTrash() && ! isNaN(Number(keys[2])) && keys[3] === this._configuration.getPathRestore()) {
                 let table = this._getTable(keys[0]);
-                let trash = this._getTable(keys[0] + '_' + this._configuration.getPathTrash());
+                let trash = this._getTable(keys[0] + this._configuration.getDatabaseCacheSeparator() + this._configuration.getPathTrash());
 
-                if (this._isJson(table)) {
-                    table = this._parseJson(table);
-                }
-
-                if (this._isJson(trash)) {
-                    trash = this._parseJson(trash);
-                }
-
-                if (table === null || ! Array.isArray(table) || Array.isArray(table) && ! table.length) {
+                if (table === null || ! isArray(trash)) {
                     table = [];
                 }
 
-                if (trash === null || ! Array.isArray(trash) || Array.isArray(trash) && ! trash.length) {
+                if (trash === null || ! isArray(trash)) {
                     return;
                 }
 
@@ -325,30 +252,20 @@ class LocalStorageDriver extends DriverInterface
 
                 let trashedModel = trash.splice(index, 1)[0];
     
-                trash = this._toJson(trash);
                 trashedModel = this._server.restore(trashedModel);
                 table.push(trashedModel);
-                table = this._toJson(table);
     
                 this._setTable(keys[0], table);
-                this._setTable(keys[0] + '_' + this._configuration.getPathTrash(), trash);
+                this._setTable(keys[0] + this._configuration.getDatabaseCacheSeparator() + this._configuration.getPathTrash(), trash);
             } else if (keys.length === 3 && keys[1] === this._configuration.getPathTrash() && keys[2] === this._configuration.getPathRestore()) {
                 let table = this._getTable(keys[0]);
-                let trash = this._getTable(keys[0] + '_' + this._configuration.getPathTrash());
+                let trash = this._getTable(keys[0] + this._configuration.getDatabaseCacheSeparator() + this._configuration.getPathTrash());
 
-                if (this._isJson(table)) {
-                    table = this._parseJson(table);
-                }
-
-                if (this._isJson(trash)) {
-                    trash = this._parseJson(trash);
-                }
-
-                if (table === null || ! Array.isArray(table) || Array.isArray(table) && ! table.length) {
+                if (table === null || ! isArray(trash)) {
                     table = [];
                 }
 
-                if (trash === null || ! Array.isArray(trash) || Array.isArray(trash) && ! trash.length) {
+                if (trash === null || ! isArray(trash)) {
                     trash = [];
                 }
 
@@ -358,9 +275,7 @@ class LocalStorageDriver extends DriverInterface
 
                 table = table.concat(trash);
 
-                this._removeTable(keys[0] + '_' + this._configuration.getPathTrash());
-
-                table = this._toJson(table);
+                this._removeTable(keys[0] + this._configuration.getDatabaseCacheSeparator() + this._configuration.getPathTrash());
 
                 this._setTable(keys[0], table);
             }
@@ -368,18 +283,14 @@ class LocalStorageDriver extends DriverInterface
     }
 
     async export(path) {
-        if (this._isPath(path)) {
+        if (path && isString(path)) {
             path = this._parsePath(path);
             let keys = path.split('/');
 
             if (keys.length === 1) {
                 let table = this._getTable(keys[0]);
-
-                if (this._isJson(table)) {
-                    table = this._parseJson(table);
-                }
     
-                if (table === null || ! Array.isArray(table) || Array.isArray(table) && ! table.length) {
+                if (table === null || ! isArray(trash)) {
                     return;
                 }
     
@@ -389,29 +300,16 @@ class LocalStorageDriver extends DriverInterface
             } else if (keys.length === 2 && keys[1] === this._configuration.getPathTrash()) {
                 let trash = this._getTable(keys[0] + '_' + this._configuration.getPathTrash());
 
-                if (this._isJson(trash)) {
-                    trash = this._parseJson(trash);
-                }
-
-                if (trash === null || ! Array.isArray(trash) || Array.isArray(trash) && ! trash.length) {
+                if (trash === null || ! isArray(trash)) {
                     return;
                 }
 
                 await this._serverDriver.post(keys[0] + '/' + this._configuration.getPathTrash() + '/' + this._configuration.getPathExport(), {[keys[0]]: trash});
     
-                this._removeTable(keys[0] + '_' + this._configuration.getPathTrash());
+                this._removeTable(keys[0] + this._configuration.getDatabaseCacheSeparator() + this._configuration.getPathTrash());
             }
         }
     }
-
-    /**
-     * 
-     * @param {any} path 
-     * @returns {Boolean}
-     */
-    _isPath(path) {
-        return path && typeof path === 'string';
-    } 
 
     /**
      * 
@@ -431,44 +329,12 @@ class LocalStorageDriver extends DriverInterface
         return encodeURI(path);
     }
 
-    /**
-     * 
-     * @param {any} value 
-     * @returns {Boolean}
-     */
-    _isJson(value) {
-        try {
-            JSON.parse(value);
-            return true;
-        } catch (e) {
-            return false;
-        }
-    }
-
-    /**
-     * 
-     * @param {any} value 
-     * @returns {String}
-     */
-    _toJson(value) {
-        return JSON.stringify(value);
-    }
-
-    /**
-     * 
-     * @param {String} str 
-     * @returns {any}
-     */
-    _parseJson(str) {
-        return JSON.parse(str);
-    }
-
     _getTable(key) {
-        return localStorage.getItem(this._configuration.getDatabaseCachePrefix() + key);
+        return parseJson(localStorage.getItem(this._configuration.getDatabaseCachePrefix() + key));
     }
 
     _setTable(key, data) {
-        localStorage.setItem(this._configuration.getDatabaseCachePrefix() + key, data);
+        localStorage.setItem(this._configuration.getDatabaseCachePrefix() + key, toJson(data));
     }
 
     _removeTable(key) {

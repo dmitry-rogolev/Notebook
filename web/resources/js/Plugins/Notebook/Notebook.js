@@ -3,7 +3,7 @@ import { Inertia } from '@inertiajs/inertia';
 import Cache from "../../Classes/Cache";
 import Configuration from "../../Classes/Configuration";
 import DeleteAllController from "../../Classes/Controllers/Note/DeleteAllController";
-import DestroyController from "../../Classes/Controllers/Note/DestroyController";
+import DeleteController from "../../Classes/Controllers/Note/DeleteController";
 import IndexContoller from "../../Classes/Controllers/Note/IndexController";
 import StoreController from "../../Classes/Controllers/Note/StoreController";
 import UpdateController from "../../Classes/Controllers/Note/UpdateController";
@@ -155,7 +155,7 @@ class Notebook
 
     delete() {
         let note = this._$window.file;
-        DestroyController.destroy(note).then(() => {
+        DeleteController.delete(note).then(() => {
             this._getNotes().then((notes) => {
                 this._notes = notes;
 

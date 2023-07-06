@@ -1,15 +1,16 @@
+import NotTypeError from "../../../Errors/NotTypeError";
 import Note from "../../../Models/Note";
 import Controller from "../../Controller";
 
-class DestroyController extends Controller
+class DeleteController extends Controller
 {
-    static delete(note) {
+    static async delete(note) {
         if (! (note instanceof Note)) {
-            throw new Error('The "note" parameter must be of type "Classes/Models/Note".');
+            throw new NotTypeError('note', 'Classes/Models/Note');
         }
 
-        return note.forceDelete();
+        await note.forceDelete();
     }
 }
 
-export default DestroyController;
+export default DeleteController;

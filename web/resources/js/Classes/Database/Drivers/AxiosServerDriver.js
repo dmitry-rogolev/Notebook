@@ -1,6 +1,7 @@
 import Configuration from '@/Classes/Configuration';
 import axios from 'axios';
 import DriverInterface from '@/Interfaces/DriverInterface';
+import { empty, isArray, isString } from '../../helpers';
 
 class AxiosServerDriver extends DriverInterface
 {
@@ -14,7 +15,7 @@ class AxiosServerDriver extends DriverInterface
 
     /**
      * 
-     * @returns {this}
+     * @returns {AxiosServerDriver}
      */
     static getInstance() {
         if (this._instance === null) {
@@ -31,11 +32,11 @@ class AxiosServerDriver extends DriverInterface
      * @returns {any}
      */
     async get(path, data = null) {
-        if (this._isPath(path)) {
+        if (path && isString(path)) {
             let response = await axios.get(this._configuration.getUrl() + '/' + this._parsePath(path));
             let responseData = response?.data?.data;
 
-            if (Array.isArray(responseData) && ! responseData.length) {
+            if (isArray(responseData) && empty(responseData)) {
                 return data;
             } 
 
@@ -52,11 +53,11 @@ class AxiosServerDriver extends DriverInterface
      * @returns {any}
      */
     async post(path, data) {
-        if (this._isPath(path)) {
+        if (path && isString(path)) {
             let response = await axios.post(this._configuration.getUrl() + '/' + this._parsePath(path), data);
             let responseData = response?.data?.data;
 
-            if (Array.isArray(responseData) && ! responseData.length) {
+            if (isArray(responseData) && empty(responseData)) {
                 return null;
             } 
 
@@ -73,11 +74,11 @@ class AxiosServerDriver extends DriverInterface
      * @returns {any}
      */
     async patch(path, data) {
-        if (this._isPath(path)) {
+        if (path && isString(path)) {
             let response = await axios.patch(this._configuration.getUrl() + '/' + this._parsePath(path), data);
             let responseData = response?.data?.data;
 
-            if (Array.isArray(responseData) && ! responseData.length) {
+            if (isArray(responseData) && empty(responseData)) {
                 return null;
             } 
 
@@ -93,7 +94,7 @@ class AxiosServerDriver extends DriverInterface
      * @returns {void}
      */
     async delete(path) {
-        if (this._isPath(path)) {
+        if (path && isString(path)) {
             await axios.delete(this._configuration.getUrl() + '/' + this._parsePath(path));
         }
     }
@@ -104,7 +105,7 @@ class AxiosServerDriver extends DriverInterface
      * @returns {void}
      */
     async truncate(path) {
-        if (this._isPath(path)) {
+        if (path && isString(path)) {
             await axios.delete(this._configuration.getUrl() + '/' + this._parsePath(path));
         }
     }
@@ -115,11 +116,11 @@ class AxiosServerDriver extends DriverInterface
      * @returns {any}
      */
     async restore(path) {
-        if (this._isPath(path)) {
+        if (path && isString(path)) {
             let response = await axios.post(this._configuration.getUrl() + '/' + this._parsePath(path));
             let responseData = response?.data?.data;
 
-            if (Array.isArray(responseData) && ! responseData.length) {
+            if (isArray(responseData) && empty(responseData)) {
                 return null;
             } 
 
@@ -131,16 +132,8 @@ class AxiosServerDriver extends DriverInterface
 
     /**
      * 
-     * @param {any} path 
-     * @returns {Boolean}
-     */
-    _isPath(path) {
-        return path && typeof path === 'string';
-    } 
-
-    /**
-     * 
      * @param {String} path 
+     * @returns {String}
      */
     _parsePath(path) {
         let result = path;
