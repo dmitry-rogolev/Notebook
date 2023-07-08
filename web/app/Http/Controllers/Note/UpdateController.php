@@ -20,8 +20,6 @@ class UpdateController extends BaseController
 
         $this->service->update($note, $validated);
 
-        $note->refresh();
-
         return new NoteResource($note);
     }
 }

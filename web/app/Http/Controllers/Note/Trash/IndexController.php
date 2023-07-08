@@ -14,6 +14,6 @@ class IndexController extends Controller
      */
     public function __invoke(): AnonymousResourceCollection
     {
-        return NoteResource::collection($this->service->indexOnlyTrashed());
+        return NoteResource::collection($this->service->index());
     }
 }

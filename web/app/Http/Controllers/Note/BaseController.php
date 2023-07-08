@@ -10,7 +10,7 @@ class BaseController extends Controller
     /**
      * @var \App\Services\NoteService
      */
-    public NoteService $service;
+    protected NoteService $service;
 
     /**
      *

@@ -15,15 +15,15 @@ class NoteTrashService extends TrashService implements Restorable, Exportable
      */
     public function index(): Collection
     {
-        return Note::onlyTrashed()->whereUserId(request()->user()->id)->get();
+        return Note::onlyTrashed()->whereUserId(auth()->user()->id)->get();
     }
 
     /**
      *
      * @param integer $id
-     * @return \App\Models\Note
+     * @return \App\Models\Note|null
      */
-    public function show(int $id): Note
+    public function show(int $id): ?Note
     {
         return Note::onlyTrashed()->whereId($id)->first();
     }
@@ -35,6 +35,10 @@ class NoteTrashService extends TrashService implements Restorable, Exportable
      */
     public function store(array $attributes): Note
     {
+        if (! isset($attributes['user_id'])) {
+            $attributes['user_id'] = auth()->user()->id;
+        }
+
         $note = Note::create($attributes);
 
         $note->delete();
@@ -49,7 +53,7 @@ class NoteTrashService extends TrashService implements Restorable, Exportable
      */
     public function delete(int $id): void 
     {
-        Note::onlyTrashed()->whereUserId(request()->user()->id)->whereId($id)->forceDelete();
+        Note::onlyTrashed()->whereUserId(auth()->user()->id)->whereId($id)->forceDelete();
     }
 
     /**
@@ -58,7 +62,7 @@ class NoteTrashService extends TrashService implements Restorable, Exportable
      */
     public function truncate(): void
     {
-        Note::onlyTrashed()->whereUserId(request()->user()->id)->forceDelete();
+        Note::onlyTrashed()->whereUserId(auth()->user()->id)->forceDelete();
     }
 
     /**
@@ -68,7 +72,7 @@ class NoteTrashService extends TrashService implements Restorable, Exportable
      */
     public function restore(int $id): void
     {
-        Note::onlyTrashed()->whereId($id)->whereUserId(request()->user()->id)->restore();
+        Note::onlyTrashed()->whereId($id)->whereUserId(auth()->user()->id)->restore();
     }
 
     /**
@@ -77,7 +81,7 @@ class NoteTrashService extends TrashService implements Restorable, Exportable
      */
     public function revert(): void
     {
-        Note::onlyTrashed()->whereUserId(request()->user()->id)->restore();
+        Note::onlyTrashed()->whereUserId(auth()->user()->id)->restore();
     }
 
     /**
@@ -87,13 +91,17 @@ class NoteTrashService extends TrashService implements Restorable, Exportable
      */
     public function export(array $notes): Collection
     {
-        $user = request()->user();
+        $user = auth()->user();
         $collection = new Collection();
 
         foreach ($notes as $note) {
-            $note['user_id'] = $user->id;
+            if (! isset($note['user_id'])) {
+                $note['user_id'] = $user->id;
+            }
+
             $trashed = Note::create($note);
             $trashed->delete();
+            
             $collection->push($trashed);
         }
 

@@ -15,15 +15,15 @@ class NoteService extends Service implements Exportable
      */
     public function index(): Collection
     {
-        return request()->user()->notes;
+        return auth()->user()->notes;
     }
 
     /**
      *
      * @param int $id
-     * @return \App\Models\Note
+     * @return \App\Models\Note|null
      */
-    public function show(int $id): Note
+    public function show(int $id): ?Note
     {
         return Note::find($id);
     }
@@ -35,6 +35,10 @@ class NoteService extends Service implements Exportable
      */
     public function store(array $attributes): Note
     {
+        if (! isset($attributes['user_id'])) {
+            $attributes['user_id'] = auth()->user()->id;
+        }
+
         return Note::create($attributes);
     }
 
@@ -66,7 +70,7 @@ class NoteService extends Service implements Exportable
      */
     public function truncate(): void
     {
-        request()->user()->notes()->delete();
+        auth()->user()->notes()->delete();
     }
 
     /**
@@ -76,11 +80,14 @@ class NoteService extends Service implements Exportable
      */
     public function export(array $notes): Collection
     {
-        $user = request()->user();
+        $user = auth()->user();
         $collection = new Collection();
 
         foreach ($notes as $note) {
-            $note['user_id'] = $user->id;
+            if (! isset($note['user_id'])) {
+                $note['user_id'] = $user->id;
+            }
+
             $collection->push(Note::create($note));
         }
 

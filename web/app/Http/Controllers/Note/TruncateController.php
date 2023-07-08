@@ -4,7 +4,7 @@ namespace App\Http\Controllers\Note;
 
 use Illuminate\Http\Response;
 
-class DeleteAllController extends BaseController
+class TruncateController extends BaseController
 {
     /**
      *
@@ -12,7 +12,7 @@ class DeleteAllController extends BaseController
      */
     public function __invoke(): Response
     {
-        $this->service->deleteAll();
+        $this->service->truncate();
 
         return response()->noContent();
     }

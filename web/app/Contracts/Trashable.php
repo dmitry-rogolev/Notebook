@@ -16,9 +16,9 @@ interface Trashable
     /**
      *
      * @param integer $id
-     * @return \Illuminate\Database\Eloquent\Model
+     * @return \Illuminate\Database\Eloquent\Model|null
      */
-    public function show(int $id): Model;
+    public function show(int $id): ?Model;
 
     /**
      *
@@ -33,10 +33,4 @@ interface Trashable
      * @return void
      */
     public function delete(int $id): void;
-
-    /**
-     *
-     * @return void
-     */
-    public function truncate(): void;
 }

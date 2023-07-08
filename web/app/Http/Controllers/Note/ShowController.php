@@ -14,6 +14,6 @@ class ShowController extends BaseController
      */
     public function __invoke(Note $note): NoteResource
     {
-        return new NoteResource($this->service->show($note));
+        return new NoteResource($note);
     }
 }

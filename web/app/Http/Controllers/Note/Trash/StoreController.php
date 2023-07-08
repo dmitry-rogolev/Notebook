@@ -1,15 +1,16 @@
 <?php
 
-namespace App\Http\Controllers\Note;
+namespace App\Http\Controllers\Note\Trash;
 
-use App\Http\Requests\Note\StoreRequest;
+use App\Http\Controllers\Note\Trash\BaseController as Controller;
+use App\Http\Requests\Note\Trash\StoreRequest;
 use App\Http\Resources\NoteResource;
 
-class StoreController extends BaseController
+class StoreController extends Controller
 {
     /**
      *
-     * @param \App\Http\Requests\Note\StoreRequest $request
+     * @param \App\Http\Requests\Note\Trash\StoreRequest $request
      * @return \App\Http\Resources\NoteResource
      */
     public function __invoke(StoreRequest $request): NoteResource

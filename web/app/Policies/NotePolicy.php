@@ -20,7 +20,7 @@ class NotePolicy
      */
     public function view(User $user, Note $note): bool
     {
-        return $user->id == $note->user_id;
+        return $user->id === $note->user_id;
     }
 
     /**
@@ -36,7 +36,7 @@ class NotePolicy
      */
     public function update(User $user, Note $note): bool
     {
-        return $user->id == $note->user_id;
+        return $user->id === $note->user_id;
     }
 
     /**
@@ -44,7 +44,23 @@ class NotePolicy
      */
     public function delete(User $user, Note $note): bool
     {
-        return $user->id == $note->user_id;
+        return $user->id === $note->user_id;
+    }
+
+    /**
+     * Determine whether the user can delete the model.
+     */
+    public function truncate(User $user): bool
+    {
+        return true;
+    }
+
+    /**
+     * Determine whether the user can delete the model.
+     */
+    public function export(User $user): bool
+    {
+        return true;
     }
 
     /**
@@ -52,7 +68,7 @@ class NotePolicy
      */
     public function restore(User $user, Note $note): bool
     {
-        return $user->id == $note->user_id;
+        return $user->id === $note->user_id;
     }
 
     /**
@@ -60,6 +76,6 @@ class NotePolicy
      */
     public function forceDelete(User $user, Note $note): bool
     {
-        return $user->id == $note->user_id;
+        return $user->id === $note->user_id;
     }
 }
