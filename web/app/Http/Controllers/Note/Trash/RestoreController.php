@@ -14,13 +14,15 @@ class RestoreController extends Controller
      */
     public function __invoke(int $id): NoteResource
     {
-        $note = $this->service->showOnlyTrashed($id);
+        $note = $this->service->show($id);
 
-        if ($note) {
-            $this->service->restore($note);
-
-            $note->refresh();
+        if ($note === null) {
+            abort(404);
         }
+
+        $this->service->restore($id);
+
+        $note->refresh();
 
         return new NoteResource($note);
     }

@@ -25,7 +25,7 @@ class NoteService extends Service implements Exportable
      */
     public function show(int $id): ?Note
     {
-        return Note::find($id);
+        return Note::whereId($id)->whereUserId(auth()->user()->id)->first();
     }
 
     /**

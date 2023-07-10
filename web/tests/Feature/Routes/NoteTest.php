@@ -19,7 +19,7 @@ class NoteTest extends TestCase
         $user = User::factory()->create();
         $this->actingAs($user);
 
-        $notes = Note::factory(10)->for($user)->trashed()->create();
+        $notes = Note::factory(10)->for($user)->create();
 
         $response = $this->getJson('/api/notes');
         $response->assertStatus(200);

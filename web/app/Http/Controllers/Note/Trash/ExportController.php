@@ -19,11 +19,7 @@ class ExportController extends Controller
     {
         $validated = $request->validated();
 
-        $collection = new Collection();
-
-        if (isset($validated['notes']) && is_array($validated['notes'])) {
-            $collection = $this->service->exportTrash($validated['notes']);
-        }
+        $collection = new Collection($this->service->export($validated['notes']));
 
         return NoteResource::collection($collection);
     }

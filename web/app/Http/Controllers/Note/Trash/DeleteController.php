@@ -14,11 +14,7 @@ class DeleteController extends Controller
      */
     public function __invoke(int $id): Response
     {
-        $note = $this->service->showOnlyTrashed($id);
-
-        if ($note) {
-            $this->service->forceDelete($note);
-        }
+        $this->service->delete($id);
 
         return response()->noContent();
     }

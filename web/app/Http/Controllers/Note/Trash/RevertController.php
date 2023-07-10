@@ -6,7 +6,7 @@ use App\Http\Controllers\Note\Trash\BaseController as Controller;
 use App\Http\Resources\NoteResource;
 use Illuminate\Http\Resources\Json\AnonymousResourceCollection;
 
-class RestoreAllController extends Controller
+class RevertController extends Controller
 {
     /**
      *
@@ -14,12 +14,10 @@ class RestoreAllController extends Controller
      */
     public function __invoke(): AnonymousResourceCollection
     {
-        $collection = $this->service->indexOnlyTrashed();
+        $collection = $this->service->index();
 
-        $this->service->restoreAll();
+        $this->service->revert();
 
-        $collection = $collection->fresh();
-
-        return NoteResource::collection($collection);
+        return NoteResource::collection($collection->fresh());
     }
 }

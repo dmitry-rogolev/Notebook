@@ -70,7 +70,7 @@ class NoteTrashTest extends TestCase
 
         $note = Note::factory()->for($user)->make();
 
-        $response = $this->postJson('/api/notes', [
+        $response = $this->postJson('/api/trashnotes', [
             'title' => $note->title, 
             'text' => $note->text, 
         ]);
@@ -85,35 +85,12 @@ class NoteTrashTest extends TestCase
                         ->etc()
                 )
         );
-    }
 
-    public function test_update(): void
-    {
-        $user = User::factory()->create();
-        $this->actingAs($user);
+        $data = json_decode($response->content())->data;
+        $note = Note::onlyTrashed()->whereId($data->id)->first();
 
-        $note = Note::factory()->for($user)->create();
-
-        $attributes = [
-            'title' => $this->faker->text(20), 
-            'text' => $this->faker->paragraphs(5, true), 
-        ];
-
-        $response = $this->patchJson("/api/notes/{$note->id}", $attributes);
-        $response->assertStatus(200);
-
-        $response->assertJson(fn (AssertableJson $json) => 
-            $json
-                ->has('data', fn ($json) => 
-                    $json
-                        ->where('id', $note->id)
-                        ->where('title', $attributes['title'])
-                        ->where('text', $attributes['text'])
-                        ->where('created_at', $note->created_at->toJson())
-                        ->where('updated_at', $note->updated_at->toJson())
-                        ->where('deleted_at', null)  
-                )
-        );
+        $this->assertNotNull($note);
+        $this->assertModelExists($note);
     }
 
     public function test_delete(): void
@@ -121,12 +98,12 @@ class NoteTrashTest extends TestCase
         $user = User::factory()->create();
         $this->actingAs($user);
 
-        $note = Note::factory()->for($user)->create();
+        $note = Note::factory()->for($user)->trashed()->create();
 
-        $response = $this->deleteJson("/api/notes/{$note->id}");
+        $response = $this->deleteJson("/api/trashnotes/{$note->id}");
         $response->assertStatus(204);
 
-        $this->assertTrue($note->fresh()->trashed());
+        $this->assertModelMissing($note);
     }
 
     public function test_truncate(): void
@@ -134,12 +111,65 @@ class NoteTrashTest extends TestCase
         $user = User::factory()->create();
         $this->actingAs($user);
 
-        $notes = Note::factory(10)->for($user)->create();
+        $notes = Note::factory(10)->for($user)->trashed()->create();
 
-        $response = $this->deleteJson('/api/notes');
+        $response = $this->deleteJson('/api/trashnotes');
         $response->assertStatus(204);
 
-        $this->assertTrue($notes->fresh()->every(fn ($note) => $note->trashed()));
+        $this->assertTrue($notes->fresh()->isEmpty());
+    }
+
+    public function test_restore(): void
+    {
+        $user = User::factory()->create();
+        $this->actingAs($user);
+
+        $note = Note::factory()->for($user)->trashed()->create();
+
+        $response = $this->patchJson("/api/trashnotes/{$note->id}");
+        $response->assertStatus(200);
+
+        $this->assertFalse($note->fresh()->trashed());
+
+        $response->assertJson(fn (AssertableJson $json) => 
+            $json
+                ->has('data', fn ($json) => 
+                    $json
+                        ->where('id', $note->id)
+                        ->where('title', $note->title)
+                        ->where('text', $note->text)
+                        ->where('created_at', $note->created_at->toJson())
+                        ->where('updated_at', $note->updated_at->toJson())
+                        ->where('deleted_at', null)    
+                )
+        );
+    }
+
+    public function test_revert(): void
+    {
+        $user = User::factory()->create();
+        $this->actingAs($user);
+
+        $notes = Note::factory(10)->for($user)->trashed()->create();
+
+        $response = $this->patchJson('/api/trashnotes');
+        $response->assertStatus(200);
+
+        $response->assertJson(fn (AssertableJson $json) => 
+            $json
+                ->has('data', 10)
+                ->has('data.0', fn ($json) => 
+                    $json
+                        ->where('id', $notes->first()->id)
+                        ->where('title', $notes->first()->title)
+                        ->where('text', $notes->first()->text)
+                        ->where('created_at', $notes->first()->created_at->toJson())
+                        ->where('updated_at', $notes->first()->updated_at->toJson())
+                        ->where('deleted_at', null)
+                )
+        );
+
+        $this->assertTrue($notes->fresh()->every(fn ($note) => ! $note->trashed()));
     }
 
     public function test_export(): void
@@ -156,7 +186,7 @@ class NoteTrashTest extends TestCase
             ]);
         }
 
-        $response = $this->postJson('/api/notes/export', [ 'notes' => $notes->toArray() ]);
+        $response = $this->postJson('/api/trashnotes/export', [ 'notes' => $notes->toArray() ]);
         $response->assertStatus(200);
 
         $response->assertJson(fn (AssertableJson $json) => 
@@ -169,5 +199,12 @@ class NoteTrashTest extends TestCase
                         ->etc()
                 )
         );
+
+        $data = json_decode($response->content())->data;
+        $note = Note::onlyTrashed()->whereId($data[0]->id)->first();
+
+        $this->assertNotNull($note);
+        $this->assertModelExists($note);
+        $this->assertTrue($note->trashed());
     }
 }

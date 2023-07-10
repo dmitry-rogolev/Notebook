@@ -25,7 +25,7 @@ class NoteTrashService extends TrashService implements Restorable, Exportable
      */
     public function show(int $id): ?Note
     {
-        return Note::onlyTrashed()->whereId($id)->first();
+        return Note::onlyTrashed()->whereId($id)->whereUserId(auth()->user()->id)->first();
     }
 
     /**

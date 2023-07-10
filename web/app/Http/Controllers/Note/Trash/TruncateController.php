@@ -5,7 +5,7 @@ namespace App\Http\Controllers\Note\Trash;
 use App\Http\Controllers\Note\Trash\BaseController as Controller;
 use Illuminate\Http\Response;
 
-class DeleteAllController extends Controller
+class TruncateController extends Controller
 {
     /**
      *
@@ -13,7 +13,7 @@ class DeleteAllController extends Controller
      */
     public function __invoke(): Response
     {
-        $this->service->forceDeleteAll();
+        $this->service->truncate();
 
         return response()->noContent();
     }
