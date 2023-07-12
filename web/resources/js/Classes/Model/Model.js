@@ -379,7 +379,7 @@ class Model
      * @returns {void}
      */
     _setCache(cache) {
-        Cache.add(this.constructor._configuration.getModelCachePrefix() + this.constructor._table, cache);
+        Cache.set(this.constructor._configuration.getModelCachePrefix() + this.constructor._table, cache);
     }
 
     /**

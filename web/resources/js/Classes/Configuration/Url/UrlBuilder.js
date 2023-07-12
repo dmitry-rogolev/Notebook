@@ -1,4 +1,4 @@
-import BuilderInterface from "@/Interfaces/BuilderInterface";
+import BuilderInterface from '../../../Interfaces/BuilderInterface';
 import Url from './Url';
 import Protocol from "./Components/Protocol";
 import Hostname from "./Components/Hostname";
@@ -6,6 +6,7 @@ import Port from "./Components/Port";
 import Pathname from "./Components/Pathname";
 import Search from "./Components/Search";
 import { isString } from "../../helpers";
+import Hash from './Components/Hash';
 
 class UrlBuilder extends BuilderInterface
 {
@@ -103,6 +104,17 @@ class UrlBuilder extends BuilderInterface
      */
     addSearch(search) {
         this._url.search = new Search(search);
+
+        return this;
+    }
+
+    /**
+     * 
+     * @param {String} search 
+     * @returns {this}
+     */
+    addHash(hash) {
+        this._url.hash = new Hash(hash);
 
         return this;
     }

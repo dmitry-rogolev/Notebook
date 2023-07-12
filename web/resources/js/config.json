@@ -1,11 +1,9 @@
 {
-    "url": {
-        "host": "/",
-        "prefix": "api", 
-        "trash": "trash", 
-        "restore": "restore", 
-        "export": "export"
-    },
+    "app_name": "Notebook", 
+    "app_url": "http://127.0.0.1:8000", 
+    "cache": {
+        "prefix": "__cache_cache"
+    }, 
     "model": {
         "id": "id", 
         "created_at": "created_at", 

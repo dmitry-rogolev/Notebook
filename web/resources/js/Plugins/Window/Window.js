@@ -237,7 +237,7 @@ class Window
      * @returns {void}
      */
     _setFullscreen(fullscreen) {
-        Cache.add(this._configuration.getWindowCachePrefix() + 'fullscreen', fullscreen);
+        Cache.set(this._configuration.getWindowCachePrefix() + 'fullscreen', fullscreen);
     }
 
     /**
@@ -254,7 +254,7 @@ class Window
      * @returns {void}
      */
     _setStatusbar(statusbar) {
-        Cache.add(this._configuration.getWindowCachePrefix() + 'statusbar', statusbar);
+        Cache.set(this._configuration.getWindowCachePrefix() + 'statusbar', statusbar);
     }
 
     /**
@@ -271,7 +271,7 @@ class Window
      * @returns {void}
      */
     _setToolbar(toolbar) {
-        Cache.add(this._configuration.getWindowCachePrefix() + 'toolbar', toolbar);
+        Cache.set(this._configuration.getWindowCachePrefix() + 'toolbar', toolbar);
     }
 
     /**
@@ -288,7 +288,7 @@ class Window
      * @returns {void}
      */
     _setStandard(standard) {
-        Cache.add(this._configuration.getWindowCachePrefix() + 'standard', standard);
+        Cache.set(this._configuration.getWindowCachePrefix() + 'standard', standard);
     }
 
     /**
@@ -305,7 +305,7 @@ class Window
      * @returns {void}
      */
     _setTabs(tabs) {
-        Cache.add(this._configuration.getWindowCachePrefix() + 'tabs', tabs);
+        Cache.set(this._configuration.getWindowCachePrefix() + 'tabs', tabs);
     }
 
     _calcHeight() {

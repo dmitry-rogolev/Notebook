@@ -1,8 +1,10 @@
-import ConfigurationFactory from "./ConfigurationFactory";
-import { isObject, isString } from "../helpers";
+import { getValue, isNull, isObject, isUndefined } from "../helpers";
+import config from '../../config.json';
 
 class Configuration 
 {
+    static _instance = null;
+
     _configurations = {};
 
     /**
@@ -12,62 +14,35 @@ class Configuration
         return this._configurations;
     }
 
-    /**
-     * 
-     * @param {Object|null} configuration 
-     */
-    constructor(configuration = null) {
-        if (isObject(configuration)) {
-            this._configurations = configuration;
-        }
+    constructor() {
+        this._configurations = config;
     }
 
     /**
      * 
-     * @param {string} key 
-     * @param {any} value 
-     * @returns {this}
+     * @returns {Configuration}
      */
-    set(key, value) {
-        if (key && isString(value)) {
-            this._configurations[key] = value;
+    static getInstance() {
+        if (this._instance === null) {
+            this._instance = new this;
         }
 
-        return this;
+        return this._instance;
     }
 
     /**
      * 
      * @param {String} key 
-     * @returns {any|null}
+     * @returns {any}
      */
-    get(key) {
-        if (this.has(key)) {
-            return this._configurations[key];
+    get(key, defaultValue = null) {
+        let value = getValue(this._configurations, key);
+
+        if (isUndefined(value) || isNull(value)) {
+            return defaultValue;
         }
 
-        return null;
-    }
-
-    /**
-     * 
-     * @param {String} key 
-     * @returns {Boolean}
-     */
-    has(key) {
-        if (key && isString(key)) {
-            return key in this._configurations;
-        }
-
-        return false;
-    }
-
-    /**
-     * 
-     * @returns {ConfigurationFactory}
-     */
-    static factory(configuration = null) {
-        return new ConfigurationFactory(configuration);
+        return value;
     }
 }
 

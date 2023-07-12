@@ -1,4 +1,4 @@
-import RenderableInterface from "@/Interfaces/RenderableInterface";
+import RenderableInterface from '../../../Interfaces/RenderableInterface';
 import Protocol from "./Components/Protocol";
 import Hostname from "./Components/Hostname";
 import Port from "./Components/Port";

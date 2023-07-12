@@ -15,12 +15,12 @@ class Protocol extends Component
         if (protocol && isString(protocol)) {
             component = protocol;
 
-            if (! component.endsWith('//')) {
-                component = component + '//';
+            if (! component.endsWith(':') && ! component.endsWith('//')) {
+                component += '://';
             }
 
-            if (! component.endsWith(':')) {
-                component += ':';
+            if (! component.endsWith('//') && component.endsWith(':')) {
+                component = component + '//';
             }
         } else {
             component = window.location.protocol + '//';

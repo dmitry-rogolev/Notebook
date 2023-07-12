@@ -1,4 +1,4 @@
-import FactoryInterface from "@/Interfaces/FactoryInterface";
+import FactoryInterface from '../../../Interfaces/FactoryInterface';
 import Url from "./Url";
 import UrlBuilder from "./UrlBuilder";
 

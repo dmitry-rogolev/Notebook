@@ -1,3 +1,4 @@
+import Configuration from "./Configuration/Configuration";
 
 /**
  * 
@@ -22,6 +23,61 @@ export function isString(value) {
  * @param {any} value 
  * @returns {Boolean}
  */
+export function isNumber(value) {
+    return typeof value === 'number';
+}
+
+/**
+ * 
+ * @param {any} value 
+ * @returns {Boolean}
+ */
+export function isBoolean(value) {
+    return typeof value === 'boolean';
+}
+
+/**
+ * 
+ * @param {any} value 
+ * @returns {Boolean}
+ */
+export function isFunction(value) {
+    return typeof value === 'function';
+}
+
+/**
+ * 
+ * @param {any} value 
+ * @returns {Boolean}
+ */
+export function isUndefined(value) {
+    return typeof value === 'undefined';
+}
+
+/**
+ * 
+ * @param {any} value 
+ * @returns {Boolean}
+ */
+export function isNull(value) {
+    return value === null;
+}
+
+/**
+ * 
+ * @param {any} value 
+ * @param {String} type
+ * @returns {Boolean}
+ */
+export function is(value, type) {
+    return typeof value === type;
+}
+
+/**
+ * 
+ * @param {any} value 
+ * @returns {Boolean}
+ */
 export function isArray(value) {
     return Array.isArray(value);
 }
@@ -33,14 +89,23 @@ export function isArray(value) {
  */
 export function empty(value) {
     if (isArray(value) || isString(value)) {
-        return !! value.length;
+        return ! value.length;
     }
 
     if (isObject(value)) {
-        return !! value.keys().length;
+        return ! Object.keys(value).length;
     }
 
-    return true;
+    return ! value;
+}
+
+/**
+ * 
+ * @param {any} value 
+ * @returns {Boolean}
+ */
+export function notEmpty(value) {
+    return ! empty(value);
 }
 
 /**
@@ -81,4 +146,39 @@ export function isJson(value) {
     } catch (e) {
         return false;
     }
+}
+
+/**
+ * 
+ * @param {Object|Array} array 
+ * @param {String|Number} key 
+ * @returns {any}
+ */
+export function getValue(array, key) {
+    if (isArray(array) && isNumber(key)) {
+        return array[key];
+    }
+
+    if (! isString(key)) {
+        return array;
+    }
+
+    let keys = key.split('.');
+    let value = array;
+
+    for (let key of keys) {
+        if (isArray(value) && Number(key)) {
+            value = value[key];
+        } else if (isObject(value)) {
+            value = value[key];
+        } else {
+            break;
+        }
+    }
+
+    return value;
+}
+
+export function config(key, defaultValue = null) {
+    return Configuration.getInstance().get(key, defaultValue);
 }

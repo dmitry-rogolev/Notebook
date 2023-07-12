@@ -150,7 +150,7 @@ class Sidebar
      * @returns {void}
      */
     _setShowNotes(show) {
-        Cache.add(this._configuration.getSidebarCachePrefix() + 'show_notes', show);
+        Cache.set(this._configuration.getSidebarCachePrefix() + 'show_notes', show);
     }
 
     /**
@@ -167,7 +167,7 @@ class Sidebar
      * @returns {void}
      */
     _setShowSearch(show) {
-        Cache.add(this._configuration.getSidebarCachePrefix() + 'show_search', show);
+        Cache.set(this._configuration.getSidebarCachePrefix() + 'show_search', show);
     }
 
     /**
@@ -184,7 +184,7 @@ class Sidebar
      * @returns {void}
      */
     _setShowTrash(show) {
-        Cache.add(this._configuration.getSidebarCachePrefix() + 'show_trash', show);
+        Cache.set(this._configuration.getSidebarCachePrefix() + 'show_trash', show);
     }
 
     /**
@@ -201,7 +201,7 @@ class Sidebar
      * @returns {void}
      */
     _setDeteiled(detailed) {
-        Cache.add(this._configuration.getSidebarCachePrefix() + 'detailed', detailed);
+        Cache.set(this._configuration.getSidebarCachePrefix() + 'detailed', detailed);
     }
 
     _calcHeight() {

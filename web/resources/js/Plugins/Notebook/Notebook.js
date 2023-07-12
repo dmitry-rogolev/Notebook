@@ -353,7 +353,7 @@ class Notebook
      * @returns {void}
      */
     _setAutosave(autosave) {
-        Cache.add(this._configuration.getNotebookCachePrefix() + 'autosave', autosave);
+        Cache.set(this._configuration.getNotebookCachePrefix() + 'autosave', autosave);
     }
 
     _onAutosave() {
