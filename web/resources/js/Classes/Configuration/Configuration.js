@@ -1,5 +1,6 @@
-import { getValue, isNull, isUndefined } from "../helpers";
+import { getValue, isNull, isString, isUndefined } from "../helpers";
 import config from '../../config.json';
+import NotTypeError from "../Errors/NotTypeError";
 
 class Configuration 
 {
@@ -30,6 +31,10 @@ class Configuration
      * @returns {any}
      */
     get(key, defaultValue = null) {
+        if (! isString(key)) {
+            throw new NotTypeError('key', 'string');
+        }
+
         let value = getValue(this._configurations, key);
 
         if (isUndefined(value) || isNull(value)) {

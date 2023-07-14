@@ -1,4 +1,5 @@
-import { config, isNull, parseJson, toJson } from "../helpers";
+import NotTypeError from "../Errors/NotTypeError";
+import { config, isNull, isString, parseJson, toJson } from "../helpers";
 
 class Cache
 {
@@ -25,6 +26,10 @@ class Cache
      * @returns {Cache}
      */
     set(key, value) {
+        if (! isString(key)) {
+            throw new NotTypeError('key', 'string');
+        }
+
         let prefix = config('cache.prefix', this._DEFAULT_CACHE_PREFIX);
 
         localStorage.setItem(prefix + key, toJson(value));
@@ -39,6 +44,10 @@ class Cache
      * @returns {any}
      */
     get(key, defaultValue = null) {
+        if (! isString(key)) {
+            throw new NotTypeError('key', 'string');
+        }
+
         let prefix = config('cache.prefix', this._DEFAULT_CACHE_PREFIX);
         let value = localStorage.getItem(prefix + key);
 
@@ -55,6 +64,10 @@ class Cache
      * @returns {Boolean}
      */
     has(key) {
+        if (! isString(key)) {
+            throw new NotTypeError('key', 'string');
+        }
+
         let prefix = config('cache.prefix', this._DEFAULT_CACHE_PREFIX);
         let value = localStorage.getItem(prefix + key);
 
@@ -71,6 +84,10 @@ class Cache
      * @returns {Cache}
      */
     remove(key) {
+        if (! isString(key)) {
+            throw new NotTypeError('key', 'string');
+        }
+        
         let prefix = config('cache.prefix', this._DEFAULT_CACHE_PREFIX);
         localStorage.removeItem(prefix + key);
 
