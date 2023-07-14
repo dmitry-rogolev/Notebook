@@ -1,21 +1,11 @@
 import DriverInterface from "../../../Interfaces/DriverInterface";
 import { isArray, parseJson, toJson } from "../../helpers";
 import AxiosServerDriver from "./AxiosServerDriver";
-import Server from "./LocalStorageDriver/Server";
 
 class LocalStorageDriver extends DriverInterface
 {
     static _instance = null;
-    _configuration = null;
-    _server = null;
     _serverDriver = null;
-
-    constructor() {
-        super();
-        // this._configuration = Configuration.getInstance();
-        // this._server = Server.getInstance();
-        // this._serverDriver = AxiosServerDriver.getInstance();
-    }
 
     /**
      * 

@@ -1,16 +1,11 @@
 import axios from 'axios';
 import DriverInterface from '../../../Interfaces/DriverInterface';
-import { empty, isArray, isString } from '../../helpers';
+import { isString } from '../../helpers';
+import NotTypeError from '../../Errors/NotTypeError';
 
 class AxiosServerDriver extends DriverInterface
 {
     static _instance = null;
-    _configuration = null;
-
-    constructor() {
-        super();
-        // this._configuration = Configuration.getInstance();
-    }
 
     /**
      * 
@@ -26,126 +21,59 @@ class AxiosServerDriver extends DriverInterface
 
     /**
      * 
-     * @param {String} path 
-     * @param {any|null} data default data
-     * @returns {any}
+     * @param {String} url 
+     * @returns {Promise}
      */
-    async get(path, data = null) {
-        if (path && isString(path)) {
-            let response = await axios.get(this._configuration.getUrl() + '/' + this._parsePath(path));
-            let responseData = response?.data?.data;
-
-            if (isArray(responseData) && empty(responseData)) {
-                return data;
-            } 
-
-            return responseData;
+    async get(url) {
+        if (! isString(url)) {
+            throw new NotTypeError('url', 'string');
         }
 
-        return data;
+        let response = await axios.get(url);
+        return response?.data?.data;
     }
 
     /**
      * 
-     * @param {String} path 
+     * @param {String} url 
      * @param {any} data 
-     * @returns {any}
+     * @returns {Promise}
      */
-    async post(path, data) {
-        if (path && isString(path)) {
-            let response = await axios.post(this._configuration.getUrl() + '/' + this._parsePath(path), data);
-            let responseData = response?.data?.data;
-
-            if (isArray(responseData) && empty(responseData)) {
-                return null;
-            } 
-
-            return responseData;
+    async post(url, data) {
+        if (! isString(url)) {
+            throw new NotTypeError('url', 'string');
         }
 
-        return null;
+        let response = await axios.post(url, data);
+        return response?.data?.data;
     }
 
     /**
      * 
-     * @param {String} path 
+     * @param {String} url 
      * @param {any} data 
-     * @returns {any}
+     * @returns {Promise}
      */
-    async patch(path, data) {
-        if (path && isString(path)) {
-            let response = await axios.patch(this._configuration.getUrl() + '/' + this._parsePath(path), data);
-            let responseData = response?.data?.data;
-
-            if (isArray(responseData) && empty(responseData)) {
-                return null;
-            } 
-
-            return responseData;
+    async patch(url, data) {
+        if (! isString(url)) {
+            throw new NotTypeError('url', 'string');
         }
 
-        return null;
+        let response = await axios.patch(url, data);
+        return response?.data?.data;
     }
 
     /**
      * 
-     * @param {String} path 
-     * @returns {void}
+     * @param {String} url 
+     * @returns {Promise}
      */
-    async delete(path) {
-        if (path && isString(path)) {
-            await axios.delete(this._configuration.getUrl() + '/' + this._parsePath(path));
-        }
-    }
-
-    /**
-     * 
-     * @param {String} path 
-     * @returns {void}
-     */
-    async truncate(path) {
-        if (path && isString(path)) {
-            await axios.delete(this._configuration.getUrl() + '/' + this._parsePath(path));
-        }
-    }
-
-    /**
-     * 
-     * @param {String} path 
-     * @returns {any}
-     */
-    async restore(path) {
-        if (path && isString(path)) {
-            let response = await axios.post(this._configuration.getUrl() + '/' + this._parsePath(path));
-            let responseData = response?.data?.data;
-
-            if (isArray(responseData) && empty(responseData)) {
-                return null;
-            } 
-
-            return responseData;
+    async delete(url) {
+        if (! isString(url)) {
+            throw new NotTypeError('url', 'string');
         }
 
-        return null;
-    }
-
-    /**
-     * 
-     * @param {String} path 
-     * @returns {String}
-     */
-    _parsePath(path) {
-        let result = path;
-
-        if (result.startsWith('/')) {
-            result = result.slice(1);
-        }
-
-        if (result.endsWith('/')) {
-            result = result.slice(0, -1);
-        }
-
-        return encodeURI(path);
+        await axios.delete(url);
     }
 }
 
