@@ -38,3 +38,42 @@ it('update', async () => {
   
     expect(fn).toHaveBeenCalled();
 });
+
+it('delete', async () => {
+    let data = {
+        title: 'title', 
+        text: 'text', 
+    };
+
+    let note = ServerFacade.store(data);
+
+    let fn = jest.fn(() => {
+        note = ServerFacade.delete(note);
+        expect(note[config('model.created_at', Model.DEFAULT_CREATED_AT)]).not.toBe(note[config('model.updated_at', Model.DEFAULT_UPDATED_AT)]);
+        expect(note[config('model.created_at', Model.DEFAULT_CREATED_AT)]).not.toBe(note[config('model.deleted_at', Model.DEFAULT_DELETED_AT)]);
+    });
+  
+    await delay(fn, 100);
+  
+    expect(fn).toHaveBeenCalled();
+});
+
+it('delete', async () => {
+    let data = {
+        title: 'title', 
+        text: 'text', 
+    };
+
+    let note = ServerFacade.store(data);
+    note = ServerFacade.delete(note);
+
+    let fn = jest.fn(() => {
+        note = ServerFacade.restore(note);
+        expect(note[config('model.created_at', Model.DEFAULT_CREATED_AT)]).not.toBe(note[config('model.updated_at', Model.DEFAULT_DELETED_AT)]);
+        expect(note[config('model.deleted_at', Model.DEFAULT_DELETED_AT)]).toBeNull();
+    });
+  
+    await delay(fn, 100);
+  
+    expect(fn).toHaveBeenCalled();
+});

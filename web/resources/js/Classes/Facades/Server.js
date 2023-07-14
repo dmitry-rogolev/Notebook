@@ -20,6 +20,24 @@ class ServerFacade extends Facade
     static update(data) {
         return Server.getInstance().update(data);
     }
+
+    /**
+     * 
+     * @param {Object} data 
+     * @returns {Object}
+     */
+    static delete(data) {
+        return Server.getInstance().delete(data);
+    }
+
+    /**
+     * 
+     * @param {Object} data 
+     * @returns {Object}
+     */
+    static restore(data) {
+        return Server.getInstance().restore(data);
+    }
 }
 
 export default ServerFacade;

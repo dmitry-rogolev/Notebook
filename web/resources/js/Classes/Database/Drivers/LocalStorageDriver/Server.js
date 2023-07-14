@@ -1,13 +1,10 @@
 import NotTypeError from "../../../Errors/NotTypeError";
 import Model from "../../../Model/Model";
-import { cache, config, isObject, isString, timestamp, uuid } from "../../../helpers";
-import Database from "../../Database";
+import { config, isObject, timestamp, uuid } from "../../../helpers";
 
 class Server 
 {
     static _instance = null;
-
-    _configuration = null;
 
     /**
      * 
@@ -63,14 +60,14 @@ class Server
      * @returns {Object}
      */
     delete(data) {
-        if (typeof data !== 'object') {
-            throw new Error('The "data" parameter must be an object.');
+        if (! isObject(data)) {
+            throw new NotTypeError('data', 'object');
         }
 
-        let timestamp = this._getTimestamp();
+        let timestampDate = timestamp();
 
-        data[this._configuration.getModelUpdatedAt()] = timestamp;
-        data[this._configuration.getModelDeletedAt()] = timestamp;
+        data[config('model.updated_at', Model.DEFAULT_UPDATED_AT)] = timestampDate;
+        data[config('model.deleted_at', Model.DEFAULT_DELETED_AT)] = timestampDate;
 
         return data;
     }
@@ -81,76 +78,16 @@ class Server
      * @returns {Object}
      */
     restore(data) {
-        if (typeof data !== 'object') {
-            throw new Error('The "data" parameter must be an object.');
+        if (! isObject(data)) {
+            throw new NotTypeError('data', 'object');
         }
 
-        let timestamp = this._getTimestamp();
+        let timestampDate = timestamp();
 
-        data[this._configuration.getModelUpdatedAt()] = timestamp;
-        data[this._configuration.getModelDeletedAt()] = null;
+        data[config('model.updated_at', Model.DEFAULT_UPDATED_AT)] = timestampDate;
+        data[config('model.deleted_at', Model.DEFAULT_DELETED_AT)] = null;
 
         return data;
-    }
-
-    _getTimestamp() {
-        let date = new Date();
-        return `${date.getUTCFullYear()}-${this._addZero(date.getUTCMonth() + 1)}-${this._addZero(date.getUTCDate())}T${this._addZero(date.getUTCHours())}:${this._addZero(date.getUTCMinutes())}:${this._addZero(date.getUTCSeconds())}.000000Z`;
-    }
-
-    _addZero(num) {
-        if (num < 10) {
-            num = '0' + String(num);
-        } else {
-            num = String(num);
-        }
-
-        return num;
-    }
-
-    /**
-     * 
-     * @param {any} value 
-     * @returns {Boolean}
-     */
-    _isJson(value) {
-        try {
-            JSON.parse(value);
-            return true;
-        } catch (e) {
-            return false;
-        }
-    }
-
-    /**
-     * 
-     * @param {any} value 
-     * @returns {String}
-     */
-    _toJson(value) {
-        return JSON.stringify(value);
-    }
-
-    /**
-     * 
-     * @param {String} str 
-     * @returns {any}
-     */
-    _parseJson(str) {
-        return JSON.parse(str);
-    }
-
-    /**
-     * 
-     * @param {String} key 
-     * @returns {any}
-     */
-    _getTable(key) {
-        if (! isString(key)) {
-            throw new NotTypeError('key', 'string');
-        }
-
-        return cache(config('database.cache.prefix', Database.DEFAULT_CACHE_PREFIX) + key);
     }
 }
 

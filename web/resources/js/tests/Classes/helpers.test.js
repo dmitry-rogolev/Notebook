@@ -1,5 +1,6 @@
 import Cache from '../../Classes/Cache/Cache';
-import { cache, config, empty, getValue, uuid, is, isArray, isBoolean, isFunction, isJson, isNull, isNumber, isObject, isString, isUndefined, notEmpty, parseJson, rand, time, toJson, timestamp, zero, delay, sleep } from '../../Classes/helpers';
+import Server from '../../Classes/Database/Drivers/LocalStorageDriver/Server';
+import { cache, config, empty, getValue, uuid, is, isArray, isBoolean, isFunction, isJson, isNull, isNumber, isObject, isString, isUndefined, notEmpty, parseJson, rand, time, toJson, timestamp, zero, delay, sleep, server } from '../../Classes/helpers';
 import { jest } from '@jest/globals';
 
 jest.useRealTimers();
@@ -225,4 +226,8 @@ it('sleep', async () => {
     expect.assertions(1);
     let start = time();
     await expect(sleep(100).then(() => time() - start)).resolves.toBeGreaterThanOrEqual(100);
+});
+
+test('server', () => {
+    expect(server()).toBeInstanceOf(Server);
 });

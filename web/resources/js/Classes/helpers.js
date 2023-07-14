@@ -1,4 +1,5 @@
 import Cache from "./Cache/Cache";
+import Server from "./Database/Drivers/LocalStorageDriver/Server";
 import NotTypeError from "./Errors/NotTypeError";
 import CacheFacade from "./Facades/Cache";
 import ConfigurationFacade from "./Facades/Configuration";
@@ -314,5 +315,13 @@ export async function sleep(timeout = 100) {
     }
 
     return new Promise((resolve) => setTimeout(() => resolve(), timeout));
+}
+
+/**
+ * 
+ * @returns {Server}
+ */
+export function server() {
+    return new Server();
 }
   
