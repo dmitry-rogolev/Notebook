@@ -1,6 +1,5 @@
-import Configuration from '@/Classes/Configuration';
 import axios from 'axios';
-import DriverInterface from '@/Interfaces/DriverInterface';
+import DriverInterface from '../../../Interfaces/DriverInterface';
 import { empty, isArray, isString } from '../../helpers';
 
 class AxiosServerDriver extends DriverInterface
@@ -10,7 +9,7 @@ class AxiosServerDriver extends DriverInterface
 
     constructor() {
         super();
-        this._configuration = Configuration.getInstance();
+        // this._configuration = Configuration.getInstance();
     }
 
     /**

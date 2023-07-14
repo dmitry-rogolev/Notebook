@@ -1,5 +1,3 @@
-import Cache from "../Cache";
-import Configuration from "../Configuration";
 import Database from "../Database/Database";
 import AxiosServerDriver from "../Database/Drivers/AxiosServerDriver";
 import { reactive } from 'vue';
@@ -7,11 +5,16 @@ import LocalStorageDriver from "../Database/Drivers/LocalStorageDriver";
 
 class Model
 {
+    static DEFAULT_PRIMARY_KEY = 'id';
+    static DEFAULT_CREATED_AT = 'created_at';
+    static DEFAULT_UPDATED_AT = 'updated_at';
+    static DEFAULT_DELETED_AT = 'deleted_at';
+    
     static _database = Database.factory(LocalStorageDriver.getInstance(), AxiosServerDriver.getInstance()).make();
-    static _configuration = Configuration.getInstance();
+    // static _configuration = Configuration.getInstance();
 
     static _table = 'models';
-    static _primaryKey = Model._configuration.getModelIdName();
+    // static _primaryKey = Model._configuration.getModelIdName();
     static _defaults = {};
 
     _originals = {};

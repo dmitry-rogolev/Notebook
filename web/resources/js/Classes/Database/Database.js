@@ -1,11 +1,10 @@
-import Configuration from '@/Classes/Configuration';
 import DatabaseFactory from "./DabaseFactory";
-import DriverInterface from "@/Interfaces/DriverInterface";
+import DriverInterface from '../../Interfaces/DriverInterface';
 import { usePage } from '@inertiajs/vue3';
 
 class Database
 {
-    static _DEFAULT_CACHE_PREFIX = 'database_';
+    static DEFAULT_CACHE_PREFIX = 'database_';
     
     _driver = null;
     _clientDriver = null;
@@ -23,7 +22,7 @@ class Database
 
         this._clientDriver = clientDriver;
         this._serverDriver = serverDriver;
-        this._configuration = Configuration.getInstance();
+        // this._configuration = Configuration.getInstance();
     }
 
     /**

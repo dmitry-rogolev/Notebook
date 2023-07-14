@@ -1,6 +1,7 @@
 import Cache from "../Cache/Cache";
+import Facade from "./Facade";
 
-class CacheFacade
+class CacheFacade extends Facade
 {
     /**
      * 

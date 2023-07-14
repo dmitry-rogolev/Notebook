@@ -1,5 +1,7 @@
 import NotTypeError from "../../../Errors/NotTypeError";
-import { isObject, isString } from "../../../helpers";
+import Model from "../../../Model/Model";
+import { cache, config, isObject, isString, timestamp, uuid } from "../../../helpers";
+import Database from "../../Database";
 
 class Server 
 {
@@ -9,7 +11,7 @@ class Server
 
     /**
      * 
-     * @returns {this}
+     * @returns {Server}
      */
     static getInstance() {
         if (this._instance === null) {
@@ -21,57 +23,21 @@ class Server
 
     /**
      * 
-     * @param {String} path
      * @param {Object} data 
      * @returns {Object}
      */
-    store(path, data) {
-        if (! isString(path)) {
-            throw new NotTypeError('path', 'string');
-        }
-
+    store(data) {
         if (! isObject(data)) {
             throw new NotTypeError('data', 'object');
         }
 
-        let keys = path.split('/');
-        let table = this._getTable(keys[0]);
+        data[config('model.primary_key', Model.DEFAULT_PRIMARY_KEY)] = uuid();
 
-        if (this._isJson(table)) {
-            table = this._parseJson(table);
-        }
+        let timestampDate = timestamp();
 
-        let id = 1;
-
-        if (table !== null && Array.isArray(table) && table.length) {
-            table.sort((a, b) => a[this._configuration.getModelIdName()] - b[this._configuration.getModelIdName()]);
-
-            id = table.reverse()[0][this._configuration.getModelIdName()] + 1;
-        }
-
-        let trash = this._getTable(keys[0] + '_' + this._configuration.getPathTrash());
-
-        if (this._isJson(trash)) {
-            trash = this._parseJson(trash);
-        }
-
-        if (trash !== null && Array.isArray(trash) && trash.length) {
-            trash.sort((a, b) => a[this._configuration.getModelIdName()] - b[this._configuration.getModelIdName()]);
-
-            let trashId = trash.reverse()[0][this._configuration.getModelIdName()] + 1;
-
-            if (id < trashId) {
-                id = trashId;
-            }
-        }
-
-        data[this._configuration.getModelIdName()] = id;
-
-        let timestamp = this._getTimestamp();
-
-        data[this._configuration.getModelCreatedAt()] = timestamp;
-        data[this._configuration.getModelUpdatedAt()] = timestamp;
-        data[this._configuration.getModelDeletedAt()] = null;
+        data[config('model.created_at', Model.DEFAULT_CREATED_AT)] = timestampDate;
+        data[config('model.updated_at', Model.DEFAULT_UPDATED_AT)] = timestampDate;
+        data[config('model.deleted_at', Model.DEFAULT_DELETED_AT)] = null;
 
         return data;
     }
@@ -82,11 +48,11 @@ class Server
      * @returns {Object}
      */
     update(data) {
-        if (typeof data !== 'object') {
-            throw new Error('The "data" parameter must be an object.');
+        if (! isObject(data)) {
+            throw new NotTypeError('data', 'object');
         }
 
-        data[this._configuration.getModelUpdatedAt()] = this._getTimestamp();
+        data[config('model.updated_at', Model.DEFAULT_UPDATED_AT)] = timestamp();
 
         return data;
     }
@@ -174,8 +140,17 @@ class Server
         return JSON.parse(str);
     }
 
+    /**
+     * 
+     * @param {String} key 
+     * @returns {any}
+     */
     _getTable(key) {
-        return localStorage.getItem(this._configuration.getDatabaseCachePrefix() + key);
+        if (! isString(key)) {
+            throw new NotTypeError('key', 'string');
+        }
+
+        return cache(config('database.cache.prefix', Database.DEFAULT_CACHE_PREFIX) + key);
     }
 }
 

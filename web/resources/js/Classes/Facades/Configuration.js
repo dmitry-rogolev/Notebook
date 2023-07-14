@@ -1,6 +1,7 @@
 import Configuration from "../Configuration/Configuration";
+import Facade from "./Facade";
 
-class ConfigurationFacade
+class ConfigurationFacade extends Facade
 {
     /**
      * 

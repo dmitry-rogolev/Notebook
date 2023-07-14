@@ -1,6 +1,8 @@
 import Cache from '../../Classes/Cache/Cache';
-import CacheFacade from '../../Classes/Facades/Cache';
-import { cache, config, empty, getValue, is, isArray, isBoolean, isFunction, isJson, isNull, isNumber, isObject, isString, isUndefined, notEmpty, parseJson, toJson } from '../../Classes/helpers';
+import { cache, config, empty, getValue, uuid, is, isArray, isBoolean, isFunction, isJson, isNull, isNumber, isObject, isString, isUndefined, notEmpty, parseJson, rand, time, toJson, timestamp, zero, delay, sleep } from '../../Classes/helpers';
+import { jest } from '@jest/globals';
+
+jest.useRealTimers();
 
 test('isObject', () => {
     expect(isObject({})).toBe(true);
@@ -185,4 +187,42 @@ test('cache', () => {
     cache().remove('prefix_key');
     expect(cache('prefix_key')).toBeNull();
     expect(cache('wrong', null, 'value')).toBe('value');
+});
+
+test('time', () => {
+    expect(isNumber(time())).toBeTruthy();
+});
+
+test('rand', () => {
+    expect(isNumber(rand())).toBeTruthy();
+    expect(rand(-100, 1000)).toBeGreaterThanOrEqual(-100);
+    expect(rand(-100, 1000)).toBeLessThanOrEqual(1000);
+});
+
+test('uuid', () => {
+    expect(isString(uuid())).toBeTruthy();
+});
+
+test('zero', () => {
+    expect(zero(3)).toBe('03');
+    expect(zero(10)).toBe('10');
+});
+
+test('timestamp', () => {
+    expect(isString(timestamp())).toBeTruthy();
+    expect(timestamp().split('T').length).toBe(2);
+});
+
+it('delay', async () => {
+    expect.assertions(1);
+
+    let start = time();
+    let fn = () => time() - start;
+    await expect(delay(fn, 100)).resolves.toBeGreaterThanOrEqual(100);
+});
+
+it('sleep', async () => {
+    expect.assertions(1);
+    let start = time();
+    await expect(sleep(100).then(() => time() - start)).resolves.toBeGreaterThanOrEqual(100);
 });

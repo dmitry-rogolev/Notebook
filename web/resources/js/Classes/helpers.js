@@ -2,6 +2,7 @@ import Cache from "./Cache/Cache";
 import NotTypeError from "./Errors/NotTypeError";
 import CacheFacade from "./Facades/Cache";
 import ConfigurationFacade from "./Facades/Configuration";
+import { v4 } from 'uuid';
 
 /**
  * 
@@ -214,3 +215,104 @@ export function cache(key = null, value = null, defaultValue = null) {
 
     CacheFacade.set(key, value);
 }
+
+/**
+ * 
+ * @returns {Number}
+ */
+export function time() {
+    return (new Date).getTime();
+}
+
+/**
+ * 
+ * @param {Number} min 
+ * @param {Number} max 
+ * @returns {Number}
+ */
+export function rand(min = 0, max = 100) {
+    if (! isNumber(min)) {
+        throw new NotTypeError('min', 'number');
+    }
+
+    if (! isNumber(max)) {
+        throw new NotTypeError('max', 'number');
+    }
+
+    return Math.floor(Math.random() * (max - min + 1)) + min;
+}
+
+/**
+ * 
+ * @returns {String}
+ */
+export function uuid() {
+    return v4();
+}
+
+/**
+ * 
+ * @param {Number} num 
+ * @returns {String}
+ */
+export function zero(num) {
+    if (! isNumber(num)) {
+        throw new NotTypeError('num', 'number');
+    }
+
+    if (num < 10) {
+        num = '0' + String(num);
+    } else {
+        num = String(num);
+    }
+
+    return num;
+}
+
+/**
+ * 
+ * @param {Date} date 
+ * @returns {String}
+ */
+export function timestamp(date = null) {
+    if (! isNull(date) && date instanceof Date) {
+        throw new NotTypeError(date, Date.name);
+    }
+
+    date = date ?? new Date();
+    return `${date.getUTCFullYear()}-${zero(date.getUTCMonth() + 1)}-${zero(date.getUTCDate())}T${zero(date.getUTCHours())}:${zero(date.getUTCMinutes())}:${zero(date.getUTCSeconds())}.${date.getUTCMilliseconds()}000Z`;
+}
+
+/**
+ * 
+ * @param {Function} heandler
+ * @param {Number} timeout 
+ * @returns {Promise}
+ */
+export async function delay(heandler, timeout = 100) {
+    if (! isFunction(heandler)) {
+        throw new NotTypeError('heandler', 'function');
+    }
+
+    if (! isNumber(timeout)) {
+        throw new NotTypeError('timeout', 'number');
+    }
+
+    return new Promise((resolve) => 
+        setTimeout(() => resolve(heandler()), timeout)
+    );
+}
+
+/**
+ * 
+ * @param {Number} timeout 
+ * @returns {Promise}
+ */
+export async function sleep(timeout = 100) {
+    if (! isNumber(timeout)) {
+        throw new NotTypeError('timeout', 'number');
+    }
+
+    return new Promise((resolve) => setTimeout(() => resolve(), timeout));
+}
+  

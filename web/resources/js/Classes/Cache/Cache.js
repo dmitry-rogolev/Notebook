@@ -5,7 +5,7 @@ class Cache
 {
     static _instance = null;
 
-    _DEFAULT_CACHE_PREFIX = '__cache_cache';
+    DEFAULT_CACHE_PREFIX = '__cache_cache';
 
     /**
      * 
@@ -30,7 +30,7 @@ class Cache
             throw new NotTypeError('key', 'string');
         }
 
-        let prefix = config('cache.prefix', this._DEFAULT_CACHE_PREFIX);
+        let prefix = config('cache.prefix', this.DEFAULT_CACHE_PREFIX);
 
         localStorage.setItem(prefix + key, toJson(value));
 
@@ -48,7 +48,7 @@ class Cache
             throw new NotTypeError('key', 'string');
         }
 
-        let prefix = config('cache.prefix', this._DEFAULT_CACHE_PREFIX);
+        let prefix = config('cache.prefix', this.DEFAULT_CACHE_PREFIX);
         let value = localStorage.getItem(prefix + key);
 
         if (isNull(value)) {
@@ -68,7 +68,7 @@ class Cache
             throw new NotTypeError('key', 'string');
         }
 
-        let prefix = config('cache.prefix', this._DEFAULT_CACHE_PREFIX);
+        let prefix = config('cache.prefix', this.DEFAULT_CACHE_PREFIX);
         let value = localStorage.getItem(prefix + key);
 
         if (isNull(value)) {
@@ -88,7 +88,7 @@ class Cache
             throw new NotTypeError('key', 'string');
         }
         
-        let prefix = config('cache.prefix', this._DEFAULT_CACHE_PREFIX);
+        let prefix = config('cache.prefix', this.DEFAULT_CACHE_PREFIX);
         localStorage.removeItem(prefix + key);
 
         return this;
@@ -98,7 +98,7 @@ class Cache
      * @returns {Cache}
      */
     clear() {
-        let prefix = config('cache.prefix', this._DEFAULT_CACHE_PREFIX);
+        let prefix = config('cache.prefix', this.DEFAULT_CACHE_PREFIX);
 
         for (let key in localStorage) {
             if (key.startsWith(prefix)) {
@@ -113,7 +113,7 @@ class Cache
      * @returns {Object}
      */
     all() {
-        let prefix = config('cache.prefix', this._DEFAULT_CACHE_PREFIX);
+        let prefix = config('cache.prefix', this.DEFAULT_CACHE_PREFIX);
         let items = {};
 
         for (let key in localStorage) {
