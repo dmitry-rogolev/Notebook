@@ -2,7 +2,13 @@
     "app_name": "Notebook", 
     "app_url": "http://127.0.0.1:8000", 
     "cache": {
-        "prefix": "__cache_cache"
+        "prefix": "__cache_", 
+        "separator": "_"
+    }, 
+    "database": {
+        "cache": {
+            "prefix": "database_"
+        }
     }, 
     "model": {
         "id": "id", 
@@ -32,11 +38,5 @@
     }, 
     "autosave": {
         "interval": 60000
-    }, 
-    "database": {
-        "cache": {
-            "separator": "_", 
-            "prefix": "__cache_database_"
-        }
     }
 }

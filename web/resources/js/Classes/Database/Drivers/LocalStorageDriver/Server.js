@@ -1,13 +1,11 @@
-import Configuration from "../../../Configuration";
+import NotTypeError from "../../../Errors/NotTypeError";
+import { isObject, isString } from "../../../helpers";
 
 class Server 
 {
     static _instance = null;
-    _configuration = null;
 
-    constructor() {
-        this._configuration = Configuration.getInstance();
-    }
+    _configuration = null;
 
     /**
      * 
@@ -28,12 +26,15 @@ class Server
      * @returns {Object}
      */
     store(path, data) {
-        if (typeof data !== 'object') {
-            throw new Error('The "data" parameter must be an object.');
+        if (! isString(path)) {
+            throw new NotTypeError('path', 'string');
+        }
+
+        if (! isObject(data)) {
+            throw new NotTypeError('data', 'object');
         }
 
         let keys = path.split('/');
-
         let table = this._getTable(keys[0]);
 
         if (this._isJson(table)) {

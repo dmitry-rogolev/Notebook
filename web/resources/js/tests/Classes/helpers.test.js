@@ -1,4 +1,6 @@
-import { config, empty, getValue, is, isArray, isBoolean, isFunction, isJson, isNull, isNumber, isObject, isString, isUndefined, notEmpty, parseJson, toJson } from '../../Classes/helpers';
+import Cache from '../../Classes/Cache/Cache';
+import CacheFacade from '../../Classes/Facades/Cache';
+import { cache, config, empty, getValue, is, isArray, isBoolean, isFunction, isJson, isNull, isNumber, isObject, isString, isUndefined, notEmpty, parseJson, toJson } from '../../Classes/helpers';
 
 test('isObject', () => {
     expect(isObject({})).toBe(true);
@@ -172,4 +174,15 @@ test('getValue', () => {
 test('config', () => {
     expect(config('app_name')).toBe('Notebook');
     expect(config('database_name', 'localStorage')).toBe('localStorage');
+});
+
+test('cache', () => {
+    expect(cache()).toBeInstanceOf(Cache);
+
+    cache('prefix_key', 'value');
+    expect(cache('prefix_key')).toBe('value');
+
+    cache().remove('prefix_key');
+    expect(cache('prefix_key')).toBeNull();
+    expect(cache('wrong', null, 'value')).toBe('value');
 });

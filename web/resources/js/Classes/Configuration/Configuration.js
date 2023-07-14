@@ -1,4 +1,4 @@
-import { getValue, isNull, isObject, isUndefined } from "../helpers";
+import { getValue, isNull, isUndefined } from "../helpers";
 import config from '../../config.json';
 
 class Configuration 
@@ -6,13 +6,6 @@ class Configuration
     static _instance = null;
 
     _configurations = {};
-
-    /**
-     * @property {Object}
-     */
-    get configurations() {
-        return this._configurations;
-    }
 
     constructor() {
         this._configurations = config;
@@ -33,6 +26,7 @@ class Configuration
     /**
      * 
      * @param {String} key 
+     * @param {any} defaultValue
      * @returns {any}
      */
     get(key, defaultValue = null) {

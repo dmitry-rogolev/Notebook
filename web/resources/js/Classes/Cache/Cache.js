@@ -1,19 +1,35 @@
-import { config, isNull, parseJson, toJson } from "./helpers";
+import { config, isNull, parseJson, toJson } from "../helpers";
 
 class Cache
 {
-    static _DEFAULT_PREFIX = '__cache_cache';
+    static _instance = null;
+
+    _DEFAULT_CACHE_PREFIX = '__cache_cache';
+
+    /**
+     * 
+     * @returns {Cache}
+     */
+    static getInstance() {
+        if (this._instance === null) {
+            this._instance = new this;
+        }
+
+        return this._instance;
+    }
 
     /**
      * 
      * @param {String} key 
      * @param {any} value 
-     * @returns {void}
+     * @returns {Cache}
      */
-    static set(key, value) {
-        let prefix = config('cache.prefix', this._DEFAULT_PREFIX);
+    set(key, value) {
+        let prefix = config('cache.prefix', this._DEFAULT_CACHE_PREFIX);
 
         localStorage.setItem(prefix + key, toJson(value));
+
+        return this;
     }
 
     /**
@@ -22,8 +38,8 @@ class Cache
      * @param {any} defaultValue 
      * @returns {any}
      */
-    static get(key, defaultValue = null) {
-        let prefix = config('cache.prefix', this._DEFAULT_PREFIX);
+    get(key, defaultValue = null) {
+        let prefix = config('cache.prefix', this._DEFAULT_CACHE_PREFIX);
         let value = localStorage.getItem(prefix + key);
 
         if (isNull(value)) {
@@ -38,8 +54,8 @@ class Cache
      * @param {String} key 
      * @returns {Boolean}
      */
-    static has(key) {
-        let prefix = config('cache.prefix', this._DEFAULT_PREFIX);
+    has(key) {
+        let prefix = config('cache.prefix', this._DEFAULT_CACHE_PREFIX);
         let value = localStorage.getItem(prefix + key);
 
         if (isNull(value)) {
@@ -52,31 +68,35 @@ class Cache
     /**
      * 
      * @param {String} key 
-     * @returns {void}
+     * @returns {Cache}
      */
-    static remove(key) {
-        let prefix = config('cache.prefix', this._DEFAULT_PREFIX);
+    remove(key) {
+        let prefix = config('cache.prefix', this._DEFAULT_CACHE_PREFIX);
         localStorage.removeItem(prefix + key);
+
+        return this;
     }
 
     /**
-     * @returns {void}
+     * @returns {Cache}
      */
-    static clear() {
-        let prefix = config('cache.prefix', this._DEFAULT_PREFIX);
+    clear() {
+        let prefix = config('cache.prefix', this._DEFAULT_CACHE_PREFIX);
 
         for (let key in localStorage) {
             if (key.startsWith(prefix)) {
                 localStorage.removeItem(key);
             }
         }
+
+        return this;
     }
 
     /**
      * @returns {Object}
      */
-    static all() {
-        let prefix = config('cache.prefix', this._DEFAULT_PREFIX);
+    all() {
+        let prefix = config('cache.prefix', this._DEFAULT_CACHE_PREFIX);
         let items = {};
 
         for (let key in localStorage) {

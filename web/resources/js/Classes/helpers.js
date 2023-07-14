@@ -1,4 +1,7 @@
-import Configuration from "./Configuration/Configuration";
+import Cache from "./Cache/Cache";
+import NotTypeError from "./Errors/NotTypeError";
+import CacheFacade from "./Facades/Cache";
+import ConfigurationFacade from "./Facades/Configuration";
 
 /**
  * 
@@ -179,6 +182,35 @@ export function getValue(array, key) {
     return value;
 }
 
+/**
+ * 
+ * @param {String} key 
+ * @param {any} defaultValue 
+ * @returns {any}
+ */
 export function config(key, defaultValue = null) {
-    return Configuration.getInstance().get(key, defaultValue);
+    return ConfigurationFacade.get(key, defaultValue);
+}
+
+/**
+ * 
+ * @param {String} key 
+ * @param {any} value 
+ * @param {any} defaultValue 
+ * @returns {any}
+ */
+export function cache(key = null, value = null, defaultValue = null) {
+    if (isNull(key)) {
+        return Cache.getInstance();    
+    }
+
+    if (! isString(key)) {
+        throw new NotTypeError('key', 'string');
+    }
+
+    if (isNull(value)) {
+        return CacheFacade.get(key, defaultValue);
+    }
+
+    CacheFacade.set(key, value);
 }
