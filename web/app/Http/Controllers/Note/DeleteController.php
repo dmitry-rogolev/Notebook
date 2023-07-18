@@ -2,20 +2,20 @@
 
 namespace App\Http\Controllers\Note;
 
+use App\Http\Resources\NoteResource;
 use App\Models\Note;
-use Illuminate\Http\Response;
 
 class DeleteController extends BaseController
 {
     /**
      *
      * @param \App\Models\Note $note
-     * @return \Illuminate\Http\Response
+     * @return \App\Http\Resources\NoteResource
      */
-    public function __invoke(Note $note): Response
+    public function __invoke(Note $note): NoteResource
     {
         $this->service->delete($note);
 
-        return response()->noContent();
+        return new NoteResource($note);
     }
 }

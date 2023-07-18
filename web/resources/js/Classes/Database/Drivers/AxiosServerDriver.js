@@ -22,58 +22,59 @@ class AxiosServerDriver extends DriverInterface
     /**
      * 
      * @param {String} url 
+     * @param {Object|null} config 
      * @returns {Promise}
      */
-    async get(url) {
+    async get(url, config = null) {
         if (! isString(url)) {
             throw new NotTypeError('url', 'string');
         }
 
-        let response = await axios.get(url);
-        return response?.data?.data;
+        return axios.get(url, config);
     }
 
     /**
      * 
      * @param {String} url 
      * @param {any} data 
+     * @param {Object|null} config 
      * @returns {Promise}
      */
-    async post(url, data) {
+    async post(url, data = null, config = null) {
         if (! isString(url)) {
             throw new NotTypeError('url', 'string');
         }
 
-        let response = await axios.post(url, data);
-        return response?.data?.data;
+        return axios.post(url, data, config);
     }
 
     /**
      * 
      * @param {String} url 
      * @param {any} data 
+     * @param {Object|null} config 
      * @returns {Promise}
      */
-    async patch(url, data) {
+    async patch(url, data = null, config = null) {
         if (! isString(url)) {
             throw new NotTypeError('url', 'string');
         }
 
-        let response = await axios.patch(url, data);
-        return response?.data?.data;
+        return axios.patch(url, data, config);
     }
 
     /**
      * 
      * @param {String} url 
+     * @param {Object|null} config 
      * @returns {Promise}
      */
-    async delete(url) {
+    async delete(url, config = null) {
         if (! isString(url)) {
             throw new NotTypeError('url', 'string');
         }
 
-        await axios.delete(url);
+        return axios.delete(url, config);
     }
 }
 

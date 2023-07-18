@@ -1,6 +1,8 @@
 import Cache from '../../Classes/Cache/Cache';
-import { cache, config, empty, getValue, uuid, is, isArray, isBoolean, isFunction, isJson, isNull, isNumber, isObject, isString, isUndefined, notEmpty, parseJson, rand, time, toJson, timestamp, zero, delay, sleep, server } from '../../Classes/helpers';
+import AxiosServerDriver from '../../Classes/Database/Drivers/AxiosServerDriver';
+import { cache, config, empty, getValue, uuid, is, isArray, isBoolean, isFunction, isJson, isNull, isNumber, isObject, isString, isUndefined, notEmpty, parseJson, rand, time, toJson, timestamp, zero, delay, sleep, server, csrfCookie, getCookie, register, user, serverDriver, driver } from '../../Classes/helpers';
 import { jest } from '@jest/globals';
+import DriverInterface from '../../Interfaces/DriverInterface';
 
 jest.useRealTimers();
 
@@ -225,4 +227,18 @@ it('sleep', async () => {
     expect.assertions(1);
     let start = time();
     await expect(sleep(100).then(() => time() - start)).resolves.toBeGreaterThanOrEqual(100);
+});
+
+it('csrfCookie', async () => {
+    expect.assertions(1);
+    await csrfCookie();
+    expect(getCookie('XSRF-TOKEN')).not.toBeUndefined();
+});
+
+test('serverDriver', () => {
+    expect(serverDriver()).toBeInstanceOf(AxiosServerDriver);
+});
+
+test('driver', () => {
+    expect(driver()).toBeInstanceOf(DriverInterface);
 });

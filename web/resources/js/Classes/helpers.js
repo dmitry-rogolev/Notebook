@@ -1,5 +1,8 @@
+import DriverInterface from "../Interfaces/DriverInterface";
 import Cache from "./Cache/Cache";
+import AxiosServerDriver from "./Database/Drivers/AxiosServerDriver";
 import NotTypeError from "./Errors/NotTypeError";
+import AxiosServerDriverFacade from "./Facades/AxiosServerDriver";
 import CacheFacade from "./Facades/Cache";
 import ConfigurationFacade from "./Facades/Configuration";
 import { v4 } from 'uuid';
@@ -314,4 +317,78 @@ export async function sleep(timeout = 100) {
     }
 
     return new Promise((resolve) => setTimeout(() => resolve(), timeout));
+}
+
+/**
+ * 
+ * @param {String} name 
+ * @returns {any}
+ */
+export function getCookie(name) {
+    let matches = document.cookie.match(new RegExp(
+      "(?:^|; )" + name.replace(/([\.$?*|{}\(\)\[\]\\\/\+^])/g, '\\$1') + "=([^;]*)"
+    ));
+    return matches ? decodeURIComponent(matches[1]) : undefined;
+}
+
+/**
+ * 
+ * @param {String} name 
+ * @param {String} value 
+ * @param {Object} options 
+ */
+export function setCookie(name, value, options = {}) {
+
+    options = {
+      path: '/',
+      // при необходимости добавьте другие значения по умолчанию
+      ...options
+    };
+  
+    if (options.expires instanceof Date) {
+      options.expires = options.expires.toUTCString();
+    }
+  
+    let updatedCookie = encodeURIComponent(name) + "=" + encodeURIComponent(value);
+  
+    for (let optionKey in options) {
+      updatedCookie += "; " + optionKey;
+      let optionValue = options[optionKey];
+      if (optionValue !== true) {
+        updatedCookie += "=" + optionValue;
+      }
+    }
+  
+    document.cookie = updatedCookie;
+}
+
+/**
+ * 
+ * @param {String} name 
+ */
+export function deleteCookie(name) {
+    setCookie(name, "", {
+      'max-age': -1
+    })
+}
+
+/**
+ * @returns {void}
+ */
+export async function csrfCookie() {
+    return AxiosServerDriverFacade.get('/sanctum/csrf-cookie');
+}
+
+/**
+ * @returns {AxiosServerDriver}
+ */
+export function serverDriver() {
+    return AxiosServerDriver.getInstance();
+}
+
+/**
+ * @returns {DriverInterface}
+ */
+export function driver() {
+    return serverDriver();
 }

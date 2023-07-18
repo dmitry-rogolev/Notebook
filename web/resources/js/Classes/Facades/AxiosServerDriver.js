@@ -6,39 +6,43 @@ class AxiosServerDriverFacade extends Facade
     /**
      * 
      * @param {String} url 
+     * @param {Object|null} config 
      * @returns {Promise}
      */
-    static get(url) {
-        return AxiosServerDriver.getInstance().get(url);
+    static get(url, config = null) {
+        return AxiosServerDriver.getInstance().get(url, config);
     }
 
     /**
      * 
      * @param {String} url 
      * @param {any} data 
+     * @param {Object|null} config 
      * @returns {Promise}
      */
-    static post(url, data) {
-        return AxiosServerDriver.getInstance().post(url, data);
+    static post(url, data = null, config = null) {
+        return AxiosServerDriver.getInstance().post(url, data, config);
     }
 
     /**
      * 
      * @param {String} url 
      * @param {any} data 
+     * @param {Object|null} config 
      * @returns {Promise}
      */
-    static patch(url, data) {
-        return AxiosServerDriver.getInstance().patch(url, data);
+    static patch(url, data = null, config = null) {
+        return AxiosServerDriver.getInstance().patch(url, data, config);
     }
 
     /**
      * 
      * @param {String} url 
+     * @param {Object|null} config 
      * @returns {Promise}
      */
-    static delete(url) {
-        return AxiosServerDriver.getInstance().delete(url);
+    static delete(url, config = null) {
+        return AxiosServerDriver.getInstance().delete(url, config);
     }
 }
 

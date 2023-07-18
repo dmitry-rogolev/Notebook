@@ -124,7 +124,20 @@ class NoteTest extends TestCase
         $note = Note::factory()->for($user)->create();
 
         $response = $this->deleteJson("/api/notes/{$note->id}");
-        $response->assertStatus(204);
+        $response->assertStatus(200);
+
+        $response->assertJson(fn (AssertableJson $json) => 
+            $json
+                ->has('data', fn ($json) => 
+                    $json
+                        ->where('id', $note->id)
+                        ->where('title', $note->title)
+                        ->where('text', $note->text)
+                        ->where('created_at', $note->created_at->toJson())
+                        ->where('updated_at', $note->updated_at->toJson())
+                        ->where('deleted_at', $note->fresh()->deleted_at->toJson())  
+                )
+        );
 
         $this->assertTrue($note->fresh()->trashed());
     }
