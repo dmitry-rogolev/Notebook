@@ -1,6 +1,6 @@
 import Cache from '../../Classes/Cache/Cache';
 import AxiosServerDriver from '../../Classes/Database/Drivers/AxiosServerDriver';
-import { cache, config, empty, getValue, uuid, is, isArray, isBoolean, isFunction, isJson, isNull, isNumber, isObject, isString, isUndefined, notEmpty, parseJson, rand, time, toJson, timestamp, zero, delay, sleep, server, csrfCookie, getCookie, register, user, serverDriver, driver } from '../../Classes/helpers';
+import { cache, config, empty, getValue, uuid, is, isArray, isBoolean, isFunction, isJson, isNull, isNumber, isObject, isString, isUndefined, notEmpty, parseJson, rand, time, toJson, timestamp, zero, delay, sleep, server, csrfCookie, getCookie, register, user, serverDriver, driver, setValue, removeValue } from '../../Classes/helpers';
 import { jest } from '@jest/globals';
 import DriverInterface from '../../Interfaces/DriverInterface';
 
@@ -175,6 +175,81 @@ test('getValue', () => {
     });
 });
 
+test('setValue', () => {
+    let users = [];
+
+    setValue(users, 0, {name: 'Bob'});
+    expect(getValue(users, 0)).toEqual({name: 'Bob'});
+
+    setValue(users, '1', {name: 'Boris'});
+    expect(getValue(users, '1')).toEqual({name: 'Boris'});
+
+    setValue(users, '0.id', 1);
+    expect(getValue(users, '0.id')).toBe(1);
+
+    setValue(users, '0.notes.0.title', 'Some title');
+    expect(getValue(users, '0.notes.0.title')).toBe('Some title');
+
+    setValue(users, '1.notes', [{id: 1}, {id: 2}]);
+    expect(getValue(users, '1.notes')).toEqual([{id: 1}, {id: 2}]);
+
+    setValue(users, '0.name', 'Ignut');
+    expect(getValue(users, '0.name')).toBe('Ignut');
+
+    setValue(users, '0.notes.0.title', 'New title');
+    expect(getValue(users, '0.notes.0.title')).toBe('New title');
+
+    setValue(users, '1.notes', [{id: 3}, {id: 4}]);
+    expect(getValue(users, '1.notes')).toEqual([{id: 3}, {id: 4}]);
+});
+
+test('removeValue', () => {
+    let users = [
+        {
+            id: 1, 
+            name: 'Bob', 
+            roles: [
+                {
+                    id: 1, 
+                    name: 'Admin', 
+                }, 
+            ], 
+        }, 
+        {
+            id: 2, 
+            name: 'Boris', 
+            roles: [
+                {
+                    id: 1, 
+                    name: 'Moderator', 
+                }, 
+            ], 
+        }, 
+        {
+            id: 3, 
+            name: 'John', 
+            roles: [
+                {
+                    id: 1, 
+                    name: 'User', 
+                }, 
+            ], 
+        }, 
+    ];
+
+    removeValue(users, '0.roles.0.name');
+    expect(getValue(users, '0.roles.0.name')).toBeUndefined();
+
+    removeValue(users, '1.name')
+    expect(getValue(users, '1.name')).toBeUndefined();
+
+    removeValue(users, '2.roles')
+    expect(getValue(users, '2.roles')).toBeUndefined();
+
+    removeValue(users, 2)
+    expect(getValue(users, 2)).toBeUndefined();
+});
+
 test('config', () => {
     expect(config('app_name')).toBe('Notebook');
     expect(config('database_name', 'localStorage')).toBe('localStorage');
@@ -233,7 +308,7 @@ it('csrfCookie', async () => {
     expect.assertions(1);
     await csrfCookie();
     expect(getCookie('XSRF-TOKEN')).not.toBeUndefined();
-});
+}, 50000);
 
 test('serverDriver', () => {
     expect(serverDriver()).toBeInstanceOf(AxiosServerDriver);

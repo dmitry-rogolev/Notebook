@@ -174,7 +174,7 @@ export function getValue(array, key) {
     let value = array;
 
     for (let key of keys) {
-        if (isArray(value) && Number(key)) {
+        if (isArray(value) && ! isNaN(Number(key))) {
             value = value[key];
         } else if (isObject(value)) {
             value = value[key];
@@ -184,6 +184,115 @@ export function getValue(array, key) {
     }
 
     return value;
+}
+
+/**
+ * 
+ * @param {Object|Array} array 
+ * @param {String|Number} key 
+ * @param {any} value
+ * @returns {Object|Array}
+ */
+export function setValue(array, key, value) {
+    if (isArray(array) && isNumber(key)) {
+        array[key] = value;
+        return array;
+    }
+
+    if (! isString(key)) {
+        return array;
+    }
+
+    let keys = key.split('.');
+    let v = array;
+
+    for (let i = 0; i < keys.length; i++) {
+        if (isArray(v) && ! isNaN(Number(keys[i]))) {
+            if (! isUndefined(v[Number(keys[i])])) {
+                if (i === keys.length - 1) {
+                    v[Number(keys[i])] = value;
+                } else {
+                    v = v[Number(keys[i])];
+                }
+            } else {
+                if (i === keys.length - 1) {
+                    v[Number(keys[i])] = value;
+                } else {
+                    if (! isNaN(Number(keys[i + 1]))) {
+                        v[Number(keys[i])] = [];
+                        v = v[Number(keys[i])];
+                    } else {
+                        v[keys[i]] = {};
+                        v = v[keys[i]];
+                    }
+                }
+            }
+        } else if (isObject(v)) {
+            if (keys[i] in v) {
+                if (i === keys.length - 1) {
+                    v[keys[i]] = value;
+                } else {
+                    v = v[keys[i]];
+                }
+            } else {
+                if (i === keys.length - 1) {
+                    v[keys[i]] = value;
+                } else {
+                    if (! isNaN(Number(keys[i + 1]))) {
+                        v[keys[i]] = [];
+                        v = v[keys[i]];
+                    } else {
+                        v[keys[i]] = {};
+                        v = v[keys[i]];
+                    }
+                }
+            }
+        } else {
+            break;
+        }
+    }
+
+    return array;
+}
+
+/**
+ * 
+ * @param {Object|Array} array 
+ * @param {String|Number} key 
+ * @returns {any}
+ */
+export function removeValue(array, key) {
+    if (isArray(array) && isNumber(key)) {
+        array.splice(key, 1);
+        return array;
+    }
+
+    if (! isString(key)) {
+        return array;
+    }
+
+    let keys = key.split('.');
+    let value = array;
+
+    for (let i = 0; i < keys.length; i++) {
+        if (isArray(value) && ! isNaN(Number(keys[i]))) {
+            if (i === keys.length - 1) {
+                value.splice(Number(keys[i]), 1);
+            } else {
+                value = value[Number(keys[i])];
+            }
+        } else if (isObject(value) && ! isArray(value)) {
+            if (i === keys.length - 1) {
+                delete value[keys[i]];
+            } else {
+                value = value[keys[i]];
+            }
+        } else {
+            break;
+        }
+    }
+
+    return array;
 }
 
 /**

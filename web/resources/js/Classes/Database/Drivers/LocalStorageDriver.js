@@ -1,11 +1,12 @@
 import DriverInterface from "../../../Interfaces/DriverInterface";
-import { isArray, parseJson, toJson } from "../../helpers";
-import AxiosServerDriver from "./AxiosServerDriver";
+import NotTypeError from "../../Errors/NotTypeError";
+import ServerFacade from "../../Facades/Server";
+import { cache, getValue, isArray, isNull, isObject, parseJson, setValue, toJson } from "../../helpers";
+import Database from "../Database";
 
 class LocalStorageDriver extends DriverInterface
 {
     static _instance = null;
-    _serverDriver = null;
 
     /**
      * 
@@ -21,107 +22,89 @@ class LocalStorageDriver extends DriverInterface
 
     /**
      * 
-     * @param {String} path 
-     * @param {any|null} data default data
+     * @param {String} url 
      * @returns {any}
      */
-    get(path, data = null) {
-        if (path && isString(path)) {
-            path = this._parsePath(path);
-            let keys = path.split('/');
-
-            if (keys.length === 1) {
-                let table = this._getTable(keys[0]);
-
-                if (table === null) {
-                    return data;
-                }
-    
-                return table;
-            } else if (keys[1] === this._configuration.getPathTrash()) {
-                let table = this._getTable(keys[0] + this._configuration.getDatabaseCacheSeparator() + keys[1]); 
-
-                if (table === null) {
-                    return data;
-                }
-    
-                return table;
-            }
+    get(url) {
+        if (! isString(url)) {
+            throw new NotTypeError('url', 'string');
         }
+
+        let keys = url.split('/').filter((v) => v !== '');
+        let table = cache(config('database.cache.prefix', Database.DEFAULT_CACHE_PREFIX) + keys[0]);
+
+        if (keys.length === 1) {
+            return table;
+        }
+
+        if (! isNull(table)) {
+            return getValue(table, keys.slice(1).join('.'));
+        }
+
+        return null;
+    }
+
+    /**
+     * 
+     * @param {String} url 
+     * @param {any} data 
+     * @param {Boolean} serverable
+     * @returns {any}
+     */
+    post(url, data, serverable = true) {
+        if (! isString(url)) {
+            throw new NotTypeError('url', 'string');
+        }
+
+        let keys = url.split('/').filter((v) => v !== '');
+        data = serverable && isObject(data) ? ServerFacade.store(data) : data;
+
+        if (keys.length === 1) {
+            cache(config('database.cache.prefix', Database.DEFAULT_CACHE_PREFIX) + keys[0], data);
+            return data;
+        }
+
+        let table = cache(config('database.cache.prefix', Database.DEFAULT_CACHE_PREFIX) + keys[0]);
+
+        if (isNull(table)) {
+            table = [];
+        }
+
+        setValue(table, keys.slice(1).join('.'), data);
+        cache(config('database.cache.prefix', Database.DEFAULT_CACHE_PREFIX) + keys[0], table);
 
         return data;
     }
 
     /**
      * 
-     * @param {String} path 
+     * @param {String} url 
      * @param {any} data 
+     * @param {Boolean} serverable
      * @returns {any}
      */
-    post(path, data) {
-        if (path && isString(path)) {
-            path = this._parsePath(path);
-            let keys = path.split('/');
-
-            let table = this._getTable(keys[0]);
-
-            if (table === null || ! isArray(table)) {
-                table = [];
-            }
-
-            let model = this._server.store(path, data);
-
-            table.push(model);
-
-            this._setTable(keys[0], table);
-
-            return model;
+    patch(url, data, serverable = true) {
+        if (! isString(url)) {
+            throw new NotTypeError('url', 'string');
         }
 
-        return null;
-    }
+        let keys = url.split('/').filter((v) => v !== '');
+        let table = cache(config('database.cache.prefix', Database.DEFAULT_CACHE_PREFIX) + keys[0]);
+        data = serverable && isObject(data) ? ServerFacade.update(data) : data;
 
-    /**
-     * 
-     * @param {String} path 
-     * @param {any} data 
-     * @returns {any}
-     */
-    patch(path, data) {
-        if (path && isString(path)) {
-            path = this._parsePath(path);
-            let keys = path.split('/');
+        if (isNull(table)) {
+            table = [];
+        }
 
-            if (keys.length !== 2) {
-                throw new Error('The path must consist of two keys.');
-            }
-
-            if (isNaN(Number(keys[1]))) {
-                throw new Error('The second key must be an identifier.');
-            }
-
-            let table = this._getTable(keys[0]);
-
-            if (table === null) {
-                return null;
-            }
-
-            let index = table.findIndex((v) => v[this._configuration.getModelIdName()] == keys[1]);
-
-            if (index === -1) {
-                return null;
-            }
-
-            let model = this._server.update(data);
-
-            table[index] = model;
-
-            this._setTable(keys[0], table);
-
+        if (keys.length === 1) {
+            cache(config('database.cache.prefix', Database.DEFAULT_CACHE_PREFIX) + keys[0], data);
             return data;
         }
 
-        return null;
+        setValue(table, keys.slice(1).join('.'), data);
+        cache(config('database.cache.prefix', Database.DEFAULT_CACHE_PREFIX) + keys[0], table);
+
+        return data;
     }
 
     /**
