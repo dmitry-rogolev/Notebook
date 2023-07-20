@@ -1,6 +1,6 @@
 import Cache from '../../Classes/Cache/Cache';
 import AxiosServerDriver from '../../Classes/Database/Drivers/AxiosServerDriver';
-import { cache, config, empty, getValue, uuid, is, isArray, isBoolean, isFunction, isJson, isNull, isNumber, isObject, isString, isUndefined, notEmpty, parseJson, rand, time, toJson, timestamp, zero, delay, sleep, server, csrfCookie, getCookie, register, user, serverDriver, driver, setValue, removeValue } from '../../Classes/helpers';
+import { cache, config, empty, getValue, uuid, is, isArray, isBoolean, isFunction, isJson, isNull, isNumber, isObject, isString, isUndefined, notEmpty, parseJson, rand, time, toJson, timestamp, zero, delay, sleep, server, csrfCookie, getCookie, register, user, serverDriver, driver, setValue, removeValue, getIndexById, url, keysByUrl } from '../../Classes/helpers';
 import { jest } from '@jest/globals';
 import DriverInterface from '../../Interfaces/DriverInterface';
 
@@ -316,4 +316,57 @@ test('serverDriver', () => {
 
 test('driver', () => {
     expect(driver()).toBeInstanceOf(DriverInterface);
+});
+
+test('getIndexById', () => {
+    let users = [
+        {
+            id: 1, 
+            name: 'Bob', 
+            roles: [
+                {
+                    id: 1, 
+                    name: 'Admin', 
+                }, 
+            ], 
+        }, 
+        {
+            id: 2, 
+            name: 'Boris', 
+            roles: [
+                {
+                    id: 1, 
+                    name: 'Moderator', 
+                }, 
+            ], 
+        }, 
+        {
+            id: 3, 
+            name: 'John', 
+            roles: [
+                {
+                    id: 1, 
+                    name: 'User', 
+                }, 
+            ], 
+        }, 
+    ];
+
+    expect(getIndexById(users, 1)).toBe(0);
+    expect(getIndexById(users, 2)).toBe(1);
+    expect(getIndexById(users, 3)).toBe(2);
+});
+
+test('url', () => {
+    expect(url('api/notes')).toBeInstanceOf(URL);
+    expect(url('api/notes').toString()).toBe((new URL('/api/notes', config('app_url'))).toString());
+    expect(url(new URL('/api/notes', config('app_url'))).toString()).toBe((new URL('/api/notes', config('app_url'))).toString());
+});
+
+test('keysByUrl', () => {
+    expect(keysByUrl('/api/')).toEqual(['']);
+    expect(keysByUrl('')).toEqual(['']);
+    expect(keysByUrl('/api/notes')).toEqual(['notes']);
+    expect(keysByUrl('/api/notes/1')).toEqual(['notes', '1']);
+    expect(keysByUrl('/api/notes/1/roles/2')).toEqual(['notes', '1', 'roles', '2']);
 });

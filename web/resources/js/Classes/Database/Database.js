@@ -5,6 +5,7 @@ import { usePage } from '@inertiajs/vue3';
 class Database
 {
     static DEFAULT_CACHE_PREFIX = 'database_';
+    static DEFAULT_API_PREFIX = 'api';
     
     _driver = null;
     _clientDriver = null;

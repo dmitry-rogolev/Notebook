@@ -9,8 +9,9 @@ class Model
     static DEFAULT_CREATED_AT = 'created_at';
     static DEFAULT_UPDATED_AT = 'updated_at';
     static DEFAULT_DELETED_AT = 'deleted_at';
+    static DEFAULT_UUID_PREFIX = 'id:';
     
-    static _database = Database.factory(LocalStorageDriver.getInstance(), AxiosServerDriver.getInstance()).make();
+    // static _database = Database.factory(LocalStorageDriver.getInstance(), AxiosServerDriver.getInstance()).make();
     // static _configuration = Configuration.getInstance();
 
     static _table = 'models';

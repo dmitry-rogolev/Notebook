@@ -1,5 +1,6 @@
 import DriverInterface from "../Interfaces/DriverInterface";
 import Cache from "./Cache/Cache";
+import Database from "./Database/Database";
 import AxiosServerDriver from "./Database/Drivers/AxiosServerDriver";
 import NotTypeError from "./Errors/NotTypeError";
 import AxiosServerDriverFacade from "./Facades/AxiosServerDriver";
@@ -173,17 +174,25 @@ export function getValue(array, key) {
     let keys = key.split('.');
     let value = array;
 
-    for (let key of keys) {
-        if (isArray(value) && ! isNaN(Number(key))) {
-            value = value[key];
-        } else if (isObject(value)) {
-            value = value[key];
+    for (let i = 0; i < keys.length; i++) {
+        if (isArray(value) && ! isNaN(Number(keys[i]))) {
+            if (i === keys.length - 1) {
+                return value[Number(keys[i])];
+            } else {
+                value = value[Number(keys[i])];
+            }
+        } else if (isObject(value) && ! isArray(value)) {
+            if (i === keys.length - 1) {
+                return value[keys[i]];
+            } else {
+                value = value[keys[i]];
+            }
         } else {
             break;
         }
     }
 
-    return value;
+    return undefined;
 }
 
 /**
@@ -227,7 +236,7 @@ export function setValue(array, key, value) {
                     }
                 }
             }
-        } else if (isObject(v)) {
+        } else if (isObject(v) && ! isArray(v)) {
             if (keys[i] in v) {
                 if (i === keys.length - 1) {
                     v[keys[i]] = value;
@@ -500,4 +509,49 @@ export function serverDriver() {
  */
 export function driver() {
     return serverDriver();
+}
+
+/**
+ * 
+ * @param {Array} array 
+ * @param {Number|String} id 
+ */
+export function getIndexById(array, id) {
+    if (! isArray(array)) {
+        throw new NotTypeError('array', 'array');
+    }
+
+    if (! isNumber(id) && ! isString(id)) {
+        throw new NotTypeError('id', 'Number|String');
+    }
+
+    return array.findIndex((v) => v[config('model.primary_key')] === id);
+}
+
+/**
+ * 
+ * @param {String|URL} url 
+ * @returns {URL}
+ */
+export function url(url) {
+    return (new URL(url, config('app_url', 'http://127.0.0.1:8000')));
+} 
+
+/**
+ * 
+ * @param {String} path 
+ * @returns {Array}
+ */
+export function keysByUrl(path) {
+    let keys = url(path).pathname.split('/').filter((v) => v !== '');
+
+    if (keys[0] === config('routes.api.prefix', Database.DEFAULT_API_PREFIX)) {
+        keys = keys.slice(1);
+    }
+
+    if (keys.length === 0) {
+        keys[0] = '';
+    }
+
+    return keys;
 }

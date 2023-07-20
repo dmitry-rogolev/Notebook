@@ -1,6 +1,11 @@
 {
     "app_name": "Notebook", 
     "app_url": "http://127.0.0.1:8000", 
+    "routes": {
+        "api": {
+            "prefix": "api"
+        }
+    }, 
     "cache": {
         "prefix": "__cache_", 
         "separator": "_"
@@ -17,6 +22,9 @@
         "deleted_at": "deleted_at", 
         "cache": {
             "prefix": "model_"
+        }, 
+        "uuid": {
+            "prefix": "id:"
         }
     }, 
     "notebook": {

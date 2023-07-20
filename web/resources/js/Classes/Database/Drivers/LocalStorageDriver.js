@@ -1,7 +1,8 @@
 import DriverInterface from "../../../Interfaces/DriverInterface";
 import NotTypeError from "../../Errors/NotTypeError";
 import ServerFacade from "../../Facades/Server";
-import { cache, getValue, isNull, isObject, removeValue, setValue } from "../../helpers";
+import Model from "../../Model/Model";
+import { cache, config, empty, getIndexById, getValue, isArray, isNull, isObject, isString, keysByUrl, removeValue, setValue } from "../../helpers";
 import Database from "../Database";
 
 class LocalStorageDriver extends DriverInterface
@@ -23,18 +24,27 @@ class LocalStorageDriver extends DriverInterface
     /**
      * 
      * @param {String} url 
+     * @param {Boolean} identifiable
      * @returns {any}
      */
-    get(url) {
+    get(url, identifiable = true) {
         if (! isString(url)) {
             throw new NotTypeError('url', 'string');
         }
 
-        let keys = url.split('/').filter((v) => v !== '');
+        let keys = keysByUrl(url);
         let table = cache(config('database.cache.prefix', Database.DEFAULT_CACHE_PREFIX) + keys[0]);
 
         if (keys.length === 1) {
             return table;
+        }
+
+        if (identifiable) {
+            try {
+                keys = this._replaceIdWithIndex(table, keys);
+            } catch (e) {
+                return null;
+            }
         }
 
         if (! isNull(table)) {
@@ -48,26 +58,46 @@ class LocalStorageDriver extends DriverInterface
      * 
      * @param {String} url 
      * @param {any} data 
+     * @param {Boolean} creatable
      * @param {Boolean} serverable
+     * @param {Boolean} identifiable
      * @returns {any}
      */
-    post(url, data, serverable = true) {
+    post(url, data, creatable = true, serverable = true, identifiable = true) {
         if (! isString(url)) {
             throw new NotTypeError('url', 'string');
         }
 
-        let keys = url.split('/').filter((v) => v !== '');
-        data = serverable && isObject(data) ? ServerFacade.store(data) : data;
+        let keys = keysByUrl(url);
+        let table = cache(config('database.cache.prefix', Database.DEFAULT_CACHE_PREFIX) + keys[0]);
+        data = serverable && isObject(data) && ! isArray(data) ? ServerFacade.store(data) : data;
+
+        if (isNull(table) || ! isArray(table)) {
+            table = ! isNull(table) ? [table] : [];
+        }
 
         if (keys.length === 1) {
-            cache(config('database.cache.prefix', Database.DEFAULT_CACHE_PREFIX) + keys[0], data);
+            if (creatable) {
+                table.push(data);
+                cache(config('database.cache.prefix', Database.DEFAULT_CACHE_PREFIX) + keys[0], table);
+            } else {
+                if (serverable && isArray(data)) {
+                    data = data.map((v) => {
+                        if (isObject(v) && ! isArray(v)) {
+                            v = ServerFacade.store(v)
+                        }
+
+                        return v;
+                    });
+                }
+
+                cache(config('database.cache.prefix', Database.DEFAULT_CACHE_PREFIX) + keys[0], data);
+            }
             return data;
         }
 
-        let table = cache(config('database.cache.prefix', Database.DEFAULT_CACHE_PREFIX) + keys[0]);
-
-        if (isNull(table)) {
-            table = [];
+        if (identifiable) {
+            keys = this._replaceIdWithIndex(table, keys);
         }
 
         setValue(table, keys.slice(1).join('.'), data);
@@ -81,14 +111,15 @@ class LocalStorageDriver extends DriverInterface
      * @param {String} url 
      * @param {any} data 
      * @param {Boolean} serverable
+     * @param {Boolean} identifiable
      * @returns {any}
      */
-    patch(url, data, serverable = true) {
+    patch(url, data, serverable = true, identifiable = true) {
         if (! isString(url)) {
             throw new NotTypeError('url', 'string');
         }
 
-        let keys = url.split('/').filter((v) => v !== '');
+        let keys = keysByUrl(url);
         let table = cache(config('database.cache.prefix', Database.DEFAULT_CACHE_PREFIX) + keys[0]);
         data = serverable && isObject(data) ? ServerFacade.update(data) : data;
 
@@ -101,6 +132,10 @@ class LocalStorageDriver extends DriverInterface
             return data;
         }
 
+        if (identifiable) {
+            keys = this._replaceIdWithIndex(table, keys);
+        }
+
         setValue(table, keys.slice(1).join('.'), data);
         cache(config('database.cache.prefix', Database.DEFAULT_CACHE_PREFIX) + keys[0], table);
 
@@ -110,17 +145,18 @@ class LocalStorageDriver extends DriverInterface
     /**
      * 
      * @param {String} url 
+     * @param {Boolean} identifiable
      * @returns {void}
      */
-    delete(url) {
+    delete(url, identifiable = true) {
         if (! isString(url)) {
             throw new NotTypeError('url', 'string');
         }
 
-        let keys = url.split('/').filter((v) => v !== '');
+        let keys = keysByUrl(url);
         let table = cache(config('database.cache.prefix', Database.DEFAULT_CACHE_PREFIX) + keys[0]);
 
-        if (isNull(table)) {
+        if (isNull(table) || ! isArray(table)) {
             return;
         }
 
@@ -129,8 +165,40 @@ class LocalStorageDriver extends DriverInterface
             return;
         }
 
-        removeValue(table, keys.join('.'));
+        if (identifiable) {
+            keys = this._replaceIdWithIndex(table, keys);
+        }
+
+        removeValue(table, keys.slice(1).join('.'));
         cache(config('database.cache.prefix', Database.DEFAULT_CACHE_PREFIX) + keys[0], table);
+    }
+
+    /**
+     * 
+     * @param {Array} table 
+     * @param {Array} keys 
+     * @returns {Array}
+     */
+    _replaceIdWithIndex(table, keys) {
+        return keys.map((v) => {
+            if ((isString(v) && v.startsWith(config('model.uuid.prefix', Model.DEFAULT_UUID_PREFIX))) || ! isNaN(Number(v))) {
+                if (isNaN(Number(v))) {
+                    v = v.slice(config('model.uuid.prefix', Model.DEFAULT_UUID_PREFIX).length);
+                } else {
+                    v = Number(v);
+                }
+
+                let index = getIndexById(table, v);
+
+                if (index === -1) {
+                    throw new Error('Not found');
+                }
+
+                return String(index);
+            }
+
+            return v;
+        });
     }
 }
 
