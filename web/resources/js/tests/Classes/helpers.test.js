@@ -1,10 +1,21 @@
 import Cache from '../../Classes/Cache/Cache';
 import AxiosServerDriver from '../../Classes/Database/Drivers/AxiosServerDriver';
-import { cache, config, empty, getValue, uuid, is, isArray, isBoolean, isFunction, isJson, isNull, isNumber, isObject, isString, isUndefined, notEmpty, parseJson, rand, time, toJson, timestamp, zero, delay, sleep, server, csrfCookie, getCookie, register, user, serverDriver, driver, setValue, removeValue, getIndexById, url, keysByUrl } from '../../Classes/helpers';
+import { cache, config, empty, getValue, uuid, is, isArray, isBoolean, isFunction, isJson, isNull, isNumber, isObject, isString, isUndefined, notEmpty, parseJson, rand, time, toJson, timestamp, zero, delay, sleep, server, csrfCookie, getCookie, register, user, serverDriver, driver, setValue, removeValue, getIndexById, url, keysByUrl, clientDriver } from '../../Classes/helpers';
 import { jest } from '@jest/globals';
 import DriverInterface from '../../Interfaces/DriverInterface';
+import AxiosServerDriverFacade from '../../Classes/Facades/AxiosServerDriver';
+import LocalStorageDriver from '../../Classes/Database/Drivers/LocalStorageDriver';
 
 jest.useRealTimers();
+
+async function auth() {
+    await csrfCookie();
+
+    await AxiosServerDriverFacade.post('/login', {
+        email: 'admin@admin.com', 
+        password: 'password', 
+    });
+}
 
 test('isObject', () => {
     expect(isObject({})).toBe(true);
@@ -314,8 +325,13 @@ test('serverDriver', () => {
     expect(serverDriver()).toBeInstanceOf(AxiosServerDriver);
 });
 
-test('driver', () => {
-    expect(driver()).toBeInstanceOf(DriverInterface);
+test('clientDriver', () => {
+    expect(clientDriver()).toBeInstanceOf(LocalStorageDriver);
+});
+
+it('driver', async () => {
+    expect.assertions(1);
+    expect(await driver()).toBeInstanceOf(DriverInterface);
 });
 
 test('getIndexById', () => {
@@ -369,4 +385,24 @@ test('keysByUrl', () => {
     expect(keysByUrl('/api/notes')).toEqual(['notes']);
     expect(keysByUrl('/api/notes/1')).toEqual(['notes', '1']);
     expect(keysByUrl('/api/notes/1/roles/2')).toEqual(['notes', '1', 'roles', '2']);
+});
+
+it('user', async () => {
+    expect.assertions(11);
+
+    let u = await user();
+    expect(u).toBeNull();
+
+    await auth();
+    u = await user();
+    expect(u).toHaveProperty(config('model.primary_key'));
+    expect(u).toHaveProperty('name');
+    expect(u).toHaveProperty('email');
+    expect(u).toHaveProperty('email_verified_at');
+    expect(u).toHaveProperty('two_factor_confirmed_at');
+    expect(u).toHaveProperty('current_team_id');
+    expect(u).toHaveProperty('profile_photo_path');
+    expect(u).toHaveProperty('profile_photo_url');
+    expect(u).toHaveProperty(config('model.created_at'));
+    expect(u).toHaveProperty(config('model.updated_at'));
 });

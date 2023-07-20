@@ -1,3 +1,4 @@
+import { usePage } from "@inertiajs/vue3";
 import DriverInterface from "../Interfaces/DriverInterface";
 import Cache from "./Cache/Cache";
 import Database from "./Database/Database";
@@ -7,6 +8,7 @@ import AxiosServerDriverFacade from "./Facades/AxiosServerDriver";
 import CacheFacade from "./Facades/Cache";
 import ConfigurationFacade from "./Facades/Configuration";
 import { v4 } from 'uuid';
+import LocalStorageDriver from "./Database/Drivers/LocalStorageDriver";
 
 /**
  * 
@@ -505,9 +507,20 @@ export function serverDriver() {
 }
 
 /**
+ * @returns {LocalStorageDriver}
+ */
+export function clientDriver() {
+    return LocalStorageDriver.getInstance();
+}
+
+/**
  * @returns {DriverInterface}
  */
-export function driver() {
+export async function driver() {
+    if (await user()) {
+        return clientDriver();
+    }
+
     return serverDriver();
 }
 
@@ -554,4 +567,24 @@ export function keysByUrl(path) {
     }
 
     return keys;
+}
+
+/**
+ * @returns {Object|null}
+ */
+export async function user() {
+    let u = usePage()?.props?.auth?.user;
+
+    if (! u) {
+        if (isUndefined(getCookie('XSRF-TOKEN'))) {
+            await csrfCookie();
+        }
+
+        try {
+            let response = await serverDriver().get(`/${config('routes.api.prefix', Database.DEFAULT_API_PREFIX)}/user`);
+            u = response?.data;
+        } catch (e) {}
+    }
+
+    return u ? u : null;
 }
