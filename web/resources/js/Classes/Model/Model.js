@@ -1,7 +1,4 @@
-import Database from "../Database/Database";
-import AxiosServerDriver from "../Database/Drivers/AxiosServerDriver";
 import { reactive } from 'vue';
-import LocalStorageDriver from "../Database/Drivers/LocalStorageDriver";
 
 class Model
 {
@@ -11,11 +8,8 @@ class Model
     static DEFAULT_DELETED_AT = 'deleted_at';
     static DEFAULT_UUID_PREFIX = 'id:';
     
-    // static _database = Database.factory(LocalStorageDriver.getInstance(), AxiosServerDriver.getInstance()).make();
-    // static _configuration = Configuration.getInstance();
 
     static _table = 'models';
-    // static _primaryKey = Model._configuration.getModelIdName();
     static _defaults = {};
 
     _originals = {};
