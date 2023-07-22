@@ -2,7 +2,7 @@ import DriverInterface from "../../../Interfaces/DriverInterface";
 import NotTypeError from "../../Errors/NotTypeError";
 import ServerFacade from "../../Facades/Server";
 import Model from "../../Model/Model";
-import { cache, config, empty, getIndexById, getValue, isArray, isNull, isObject, isString, keysByUrl, removeValue, setValue } from "../../helpers";
+import { cache, config, getIndexById, getValue, isArray, isNull, isObject, isString, keysByUrl, removeValue, setValue } from "../../helpers";
 import Database from "../Database";
 
 class LocalStorageDriver extends DriverInterface
@@ -36,22 +36,22 @@ class LocalStorageDriver extends DriverInterface
         let table = cache(config('database.cache.prefix', Database.DEFAULT_CACHE_PREFIX) + keys[0]);
 
         if (keys.length === 1) {
-            return table;
+            return setValue({}, 'data.data', table);
         }
 
         if (identifiable) {
             try {
                 keys = this._replaceIdWithIndex(table, keys);
             } catch (e) {
-                return null;
+                return setValue({}, 'data.data', null);
             }
         }
 
         if (! isNull(table)) {
-            return getValue(table, keys.slice(1).join('.'));
+            return setValue({}, 'data.data', getValue(table, keys.slice(1).join('.')));
         }
 
-        return null;
+        return setValue({}, 'data.data', null);
     }
 
     /**
@@ -93,17 +93,21 @@ class LocalStorageDriver extends DriverInterface
 
                 cache(config('database.cache.prefix', Database.DEFAULT_CACHE_PREFIX) + keys[0], data);
             }
-            return data;
+            return setValue({}, 'data.data', data);
         }
 
         if (identifiable) {
-            keys = this._replaceIdWithIndex(table, keys);
+            try {
+                keys = this._replaceIdWithIndex(table, keys);
+            } catch (e) {
+                return setValue({}, 'data.data', data);
+            }
         }
 
         setValue(table, keys.slice(1).join('.'), data);
         cache(config('database.cache.prefix', Database.DEFAULT_CACHE_PREFIX) + keys[0], table);
 
-        return data;
+        return setValue({}, 'data.data', data);
     }
 
     /**
@@ -129,17 +133,21 @@ class LocalStorageDriver extends DriverInterface
 
         if (keys.length === 1) {
             cache(config('database.cache.prefix', Database.DEFAULT_CACHE_PREFIX) + keys[0], data);
-            return data;
+            return setValue({}, 'data.data', data);
         }
 
         if (identifiable) {
-            keys = this._replaceIdWithIndex(table, keys);
+            try {
+                keys = this._replaceIdWithIndex(table, keys);
+            } catch (e) {
+                return setValue({}, 'data.data', data);
+            }
         }
 
         setValue(table, keys.slice(1).join('.'), data);
         cache(config('database.cache.prefix', Database.DEFAULT_CACHE_PREFIX) + keys[0], table);
 
-        return data;
+        return setValue({}, 'data.data', data);
     }
 
     /**
@@ -157,20 +165,26 @@ class LocalStorageDriver extends DriverInterface
         let table = cache(config('database.cache.prefix', Database.DEFAULT_CACHE_PREFIX) + keys[0]);
 
         if (isNull(table) || ! isArray(table)) {
-            return;
+            return setValue({}, 'data.data', null);
         }
 
         if (keys.length === 1) {
             cache().remove(config('database.cache.prefix', Database.DEFAULT_CACHE_PREFIX) + keys[0]);
-            return;
+            return setValue({}, 'data.data', null);
         }
 
         if (identifiable) {
-            keys = this._replaceIdWithIndex(table, keys);
+            try {
+                keys = this._replaceIdWithIndex(table, keys);
+            } catch (e) {
+                return setValue({}, 'data.data', null);
+            }
         }
 
         removeValue(table, keys.slice(1).join('.'));
         cache(config('database.cache.prefix', Database.DEFAULT_CACHE_PREFIX) + keys[0], table);
+
+        return setValue({}, 'data.data', null);
     }
 
     /**

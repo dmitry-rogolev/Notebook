@@ -1,20 +1,26 @@
 import AxiosServerDriverFacade from "../../../Classes/Facades/AxiosServerDriver";
-import { config, csrfCookie, isArray, sleep } from "../../../Classes/helpers";
+import { config, csrfCookie, isArray, serverDriver, sleep } from "../../../Classes/helpers";
 
 async function auth() {
     await csrfCookie();
 
-    await AxiosServerDriverFacade.post('/login', {
+    await serverDriver().post('/login', {
         email: 'admin@admin.com', 
         password: 'password', 
     });
 }
 
+async function logout() {
+    await serverDriver().post('/logout');
+}
+
 it('get', async () => {
     expect.assertions(7);
+
     await auth();
 
     let response = await AxiosServerDriverFacade.get('/api/notes');
+
     let data = response?.data?.data;
     expect(isArray(data)).toBeTruthy();
     expect(data[0]).toHaveProperty(config('model.primary_key'));
@@ -27,7 +33,6 @@ it('get', async () => {
 
 it('post', async () => {
     expect.assertions(6);
-
     let response = await AxiosServerDriverFacade.post('/api/notes', {
         title: 'title', 
         text: 'text', 
@@ -89,4 +94,6 @@ it('delete', async () => {
     expect(data[config('model.deleted_at')]).not.toBeNull();
 
     await AxiosServerDriverFacade.delete('/api/trashnotes/' + data[config('model.primary_key')]);
+
+    await logout();
 }, 50000);

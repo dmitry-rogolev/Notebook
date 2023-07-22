@@ -1,9 +1,22 @@
-import { driver } from "../helpers";
+import { driver, isNull } from "../helpers";
 
 class Database
 {
     static DEFAULT_CACHE_PREFIX = 'database_';
     static DEFAULT_API_PREFIX = 'api';
+    static _instance = null;
+
+    /**
+     * 
+     * @returns {Database}
+     */
+    static getInstance() {
+        if (isNull(this._instance)) {
+            this._instance = new this;
+        }
+
+        return this._instance;
+    }
     
     /**
      * 
@@ -37,7 +50,7 @@ class Database
     /**
      * 
      * @param {String} url 
-     * @return {void}
+     * @returns {void}
      */
     async delete(url) {
         (await driver()).delete(url);

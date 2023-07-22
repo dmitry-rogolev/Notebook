@@ -2,7 +2,6 @@ import Cache from '../../Classes/Cache/Cache';
 import AxiosServerDriver from '../../Classes/Database/Drivers/AxiosServerDriver';
 import { cache, config, empty, getValue, uuid, is, isArray, isBoolean, isFunction, isJson, isNull, isNumber, isObject, isString, isUndefined, notEmpty, parseJson, rand, time, toJson, timestamp, zero, delay, sleep, server, csrfCookie, getCookie, register, user, serverDriver, driver, setValue, removeValue, getIndexById, url, keysByUrl, clientDriver } from '../../Classes/helpers';
 import { jest } from '@jest/globals';
-import DriverInterface from '../../Interfaces/DriverInterface';
 import AxiosServerDriverFacade from '../../Classes/Facades/AxiosServerDriver';
 import LocalStorageDriver from '../../Classes/Database/Drivers/LocalStorageDriver';
 
@@ -15,6 +14,10 @@ async function auth() {
         email: 'admin@admin.com', 
         password: 'password', 
     });
+}
+
+async function logout() {
+    await serverDriver().post('/logout');
 }
 
 test('isObject', () => {
@@ -330,8 +333,15 @@ test('clientDriver', () => {
 });
 
 it('driver', async () => {
-    expect.assertions(1);
-    expect(await driver()).toBeInstanceOf(DriverInterface);
+    expect.assertions(2);
+
+    expect(await driver()).toBeInstanceOf(LocalStorageDriver);
+
+    await auth();
+
+    expect(await driver()).toBeInstanceOf(AxiosServerDriver);
+    
+    await logout();
 });
 
 test('getIndexById', () => {
@@ -394,6 +404,7 @@ it('user', async () => {
     expect(u).toBeNull();
 
     await auth();
+
     u = await user();
     expect(u).toHaveProperty(config('model.primary_key'));
     expect(u).toHaveProperty('name');
@@ -405,4 +416,6 @@ it('user', async () => {
     expect(u).toHaveProperty('profile_photo_url');
     expect(u).toHaveProperty(config('model.created_at'));
     expect(u).toHaveProperty(config('model.updated_at'));
+
+    await logout();
 });

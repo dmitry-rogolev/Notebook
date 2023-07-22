@@ -517,7 +517,7 @@ export function clientDriver() {
  * @returns {DriverInterface}
  */
 export async function driver() {
-    if (await user()) {
+    if (isNull(await user())) {
         return clientDriver();
     }
 
