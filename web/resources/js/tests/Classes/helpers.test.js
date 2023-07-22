@@ -1,9 +1,10 @@
 import Cache from '../../Classes/Cache/Cache';
 import AxiosServerDriver from '../../Classes/Database/Drivers/AxiosServerDriver';
-import { cache, config, empty, getValue, uuid, is, isArray, isBoolean, isFunction, isJson, isNull, isNumber, isObject, isString, isUndefined, notEmpty, parseJson, rand, time, toJson, timestamp, zero, delay, sleep, server, csrfCookie, getCookie, register, user, serverDriver, driver, setValue, removeValue, getIndexById, url, keysByUrl, clientDriver } from '../../Classes/helpers';
+import { cache, config, empty, getValue, uuid, is, isArray, isBoolean, isFunction, isJson, isNull, isNumber, isObject, isString, isUndefined, notEmpty, parseJson, rand, time, toJson, timestamp, zero, delay, sleep, server, csrfCookie, getCookie, register, user, serverDriver, driver, setValue, removeValue, getIndexById, url, keysByUrl, clientDriver, pluralize, timestamps, isDateFormatISO8601 } from '../../Classes/helpers';
 import { jest } from '@jest/globals';
 import AxiosServerDriverFacade from '../../Classes/Facades/AxiosServerDriver';
 import LocalStorageDriver from '../../Classes/Database/Drivers/LocalStorageDriver';
+import Model from '../../Classes/Model/Model';
 
 jest.useRealTimers();
 
@@ -418,4 +419,52 @@ it('user', async () => {
     expect(u).toHaveProperty(config('model.updated_at'));
 
     await logout();
+});
+
+test('pluralize', () => {
+    expect(pluralize('word')).toBe('words');
+});
+
+test('timestamps', () => {
+    let attributes = {
+        [config('model.created_at', Model.DEFAULT_CREATED_AT)]: timestamp(), 
+        [config('model.updated_at', Model.DEFAULT_UPDATED_AT)]: timestamp(), 
+        [config('model.deleted_at', Model.DEFAULT_DELETED_AT)]: timestamp(), 
+    };
+    let keys = [config('model.created_at', Model.DEFAULT_CREATED_AT), config('model.updated_at', Model.DEFAULT_UPDATED_AT), config('model.deleted_at', Model.DEFAULT_DELETED_AT)];
+    timestamps(attributes, keys);
+
+    expect(attributes).toHaveProperty(config('model.created_at', Model.DEFAULT_CREATED_AT));
+    expect(attributes).toHaveProperty(config('model.updated_at', Model.DEFAULT_UPDATED_AT));
+    expect(attributes).toHaveProperty(config('model.deleted_at', Model.DEFAULT_DELETED_AT));
+
+    expect(attributes[config('model.created_at', Model.DEFAULT_CREATED_AT)]).toBeInstanceOf(Date);
+    expect(attributes[config('model.updated_at', Model.DEFAULT_UPDATED_AT)]).toBeInstanceOf(Date);
+    expect(attributes[config('model.deleted_at', Model.DEFAULT_DELETED_AT)]).toBeInstanceOf(Date);
+
+    timestamps(attributes, keys);
+
+    expect(attributes).toHaveProperty(config('model.created_at', Model.DEFAULT_CREATED_AT));
+    expect(attributes).toHaveProperty(config('model.updated_at', Model.DEFAULT_UPDATED_AT));
+    expect(attributes).toHaveProperty(config('model.deleted_at', Model.DEFAULT_DELETED_AT));
+
+    expect(attributes[config('model.created_at', Model.DEFAULT_CREATED_AT)]).toBeInstanceOf(Date);
+    expect(attributes[config('model.updated_at', Model.DEFAULT_UPDATED_AT)]).toBeInstanceOf(Date);
+    expect(attributes[config('model.deleted_at', Model.DEFAULT_DELETED_AT)]).toBeInstanceOf(Date);
+
+    attributes = {};
+    timestamps(attributes, keys);
+
+    expect(attributes).toHaveProperty(config('model.created_at', Model.DEFAULT_CREATED_AT));
+    expect(attributes).toHaveProperty(config('model.updated_at', Model.DEFAULT_UPDATED_AT));
+    expect(attributes).toHaveProperty(config('model.deleted_at', Model.DEFAULT_DELETED_AT));
+
+    expect(attributes[config('model.created_at', Model.DEFAULT_CREATED_AT)]).toBeNull();
+    expect(attributes[config('model.updated_at', Model.DEFAULT_UPDATED_AT)]).toBeNull();
+    expect(attributes[config('model.deleted_at', Model.DEFAULT_DELETED_AT)]).toBeNull();
+});
+
+test('isDateFormatISO8601', () => {
+    expect(isDateFormatISO8601('25.08.2000')).toBeFalsy();
+    expect(isDateFormatISO8601('2000-08-25T04:25:24.000000Z')).toBeTruthy();
 });

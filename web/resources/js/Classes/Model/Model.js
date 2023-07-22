@@ -1,4 +1,6 @@
 import { reactive } from 'vue';
+import { cache, config, isArray, isNull, isNumber, isObject, isString, isUndefined, notEmpty, pluralize, timestamps } from '../helpers';
+import NotTypeError from '../Errors/NotTypeError';
 
 class Model
 {
@@ -7,28 +9,39 @@ class Model
     static DEFAULT_UPDATED_AT = 'updated_at';
     static DEFAULT_DELETED_AT = 'deleted_at';
     static DEFAULT_UUID_PREFIX = 'id:';
-    
+    static DEFAULT_CACHE_PREFIX = 'model_';
 
-    static _table = 'models';
     static _defaults = {};
 
     _originals = {};
     _attributes = {};
     _isDirty = false;
     _isTrashed = false;
+    _table = '';
 
     /**
      * @property {String}
      */
     get table() {
+        if (! this._table) {
+            this._table = this.getTable();
+        }
+
         return this._table;
     }
 
     /**
-     * @property {String}
+     * @property {String|Number}
+     */
+    get key() {
+        return this.primaryKey;
+    }
+
+    /**
+     * @property {String|Number}
      */
     get primaryKey() {
-        return this._primaryKey;
+        return this.getPrimaryKey();
     }
 
     /**
@@ -58,25 +71,60 @@ class Model
      * @param {Object} originals 
      */
     constructor(originals = {}) {
-        if (typeof originals !== 'object') {
-            throw new Error('The "originals" parameter must be an object.');
+        if (! isObject(originals)) {
+            throw new NotTypeError('originals', 'object')
         }
 
-        originals = this._defaultAttributes(originals);
+        let keys = [config('model.created_at', Model.DEFAULT_CREATED_AT), config('model.updated_at', Model.DEFAULT_UPDATED_AT), config('model.deleted_at', Model.DEFAULT_DELETED_AT)];
 
-        this._originals = this._parseTimestamps(originals);
+        this._originals = timestamps(originals, keys);
+        this._attributes = timestamps(this._getAttributes(), keys);
 
-        let attributes = this._getAttributesFromCache(originals);
+        if (this.dirty()) {
+            this._isDirty = true;
+        }
 
-        if (attributes) {
-            this._attributes = this._parseTimestamps(attributes);
+        if (this.trashed()) {
+            this._isTrashed = true;
+        }
+    }
 
-            if (this.isChanged()) {
-                this._isDirty = true;
+    /**
+     * 
+     * @returns {String}
+     */
+    getTable() {
+        return pluralize(this.constructor.name.toLowerCase());
+    }
+
+    /**
+     * 
+     * @returns {Number|String}
+     */
+    getPrimaryKey() {
+        return this.getOriginalAttribute(config('model.primary_key', Model.DEFAULT_PRIMARY_KEY));
+    }
+
+    /**
+     * 
+     * @returns {Boolean}
+     */
+    dirty() {
+        for (let attribute in this._attributes) {
+            if (this._attributes[attribute] !== this._originals[attribute]) {
+                return true;
             }
-        } else {
-            this._attributes = Object.assign({}, this._originals);
         }
+
+        return false;
+    }
+
+    /**
+     * 
+     * @returns {Boolean}
+     */
+    trashed() {
+        return ! isNull(this.getOriginalAttribute(config('model.deleted_at', Model.DEFAULT_DELETED_AT)));
     }
 
     /**
@@ -85,8 +133,8 @@ class Model
      * @returns {any}
      */
     getAttribute(attribute) {
-        if (typeof attribute !== 'string') {
-            throw new Error('The "attribute" parameter must be a string.');
+        if (! isString(attribute)) {
+            throw new NotTypeError('attribute', 'string');
         }
 
         return this._attributes[attribute];
@@ -98,8 +146,8 @@ class Model
      * @returns {any}
      */
     getOriginalAttribute(attribute) {
-        if (typeof attribute !== 'string') {
-            throw new Error('The "attribute" parameter must be a string.');
+        if (! isString(attribute)) {
+            throw new NotTypeError('attribute', 'string');
         }
 
         return this._originals[attribute];
@@ -112,14 +160,19 @@ class Model
      * @returns {void}
      */
     setAttribute(attribute, value) {
-        if (typeof attribute !== 'string') {
-            throw new Error('The "attribute" parameter must be a string.');
+        if (! isString(attribute)) {
+            throw new NotTypeError('attribute', 'string');
         }
 
         if (attribute in this._attributes && this._attributes[attribute] !== value) {
             this._attributes[attribute] = value;
-            this._isDirty = true;
-            this._cacheAttributes();
+            this._isDirty = this.dirty();
+
+            if (this._isDirty) {
+                this._setAttributes();
+            } else {
+                this._removeAttributes();
+            }
         } 
 
         return this;
@@ -269,152 +322,86 @@ class Model
 
     /**
      * 
-     * @returns {Boolean}
-     */
-    isChanged() {
-        let dirty = false;
-
-        for (let attribute in this._attributes) {
-            if (this._attributes[attribute] !== this._originals[attribute]) {
-                dirty = true;
-                break;
-            }
-        }
-
-        return dirty;
-    }
-
-    _defaultAttributes(attributes) {
-        for (let attribute in this.constructor._defaults) {
-            if (! (attribute in attributes) || attributes[attribute] === null) {
-                attributes[attribute] = this.constructor._defaults[attribute];
-            } 
-        }
-
-        return attributes;
-    }
-
-    /**
-     * 
-     * @param {Object} attributes 
-     * @returns {void}
-     */
-    _cacheAttributes(attributes = null) {
-        if (! attributes) {
-            attributes = this._attributes;
-        }
-
-        let models = this._getCache();
-
-        if (Array.isArray(models)) {
-            let index = models.findIndex((v) => v.id === attributes[this.constructor._configuration.getModelIdName()]);
-
-            if (index !== -1) {
-                models[index] = attributes;
-                this._setCache(models);
-            } else {
-                models.push(attributes);
-                this._setCache(models);
-            }
-        } else {
-            models = [];
-            models.push(attributes);
-            this._setCache(models);
-        }
-    }
-
-    /**
-     * 
-     * @param {Object} attributes 
-     * @returns {any}
-     */
-    _getAttributesFromCache(attributes = null) {
-        if (! attributes) {
-            attributes = this._attributes;
-        }
-
-        let models = this._getCache();
-
-        if (models && Array.isArray(models)) {
-            let model = models.find((v) => v.id === attributes[this.constructor._configuration.getModelIdName()]);
-
-            if (model !== undefined) {
-                return model;
-            }
-        }
-
-        return null;
-    }
-
-    _removeCacheAttributes(attributes = null) {
-        if (! attributes) {
-            attributes = this._attributes;
-        }
-
-        let models = this._getCache();
-
-        if (models && Array.isArray(models)) {
-            let index = models.findIndex((v) => v.id === attributes[this.constructor._configuration.getModelIdName()]);
-
-            if (index !== -1) {
-                models.splice(index, 1);
-                this._setCache(models);
-            }
-        }
-    }
-
-    /**
-     * 
-     * @returns {void}
-     */
-    _getCache() {
-        return Cache.get(this.constructor._configuration.getModelCachePrefix() + this.constructor._table);
-    }
-
-    /**
-     * 
-     * @param {any} cache 
-     * @returns {void}
-     */
-    _setCache(cache) {
-        Cache.set(this.constructor._configuration.getModelCachePrefix() + this.constructor._table, cache);
-    }
-
-    /**
-     * 
-     * @returns {void}
-     */
-    static _removeCache() {
-        Cache.remove(this._configuration.getModelCachePrefix() + this._table);
-    }
-
-    /**
-     * 
-     * @param {Object} attributes 
      * @returns {Object}
      */
-    _parseTimestamps(attributes) {
-        if (typeof attributes !== 'object') {
-            throw new Error('The "attributes" parameter must be an object.');
+    _getAttributes() {
+        let primary_key = config('model.primary_key', Model.DEFAULT_PRIMARY_KEY);
+
+        if (primary_key in this._originals) {
+            let models = cache(`${config('model.cache.prefix', Model.DEFAULT_CACHE_PREFIX)}${this.table}`);
+
+            if (isArray(models) && notEmpty(models)) {
+                let id = this._originals[primary_key];
+
+                let model = models.find((v) => {
+                    if (isObject(v) && primary_key in v) {
+                        return v[primary_key] === id;
+                    }
+    
+                    return false;
+                });
+    
+                if (! isUndefined(model)) {
+                    return model;
+                }
+            }
+        } 
+
+        return Object.assign({}, this._originals);
+    }
+
+    _setAttributes() {
+        let primary_key = config('model.primary_key', Model.DEFAULT_PRIMARY_KEY);
+        let models = cache(`${config('model.cache.prefix', Model.DEFAULT_CACHE_PREFIX)}${this.table}`);
+
+        if (isNull(models) || ! isArray(models)) {
+            models = [];
         }
 
-        let created_at = this.constructor._configuration.getModelCreatedAt();
-        let updated_at = this.constructor._configuration.getModelUpdatedAt();
-        let deleted_at = this.constructor._configuration.getModelDeletedAt();
+        let index = models.findIndex((v) => {
+            if (isObject(v) && primary_key in v) {
+                return v[primary_key] === this.primaryKey;
+            }
 
-        if (created_at in attributes) {
-            attributes[created_at] = new Date(attributes[created_at]);
+            return false;
+        });
+
+        if (index === -1) {
+            models.push(this._attributes);
+        } else {
+            models[index] = this._attributes;
         }
 
-        if (updated_at in attributes) {
-            attributes[updated_at] = new Date(attributes[updated_at]);
+        cache(`${config('model.cache.prefix', Model.DEFAULT_CACHE_PREFIX)}${this.table}`, models);
+    }
+
+    /**
+     * 
+     * @returns {void}
+     */
+    _removeAttributes() {
+        let primary_key = config('model.primary_key', Model.DEFAULT_PRIMARY_KEY);
+        let models = cache(`${config('model.cache.prefix', Model.DEFAULT_CACHE_PREFIX)}${this.table}`);
+
+        if (isNull(models) || ! isArray(models)) {
+            return;
         }
 
-        if (deleted_at in attributes && attributes[deleted_at] !== null) {
-            attributes[deleted_at] = new Date(attributes[deleted_at]);
+        let index = models.findIndex((v) => {
+            if (isObject(v) && primary_key in v) {
+                return v[primary_key] === this.primaryKey;
+            }
+
+            return false;
+        });
+
+        if (index === -1) {
+            return;
         }
 
-        return attributes;
+        models.splice(index, 1);
+
+        cache(`${config('model.cache.prefix', Model.DEFAULT_CACHE_PREFIX)}${this.table}`, models);
     }
 
     static _proxy(model) {

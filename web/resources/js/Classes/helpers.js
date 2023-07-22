@@ -9,6 +9,8 @@ import CacheFacade from "./Facades/Cache";
 import ConfigurationFacade from "./Facades/Configuration";
 import { v4 } from 'uuid';
 import LocalStorageDriver from "./Database/Drivers/LocalStorageDriver";
+import plur from 'pluralize';
+import moment from 'moment';
 
 /**
  * 
@@ -587,4 +589,54 @@ export async function user() {
     }
 
     return u ? u : null;
+}
+
+/**
+ * 
+ * @param {String} word 
+ * @param {Number|null} count 
+ * @param {Boolean} inclusive 
+ * @returns {String}
+ */
+export function pluralize(word, count = null, inclusive = false) {
+    return plur(word, count, inclusive);
+}
+
+/**
+ * 
+ * @param {Object} attributes 
+ * @param {Array} keys 
+ * @returns {Object}
+ */
+export function timestamps(attributes, keys) {
+    if (! isObject(attributes)) {
+        throw new NotTypeError('attributes', 'object');
+    }
+
+    if (! isArray(keys)) {
+        throw new NotTypeError('keys', 'array');
+    }
+
+    for (let key of keys) {
+        if (isDateFormatISO8601(attributes[key])) {
+            attributes[key] = new Date(attributes[key]);
+        } else if (! (attributes[key] instanceof Date)) {
+            attributes[key] = null;
+        }
+    }
+
+    return attributes;
+}
+
+/**
+ * 
+ * @param {String} date 
+ * @returns {Boolean}
+ */
+export function isDateFormatISO8601(date) {
+    if (! isString(date)) {
+        return false;
+    }
+
+    return moment(date, moment.ISO_8601, true).isValid();
 }
