@@ -125,3 +125,62 @@ test('_getAttributes', () => {
 
     expect(model.isDirty).toBeTruthy();
 });
+
+test('fill', () => {
+    let primary_key = config('model.primary_key', Model.DEFAULT_PRIMARY_KEY);
+    let model = new Model(ServerFacade.store({title: 'title', text: 'text'}));
+
+    model.fill({
+        title: 'updated', 
+        text: 'updated', 
+    });
+
+    expect(model.getAttribute('title')).toBe('updated');
+    expect(model.getOriginalAttribute('title')).toBe('title');
+
+    expect(model.getAttribute('text')).toBe('updated');
+    expect(model.getOriginalAttribute('text')).toBe('text');
+
+    expect(model.isDirty).toBeTruthy();
+
+    let models = cache(`${config('model.cache.prefix', Model.DEFAULT_CACHE_PREFIX)}${model.table}`);
+
+    expect(isArray(models) && notEmpty(models)).toBeTruthy();
+
+    let index = models.findIndex((v) => {
+        if (isObject(v) && primary_key in v) {
+            return v[primary_key] === model.primaryKey;
+        }
+
+        return false;
+    });
+
+    expect(index !== -1).toBeTruthy();
+
+    model.fill({
+        title: 'title', 
+        text: 'text', 
+    });
+
+    expect(model.getAttribute('title')).toBe('title');
+    expect(model.getOriginalAttribute('title')).toBe('title');
+
+    expect(model.getAttribute('text')).toBe('text');
+    expect(model.getOriginalAttribute('text')).toBe('text');
+
+    expect(model.isDirty).toBeFalsy();
+
+    models = cache(`${config('model.cache.prefix', Model.DEFAULT_CACHE_PREFIX)}${model.table}`);
+
+    expect(isArray(models) && notEmpty(models)).toBeTruthy();
+
+    index = models.findIndex((v) => {
+        if (isObject(v) && primary_key in v) {
+            return v[primary_key] === model.primaryKey;
+        }
+
+        return false;
+    });
+
+    expect(index === -1).toBeTruthy();
+});

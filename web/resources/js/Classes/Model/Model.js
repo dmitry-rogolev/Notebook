@@ -1,5 +1,5 @@
 import { reactive } from 'vue';
-import { cache, config, isArray, isNull, isNumber, isObject, isString, isUndefined, notEmpty, pluralize, timestamps } from '../helpers';
+import { cache, config, isArray, isNull, isObject, isString, isUndefined, notEmpty, pluralize, timestamps } from '../helpers';
 import NotTypeError from '../Errors/NotTypeError';
 
 class Model
@@ -183,18 +183,23 @@ class Model
      * @param {Object} attributes 
      */
     fill(attributes) {
-        if (typeof attributes !== 'object') {
-            throw new Error('The "attributes" parameter must be an object.');
+        if (! isObject(attributes) || isArray(attributes)) {
+            throw new NotTypeError('attributes', 'object')
         }
 
         for (let attribute in attributes) {
             if (attribute in this._attributes && this._attributes[attribute] !== attributes[attribute]) {
                 this._attributes[attribute] = attributes[attribute];
-                this._isDirty = true;
-            }
+            } 
         }
 
-        this._cacheAttributes();
+        this._isDirty = this.dirty();
+    
+        if (this._isDirty) {
+            this._setAttributes();
+        } else {
+            this._removeAttributes();
+        }
 
         return this;
     }
