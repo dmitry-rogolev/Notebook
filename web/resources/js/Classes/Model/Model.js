@@ -317,8 +317,8 @@ class Model
      * @returns {void}
      */
     async delete() {
-        await this.constructor._database.delete(this.constructor._table + '/' + this._originals[this.constructor._primaryKey]);
-        this._removeCacheAttributes();
+        await DatabaseFacade.delete(`/${config('routes.api.prefix', Database.DEFAULT_API_PREFIX)}/${this.table}/${this.primaryKey}`);
+        this._removeAttributes();
     }
 
     /**

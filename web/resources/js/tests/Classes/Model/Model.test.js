@@ -1,4 +1,5 @@
 import Database from "../../../Classes/Database/Database";
+import DatabaseFacade from "../../../Classes/Facades/DatabaseFacade";
 import ServerFacade from "../../../Classes/Facades/Server";
 import Model from "../../../Classes/Model/Model";
 import Note from "../../../Classes/Models/Note";
@@ -358,6 +359,35 @@ it('save', async () => {
     expect(note.isDirty).toBeFalsy();
     expect(note.getOriginalAttribute('title')).toBe('updated');
     expect(note.getOriginalAttribute('text')).toBe('updated');
+
+    await logout();
+});
+
+it('delete', async () => {
+    expect.assertions(3);
+
+    let note = await Note.create({
+        title: 'title', 
+        text: 'text', 
+    });
+
+    await note.delete();
+
+    expect((await DatabaseFacade.get(`/${config('routes.api.prefix', Database.DEFAULT_API_PREFIX)}/notes/${note[config('model.primary_key', Model.DEFAULT_PRIMARY_KEY)]}`))?.data?.data).toBeNull();
+
+    await auth();
+
+    note = await Note.create({
+        title: 'title', 
+        text: 'text', 
+    });
+
+    await note.delete();
+
+    let trashed = (await DatabaseFacade.get(`/${config('routes.api.prefix', Database.DEFAULT_API_PREFIX)}/${config('model.trashed.prefix', Model.DEFAULT_TRASHED_PREFIX)}notes/${note[config('model.primary_key', Model.DEFAULT_PRIMARY_KEY)]}`))?.data?.data;
+
+    expect(trashed[config('model.primary_key', Model.DEFAULT_PRIMARY_KEY)]).toBe(note[config('model.primary_key', Model.DEFAULT_PRIMARY_KEY)]);
+    expect(trashed[config('model.deleted_at', Model.DEFAULT_DELETED_AT)]).not.toBeNull();
 
     await logout();
 });
