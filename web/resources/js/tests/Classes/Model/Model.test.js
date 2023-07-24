@@ -2,7 +2,7 @@ import Database from "../../../Classes/Database/Database";
 import ServerFacade from "../../../Classes/Facades/Server";
 import Model from "../../../Classes/Model/Model";
 import Note from "../../../Classes/Models/Note";
-import { cache, clientDriver, config, csrfCookie, isArray, isObject, notEmpty, serverDriver } from "../../../Classes/helpers";
+import { cache, clientDriver, config, csrfCookie, empty, isArray, isObject, notEmpty, serverDriver } from "../../../Classes/helpers";
 
 async function auth() {
     await csrfCookie();
@@ -261,6 +261,9 @@ it('all', async () => {
 
     await auth();
 
+    await serverDriver().delete(`/${config('routes.api.prefix', Database.DEFAULT_API_PREFIX)}/notes`);
+    await serverDriver().delete(`/${config('routes.api.prefix', Database.DEFAULT_API_PREFIX)}/${config('model.trashed.prefix')}notes`);
+
     await serverDriver().post(`/${config('routes.api.prefix', Database.DEFAULT_API_PREFIX)}/notes`, {title: 'title', text: 'text'});
     await serverDriver().post(`/${config('routes.api.prefix', Database.DEFAULT_API_PREFIX)}/notes`, {title: 'title', text: 'text'});
     await serverDriver().post(`/${config('routes.api.prefix', Database.DEFAULT_API_PREFIX)}/notes`, {title: 'title', text: 'text'});
@@ -314,3 +317,47 @@ it('create', async () => {
 
     await logout();
 }, 50000);
+
+it('save', async () => {
+    expect.assertions(9);
+
+    let note = await Note.create({
+        title: 'title', 
+        text: 'text', 
+    });
+
+    note.title = 'updated';
+    note.text = 'updated';
+
+    expect(note.isDirty).toBeTruthy();
+
+    await note.save();
+
+    expect(note.isDirty).toBeFalsy();
+    expect(note.getOriginalAttribute('title')).toBe('updated');
+    expect(note.getOriginalAttribute('text')).toBe('updated');
+
+    let notes = cache(`${config('model.cache.prefix', Model.DEFAULT_CACHE_PREFIX)}${note.table}`);
+
+    expect(isArray(notes) && empty(notes)).toBeTruthy();
+
+    await auth();
+
+    note = await Note.create({
+        title: 'title', 
+        text: 'text', 
+    });
+
+    note.title = 'updated';
+    note.text = 'updated';
+
+    expect(note.isDirty).toBeTruthy();
+
+    await note.save();
+
+    expect(note.isDirty).toBeFalsy();
+    expect(note.getOriginalAttribute('title')).toBe('updated');
+    expect(note.getOriginalAttribute('text')).toBe('updated');
+
+    await logout();
+});

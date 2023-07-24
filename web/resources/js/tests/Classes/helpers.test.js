@@ -1,10 +1,11 @@
 import Cache from '../../Classes/Cache/Cache';
 import AxiosServerDriver from '../../Classes/Database/Drivers/AxiosServerDriver';
-import { cache, config, empty, getValue, uuid, is, isArray, isBoolean, isFunction, isJson, isNull, isNumber, isObject, isString, isUndefined, notEmpty, parseJson, rand, time, toJson, timestamp, zero, delay, sleep, server, csrfCookie, getCookie, register, user, serverDriver, driver, setValue, removeValue, getIndexById, url, keysByUrl, clientDriver, pluralize, timestamps, isDateFormatISO8601 } from '../../Classes/helpers';
+import { cache, config, empty, getValue, uuid, is, isArray, isBoolean, isFunction, isJson, isNull, isNumber, isObject, isString, isUndefined, notEmpty, parseJson, rand, time, toJson, timestamp, zero, delay, sleep, server, csrfCookie, getCookie, register, user, serverDriver, driver, setValue, removeValue, getIndexById, url, keysByUrl, clientDriver, pluralize, timestamps, isDateFormatISO8601, identifiable } from '../../Classes/helpers';
 import { jest } from '@jest/globals';
 import AxiosServerDriverFacade from '../../Classes/Facades/AxiosServerDriver';
 import LocalStorageDriver from '../../Classes/Database/Drivers/LocalStorageDriver';
 import Model from '../../Classes/Model/Model';
+import ServerFacade from '../../Classes/Facades/Server';
 
 jest.useRealTimers();
 
@@ -467,4 +468,13 @@ test('timestamps', () => {
 test('isDateFormatISO8601', () => {
     expect(isDateFormatISO8601('25.08.2000')).toBeFalsy();
     expect(isDateFormatISO8601('2000-08-25T04:25:24.000000Z')).toBeTruthy();
+});
+
+test('identifiable', () => {
+    expect(identifiable({})).toHaveProperty(config('model.primary_key', Model.DEFAULT_PRIMARY_KEY));
+
+    let model = ServerFacade.store({});
+    let id = model[config('model.primary_key', Model.DEFAULT_PRIMARY_KEY)];
+
+    expect(identifiable(model)[config('model.primary_key', Model.DEFAULT_PRIMARY_KEY)]).toBe(id);
 });

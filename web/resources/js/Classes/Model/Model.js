@@ -1,5 +1,5 @@
 import { reactive } from 'vue';
-import { cache, config, isArray, isNull, isObject, isString, isUndefined, notEmpty, pluralize, timestamps } from '../helpers';
+import { cache, config, identifiable, isArray, isNull, isObject, isString, isUndefined, notEmpty, pluralize, timestamps } from '../helpers';
 import NotTypeError from '../Errors/NotTypeError';
 import DatabaseFacade from '../Facades/DatabaseFacade';
 import Database from '../Database/Database';
@@ -78,7 +78,7 @@ class Model
 
         let keys = [config('model.created_at', Model.DEFAULT_CREATED_AT), config('model.updated_at', Model.DEFAULT_UPDATED_AT), config('model.deleted_at', Model.DEFAULT_DELETED_AT)];
 
-        this._originals = timestamps(originals, keys);
+        this._originals = timestamps(identifiable(originals), keys);
         this._attributes = timestamps(this._getAttributes(), keys);
 
         if (this.dirty()) {
@@ -291,7 +291,7 @@ class Model
 
         let data = (await DatabaseFacade.store(`/${config('routes.api.prefix', Database.DEFAULT_API_PREFIX)}/${this.getTable()}`, attributes))?.data?.data;
 
-        return Model.proxy(reactive(new this(data)));
+        return Model.proxy(reactive(new this((isNull(data) || isUndefined(data)) ? attributes : data)));
     }
 
     /**
@@ -299,13 +299,16 @@ class Model
      */
     async save() {
         if (this.isDirty) {
-            let data = await DatabaseFacade.update(`/${config('routes.api.prefix', Database.DEFAULT_API_PREFIX)}/${this.table}/`, this._attributes);
+            let data = (await DatabaseFacade.update(`/${config('routes.api.prefix', Database.DEFAULT_API_PREFIX)}/${this.table}/${this.primaryKey}`, this._attributes))?.data?.data;
 
-            if (data) {
-                this._originals = this._parseTimestamps(data);
+            if (! isNull(data) || ! isUndefined(data)) {
+                let keys = [config('model.created_at', Model.DEFAULT_CREATED_AT), config('model.updated_at', Model.DEFAULT_UPDATED_AT), config('model.deleted_at', Model.DEFAULT_DELETED_AT)];
+
+                this._originals = timestamps(identifiable(data), keys);
                 this._attributes = Object.assign({}, this._originals);
+
                 this._isDirty = false;
-                this._removeCacheAttributes();
+                this._removeAttributes();
             }
         }
     }

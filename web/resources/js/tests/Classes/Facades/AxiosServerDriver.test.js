@@ -20,6 +20,10 @@ it('get', async () => {
 
     await auth();
 
+    await AxiosServerDriverFacade.post(`/${config('routes.api.prefix', Model.DEFAULT_UUID_PREFIX)}/notes`, {title: 'title', text: 'text'});
+    await AxiosServerDriverFacade.post(`/${config('routes.api.prefix', Model.DEFAULT_UUID_PREFIX)}/notes`, {title: 'title', text: 'text'});
+    await AxiosServerDriverFacade.post(`/${config('routes.api.prefix', Model.DEFAULT_UUID_PREFIX)}/notes`, {title: 'title', text: 'text'});
+
     let response = await AxiosServerDriverFacade.get(`/${config('routes.api.prefix', Model.DEFAULT_UUID_PREFIX)}/notes`);
 
     let data = response?.data?.data;

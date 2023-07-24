@@ -11,6 +11,7 @@ import { v4 } from 'uuid';
 import LocalStorageDriver from "./Database/Drivers/LocalStorageDriver";
 import plur from 'pluralize';
 import moment from 'moment';
+import Model from "./Model/Model";
 
 /**
  * 
@@ -639,4 +640,19 @@ export function isDateFormatISO8601(date) {
     }
 
     return moment(date, moment.ISO_8601, true).isValid();
+}
+
+/**
+ * 
+ * @param {Object} model 
+ * @returns {Object}
+ */
+export function identifiable(model) {
+    if (! isObject(model) || config('model.primary_key', Model.DEFAULT_PRIMARY_KEY) in model) {
+        return model;
+    }
+
+    model[config('model.primary_key', Model.DEFAULT_PRIMARY_KEY)] = uuid();
+
+    return model;
 }
