@@ -1,8 +1,10 @@
 import { reactive } from 'vue';
-import { cache, config, identifiable, isArray, isNull, isObject, isString, isUndefined, notEmpty, pluralize, timestamps } from '../helpers';
+import { cache, config, driver, identifiable, isArray, isAuth, isNull, isObject, isString, isUndefined, notEmpty, pluralize, timestamps } from '../helpers';
 import NotTypeError from '../Errors/NotTypeError';
 import DatabaseFacade from '../Facades/DatabaseFacade';
 import Database from '../Database/Database';
+import LocalStorageDriver from '../Database/Drivers/LocalStorageDriver';
+import ServerFacade from '../Facades/Server';
 
 class Model
 {
@@ -319,14 +321,18 @@ class Model
     async delete() {
         await DatabaseFacade.delete(`/${config('routes.api.prefix', Database.DEFAULT_API_PREFIX)}/${this.table}/${this.primaryKey}`);
         this._removeAttributes();
+
+        if (! (await isAuth())) {
+            await DatabaseFacade.store(`/${config('routes.api.prefix', Database.DEFAULT_API_PREFIX)}/${config('model.trashed.prefix', Model.DEFAULT_TRASHED_PREFIX)}${this.table}`, ServerFacade.delete(this._originals), true, false);
+        }
     }
 
     /**
      * @returns {void}
      */
     async forceDelete() {
-        await this.constructor._database.delete(this.constructor._configuration.getUrlTrash(this.constructor._table, this._originals[this.constructor._primaryKey]));
-        this._removeCacheAttributes();
+        await DatabaseFacade.delete(`/${config('routes.api.prefix', Database.DEFAULT_API_PREFIX)}/${config('model.trashed.prefix', Model.DEFAULT_TRASHED_PREFIX)}${this.table}/${this.primaryKey}`);
+        this._removeAttributes();
     }
 
     /**

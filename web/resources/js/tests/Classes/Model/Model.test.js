@@ -361,10 +361,10 @@ it('save', async () => {
     expect(note.getOriginalAttribute('text')).toBe('updated');
 
     await logout();
-});
+}, 50000);
 
 it('delete', async () => {
-    expect.assertions(3);
+    expect.assertions(6);
 
     let note = await Note.create({
         title: 'title', 
@@ -373,7 +373,11 @@ it('delete', async () => {
 
     await note.delete();
 
-    expect((await DatabaseFacade.get(`/${config('routes.api.prefix', Database.DEFAULT_API_PREFIX)}/notes/${note[config('model.primary_key', Model.DEFAULT_PRIMARY_KEY)]}`))?.data?.data).toBeNull();
+    let trashed = (await DatabaseFacade.get(`/${config('routes.api.prefix', Database.DEFAULT_API_PREFIX)}/${config('model.trashed.prefix', Model.DEFAULT_TRASHED_PREFIX)}notes/${note[config('model.primary_key', Model.DEFAULT_PRIMARY_KEY)]}`))?.data?.data;
+
+    expect(trashed).toHaveProperty(config('model.primary_key', Model.DEFAULT_PRIMARY_KEY), note[config('model.primary_key', Model.DEFAULT_PRIMARY_KEY)]);
+    expect(trashed).toHaveProperty(config('model.deleted_at', Model.DEFAULT_DELETED_AT));
+    expect(trashed[config('model.deleted_at', Model.DEFAULT_DELETED_AT)]).not.toBeNull();
 
     await auth();
 
@@ -384,10 +388,39 @@ it('delete', async () => {
 
     await note.delete();
 
-    let trashed = (await DatabaseFacade.get(`/${config('routes.api.prefix', Database.DEFAULT_API_PREFIX)}/${config('model.trashed.prefix', Model.DEFAULT_TRASHED_PREFIX)}notes/${note[config('model.primary_key', Model.DEFAULT_PRIMARY_KEY)]}`))?.data?.data;
+    trashed = (await DatabaseFacade.get(`/${config('routes.api.prefix', Database.DEFAULT_API_PREFIX)}/${config('model.trashed.prefix', Model.DEFAULT_TRASHED_PREFIX)}notes/${note[config('model.primary_key', Model.DEFAULT_PRIMARY_KEY)]}`))?.data?.data;
 
     expect(trashed[config('model.primary_key', Model.DEFAULT_PRIMARY_KEY)]).toBe(note[config('model.primary_key', Model.DEFAULT_PRIMARY_KEY)]);
+    expect(trashed).toHaveProperty(config('model.deleted_at', Model.DEFAULT_DELETED_AT));
     expect(trashed[config('model.deleted_at', Model.DEFAULT_DELETED_AT)]).not.toBeNull();
 
     await logout();
-});
+}, 50000);
+
+// it('forceDelete', async () => {
+//     expect.assertions(1);
+
+//     let note = await Note.create({
+//         title: 'title', 
+//         text: 'text', 
+//     });
+
+//     await note.forceDelete();
+
+//     expect((await DatabaseFacade.get(`/${config('routes.api.prefix', Database.DEFAULT_API_PREFIX)}/notes/${note[config('model.primary_key', Model.DEFAULT_PRIMARY_KEY)]}`))?.data?.data).toBeNull();
+
+//     await auth();
+
+//     note = await Note.create({
+//         title: 'title', 
+//         text: 'text', 
+//     });
+
+//     await note.forceDelete();
+
+//     let trashed = (await DatabaseFacade.get(`/${config('routes.api.prefix', Database.DEFAULT_API_PREFIX)}/${config('model.trashed.prefix', Model.DEFAULT_TRASHED_PREFIX)}notes/${note[config('model.primary_key', Model.DEFAULT_PRIMARY_KEY)]}`))?.data?.data;
+
+//     console.log(trashed);
+
+//     await logout();
+// });

@@ -520,7 +520,7 @@ export function clientDriver() {
  * @returns {DriverInterface}
  */
 export async function driver() {
-    if (isNull(await user())) {
+    if (! (await isAuth())) {
         return clientDriver();
     }
 
@@ -655,4 +655,12 @@ export function identifiable(model) {
     model[config('model.primary_key', Model.DEFAULT_PRIMARY_KEY)] = uuid();
 
     return model;
+}
+
+/**
+ * 
+ * @returns {Boolean}
+ */
+export async function isAuth() {
+    return ! isNull(await user());
 }

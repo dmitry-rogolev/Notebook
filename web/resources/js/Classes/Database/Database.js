@@ -23,8 +23,8 @@ class Database
      * @param {String} url 
      * @returns {any}
      */
-    async get(url) {
-        return (await driver()).get(url);
+    async get(url, ...params) {
+        return (await driver()).get(url, ...params);
     }
 
     /**
@@ -33,8 +33,8 @@ class Database
      * @param {any} data 
      * @returns {any}
      */
-    async store(url, data) {
-        return (await driver()).post(url, data);
+    async store(url, data, ...params) {
+        return (await driver()).post(url, data, ...params);
     }
 
     /**
@@ -43,8 +43,8 @@ class Database
      * @param {any} data 
      * @returns {any}
      */
-    async update(url, data) {
-        return (await driver()).patch(url, data);
+    async update(url, data, ...params) {
+        return (await driver()).patch(url, data, ...params);
     }
 
     /**
@@ -52,8 +52,8 @@ class Database
      * @param {String} url 
      * @returns {void}
      */
-    async delete(url) {
-        (await driver()).delete(url);
+    async delete(url, ...params) {
+        (await driver()).delete(url, ...params);
     }
 }
 
