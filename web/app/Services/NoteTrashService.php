@@ -53,7 +53,7 @@ class NoteTrashService extends TrashService implements Restorable, Exportable
      */
     public function delete(int $id): void 
     {
-        Note::onlyTrashed()->whereUserId(auth()->user()->id)->whereId($id)->forceDelete();
+        Note::withTrashed()->whereUserId(auth()->user()->id)->whereId($id)->forceDelete();
     }
 
     /**

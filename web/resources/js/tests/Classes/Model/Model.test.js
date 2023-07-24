@@ -277,8 +277,40 @@ it('all', async () => {
     expect(models[0]).toHaveProperty(config('model.deleted_at', Model.DEFAULT_DELETED_AT), null);
 
     models.forEach(async (model) => {
-        await serverDriver().delete(`/${config('routes.api.prefix', Database.DEFAULT_API_PREFIX)}/notes/${model[config('model.primary_key', Model.DEFAULT_PRIMARY_KEY)]}`);
+        await serverDriver().delete(`/${config('routes.api.prefix', Database.DEFAULT_API_PREFIX)}/${config('model.trashed.prefix', Model.DEFAULT_TRASHED_PREFIX)}notes/${model[config('model.primary_key', Model.DEFAULT_PRIMARY_KEY)]}`);
     });
 
     await logout();
 }, 100000);
+
+it('create', async () => {
+    let note = await Note.create({
+        title: 'title', 
+        text: 'text', 
+    });
+
+    expect(note).toHaveProperty(config('model.primary_key', Model.DEFAULT_PRIMARY_KEY));
+    expect(note).toHaveProperty('title', 'title');
+    expect(note).toHaveProperty('text', 'text');
+    expect(note).toHaveProperty(config('model.created_at', Model.DEFAULT_CREATED_AT));
+    expect(note).toHaveProperty(config('model.updated_at', Model.DEFAULT_UPDATED_AT));
+    expect(note).toHaveProperty(config('model.deleted_at', Model.DEFAULT_DELETED_AT), null);
+
+    await auth();
+
+    note = await Note.create({
+        title: 'title', 
+        text: 'text', 
+    });
+
+    expect(note).toHaveProperty(config('model.primary_key', Model.DEFAULT_PRIMARY_KEY));
+    expect(note).toHaveProperty('title', 'title');
+    expect(note).toHaveProperty('text', 'text');
+    expect(note).toHaveProperty(config('model.created_at', Model.DEFAULT_CREATED_AT));
+    expect(note).toHaveProperty(config('model.updated_at', Model.DEFAULT_UPDATED_AT));
+    expect(note).toHaveProperty(config('model.deleted_at', Model.DEFAULT_DELETED_AT), null);
+
+    await serverDriver().delete(`/${config('routes.api.prefix', Database.DEFAULT_API_PREFIX)}/${config('model.trashed.prefix', Model.DEFAULT_TRASHED_PREFIX)}notes/${note[config('model.primary_key', Model.DEFAULT_PRIMARY_KEY)]}`);
+
+    await logout();
+});

@@ -12,6 +12,7 @@ class Model
     static DEFAULT_DELETED_AT = 'deleted_at';
     static DEFAULT_UUID_PREFIX = 'id:';
     static DEFAULT_CACHE_PREFIX = 'model_';
+    static DEFAULT_TRASHED_PREFIX = 'trash';
 
     _originals = {};
     _attributes = {};
@@ -217,7 +218,7 @@ class Model
      * @param {Object} attributes 
      */
     fill(attributes) {
-        if (! isObject(attributes) || isArray(attributes)) {
+        if (! isObject(attributes)) {
             throw new NotTypeError('attributes', 'object')
         }
 
@@ -242,8 +243,8 @@ class Model
      * 
      * @returns {Array}
      */
-    static async all() {
-        let data = (await DatabaseFacade.get(`/${config('routes.api.prefix', Database.DEFAULT_API_PREFIX)}/${this.getTable()}`))?.data?.data;
+    static async all(onlyTrashed = false) {
+        let data = (await DatabaseFacade.get(`/${config('routes.api.prefix', Database.DEFAULT_API_PREFIX)}/${onlyTrashed ? config('model.trashed.prefix', Model.DEFAULT_TRASHED_PREFIX) : ''}${this.getTable()}`))?.data?.data;
         let models = [];
 
         if (! isNull(data) && isArray(data)) {
@@ -259,23 +260,23 @@ class Model
      * 
      * @returns {Array|null}
      */
-    static async allOnlyTrash() {
-        let data = await this._database.get(this._table + '/' + this._configuration.getPathTrash());
+    // static async allOnlyTrash() {
+    //     let data = await this._database.get(this._table + '/' + this._configuration.getPathTrash());
 
-        if (data) {
-            let models = [];
+    //     if (data) {
+    //         let models = [];
 
-            for (let model of data) {
-                let proxy = this._proxy(reactive(new this(model)));
-                proxy._isTrashed = true;
-                models.push(proxy);
-            }
+    //         for (let model of data) {
+    //             let proxy = this._proxy(reactive(new this(model)));
+    //             proxy._isTrashed = true;
+    //             models.push(proxy);
+    //         }
 
-            return models;
-        }
+    //         return models;
+    //     }
 
-        return null;
-    }
+    //     return null;
+    // }
 
     /**
      * 
@@ -284,13 +285,13 @@ class Model
      * @returns {Model}
      */
     static async create(attributes = {}) {
-        if (typeof attributes !== 'object') {
-            throw new Error('The "attributes" parameter must be an object.');
+        if (! isObject(attributes)) {
+            throw new NotTypeError('attributes', 'object');
         }
 
-        let data = await this._database.store(this._table, attributes);
+        let data = (await DatabaseFacade.store(`/${config('routes.api.prefix', Database.DEFAULT_API_PREFIX)}/${this.getTable()}`, attributes))?.data?.data;
 
-        return this._proxy(reactive(new this(data)));
+        return Model.proxy(reactive(new this(data)));
     }
 
     /**

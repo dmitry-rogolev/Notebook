@@ -25,6 +25,9 @@
         }, 
         "uuid": {
             "prefix": "id:"
+        }, 
+        "trashed": {
+            "prefix": "trash"
         }
     }, 
     "notebook": {
