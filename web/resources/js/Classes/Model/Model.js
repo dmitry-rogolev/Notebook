@@ -1,6 +1,8 @@
 import { reactive } from 'vue';
 import { cache, config, isArray, isNull, isObject, isString, isUndefined, notEmpty, pluralize, timestamps } from '../helpers';
 import NotTypeError from '../Errors/NotTypeError';
+import DatabaseFacade from '../Facades/DatabaseFacade';
+import Database from '../Database/Database';
 
 class Model
 {
@@ -10,8 +12,6 @@ class Model
     static DEFAULT_DELETED_AT = 'deleted_at';
     static DEFAULT_UUID_PREFIX = 'id:';
     static DEFAULT_CACHE_PREFIX = 'model_';
-
-    static _defaults = {};
 
     _originals = {};
     _attributes = {};
@@ -93,6 +93,14 @@ class Model
      * 
      * @returns {String}
      */
+    static getTable() {
+        return pluralize(this.name.toLowerCase());
+    }
+
+    /**
+     * 
+     * @returns {String}
+     */
     getTable() {
         return pluralize(this.constructor.name.toLowerCase());
     }
@@ -145,12 +153,38 @@ class Model
      * @param {String} attribute 
      * @returns {any}
      */
+    hasAttribute(attribute) {
+        if (! isString(attribute)) {
+            throw new NotTypeError('attribute', 'string');
+        }
+
+        return attribute in this._attributes;
+    }
+
+    /**
+     * 
+     * @param {String} attribute 
+     * @returns {any}
+     */
     getOriginalAttribute(attribute) {
         if (! isString(attribute)) {
             throw new NotTypeError('attribute', 'string');
         }
 
         return this._originals[attribute];
+    }
+
+    /**
+     * 
+     * @param {String} attribute 
+     * @returns {any}
+     */
+    hasOriginalAttribute(attribute) {
+        if (! isString(attribute)) {
+            throw new NotTypeError('attribute', 'string');
+        }
+
+        return attribute in this._originals;
     }
 
     /**
@@ -206,22 +240,19 @@ class Model
 
     /**
      * 
-     * @returns {Array|null}
+     * @returns {Array}
      */
     static async all() {
-        let data = await this._database.get(this._table);
+        let data = (await DatabaseFacade.get(`/${config('routes.api.prefix', Database.DEFAULT_API_PREFIX)}/${this.getTable()}`))?.data?.data;
+        let models = [];
 
-        if (data) {
-            let models = [];
-
+        if (! isNull(data) && isArray(data)) {
             for (let model of data) {
-                models.push(this._proxy(reactive(new this(model))));
+                models.push(Model.proxy(reactive(new this(model))));
             }
-
-            return models;
         }
 
-        return null;
+        return models;
     }
 
     /**
@@ -409,19 +440,15 @@ class Model
         cache(`${config('model.cache.prefix', Model.DEFAULT_CACHE_PREFIX)}${this.table}`, models);
     }
 
-    static _proxy(model) {
+    static proxy(model) {
         return new Proxy(model, {
             get(target, property, receiver) {
                 if (property in target) {
                     return target[property];
                 }
 
-                if (property in target._attributes && target._attributes[property] !== null) {
-                    return target._attributes[property];
-                }
-
-                if (property in target.constructor._defaults && target.constructor._defaults[property] !== null) {
-                    return target.constructor._defaults[property];
+                if (isString(property) && target.hasAttribute(property)) {
+                    return target.getAttribute(property);
                 }
 
                 return Reflect.get(target, property, receiver);
@@ -429,25 +456,18 @@ class Model
             set(target, property, value, receiver) {
                 if (property in target) {
                     target[property] = value;
+
                     return true;
                 }
 
-                if (property in target._attributes) {
-                    target._attributes[property] = value;
+                if (isString(property) && target.hasAttribute(property)) {
+                    target.setAttribute(property, value);
 
-                    if (! target._isTrashed && target.isChanged()) {
-                        target._isDirty = true;
-                        target._cacheAttributes();
-                    } else {
-                        target._isDirty = false;
-                        target._removeCacheAttributes();
-                    }
-                    
                     return true;
                 }
 
                 return Reflect.set(target, property, value, receiver);
-            }, 
+            },
         });
     }
 }

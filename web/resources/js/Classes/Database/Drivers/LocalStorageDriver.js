@@ -77,7 +77,7 @@ class LocalStorageDriver extends DriverInterface
         }
 
         if (keys.length === 1) {
-            if (creatable) {
+            if (creatable && isObject(data) && ! isArray(data)) {
                 table.push(data);
                 cache(config('database.cache.prefix', Database.DEFAULT_CACHE_PREFIX) + keys[0], table);
             } else {

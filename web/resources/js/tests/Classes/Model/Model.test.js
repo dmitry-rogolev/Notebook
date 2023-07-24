@@ -1,10 +1,30 @@
+import Database from "../../../Classes/Database/Database";
 import ServerFacade from "../../../Classes/Facades/Server";
 import Model from "../../../Classes/Model/Model";
-import { cache, config, isArray, isObject, notEmpty } from "../../../Classes/helpers";
+import Note from "../../../Classes/Models/Note";
+import { cache, clientDriver, config, csrfCookie, isArray, isObject, notEmpty, serverDriver } from "../../../Classes/helpers";
+
+async function auth() {
+    await csrfCookie();
+
+    await serverDriver().post('/login', {
+        email: 'admin@admin.com', 
+        password: 'password', 
+    });
+}
+
+async function logout() {
+    await serverDriver().post('/logout');
+}
 
 test('table property', () => {
     let model = new Model();
     expect(model.table).toBe('models');
+    let note = new Note();
+    expect(note.table).toBe('notes');
+
+    expect(Model.table).toBeUndefined();
+    expect(Note.table).toBeUndefined();
 });
 
 test('key property', () => {
@@ -34,6 +54,11 @@ test('isTrashed property', () => {
 test('getTable', () => {
     let model = new Model();
     expect(model.getTable()).toBe('models');
+    let note = new Note();
+    expect(note.getTable()).toBe('notes');
+
+    expect(Model.getTable()).toBe('models');
+    expect(Note.getTable()).toBe('notes');
 });
 
 test('getPrimaryKey', () => {
@@ -63,12 +88,25 @@ test('getAttribute', () => {
     expect(model.getAttribute('some_attribute')).toBeUndefined();
 });
 
+test('hasAttribute', () => {
+    let model = new Model(ServerFacade.store({title: 'title', text: 'text'}));
+    expect(model.hasAttribute('title')).toBeTruthy();
+    expect(model.hasAttribute('some_attribute')).toBeFalsy();
+});
+
 test('getOriginalAttribute', () => {
     let model = new Model(ServerFacade.store({title: 'title', text: 'text'}));
     model.setAttribute('title', 'new_title');
 
     expect(model.getAttribute('title')).toBe('new_title');
     expect(model.getOriginalAttribute('title')).toBe('title');
+});
+
+test('hasOriginalAttribute', () => {
+    let model = new Model(ServerFacade.store({title: 'title', text: 'text'}));
+
+    expect(model.hasOriginalAttribute('title')).toBeTruthy();
+    expect(model.hasOriginalAttribute('some_attribute')).toBeFalsy();
 });
 
 test('setAttribute', () => {
@@ -184,3 +222,63 @@ test('fill', () => {
 
     expect(index === -1).toBeTruthy();
 });
+
+test('proxy', () => {
+    let model = Model.proxy(new Model(ServerFacade.store({title: 'title', text: 'text'}))); 
+
+    expect(model.isDirty).toBeFalsy();
+    expect(model.title).toBe('title');
+
+    model.getAttribute('title');
+
+    model.title = 'updated';
+
+    expect(model.title).toBe('updated');
+    expect(model.isDirty).toBeTruthy();
+
+    model._isDirty = false;
+
+    expect(model._isDirty).toBeFalsy();
+});
+
+it('all', async () => {
+    clientDriver().post(`/${config('routes.api.prefix', Database.DEFAULT_API_PREFIX)}/models`, [
+        {title: 'title', text: 'text'}, 
+        {title: 'title', text: 'text'}, 
+        {title: 'title', text: 'text'}, 
+    ]);
+
+    let models = await Model.all();
+
+    expect(isArray(models)).toBeTruthy();
+    expect(models).toHaveLength(3);
+    expect(models[0]).toHaveProperty(config('model.primary_key', Model.DEFAULT_PRIMARY_KEY));
+    expect(models[0]).toHaveProperty('title', 'title');
+    expect(models[0]).toHaveProperty('text', 'text');
+    expect(models[0]).toHaveProperty(config('model.created_at', Model.DEFAULT_CREATED_AT));
+    expect(models[0]).toHaveProperty(config('model.updated_at', Model.DEFAULT_UPDATED_AT));
+    expect(models[0]).toHaveProperty(config('model.deleted_at', Model.DEFAULT_DELETED_AT), null);
+
+    await auth();
+
+    await serverDriver().post(`/${config('routes.api.prefix', Database.DEFAULT_API_PREFIX)}/notes`, {title: 'title', text: 'text'});
+    await serverDriver().post(`/${config('routes.api.prefix', Database.DEFAULT_API_PREFIX)}/notes`, {title: 'title', text: 'text'});
+    await serverDriver().post(`/${config('routes.api.prefix', Database.DEFAULT_API_PREFIX)}/notes`, {title: 'title', text: 'text'});
+
+    models = await Note.all();
+
+    expect(isArray(models)).toBeTruthy();
+    expect(models).toHaveLength(3);
+    expect(models[0]).toHaveProperty(config('model.primary_key', Model.DEFAULT_PRIMARY_KEY));
+    expect(models[0]).toHaveProperty('title', 'title');
+    expect(models[0]).toHaveProperty('text', 'text');
+    expect(models[0]).toHaveProperty(config('model.created_at', Model.DEFAULT_CREATED_AT));
+    expect(models[0]).toHaveProperty(config('model.updated_at', Model.DEFAULT_UPDATED_AT));
+    expect(models[0]).toHaveProperty(config('model.deleted_at', Model.DEFAULT_DELETED_AT), null);
+
+    models.forEach(async (model) => {
+        await serverDriver().delete(`/${config('routes.api.prefix', Database.DEFAULT_API_PREFIX)}/notes/${model[config('model.primary_key', Model.DEFAULT_PRIMARY_KEY)]}`);
+    });
+
+    await logout();
+}, 100000);
