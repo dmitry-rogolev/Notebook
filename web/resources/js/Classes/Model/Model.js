@@ -298,8 +298,8 @@ class Model
      * @returns {void}
      */
     async save() {
-        if (this._isDirty) {
-            let data = await this.constructor._database.update(this.constructor._table + '/' + this._originals[this.constructor._primaryKey], this._attributes);
+        if (this.isDirty) {
+            let data = await DatabaseFacade.update(`/${config('routes.api.prefix', Database.DEFAULT_API_PREFIX)}/${this.table}/`, this._attributes);
 
             if (data) {
                 this._originals = this._parseTimestamps(data);

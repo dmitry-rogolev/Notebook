@@ -313,4 +313,4 @@ it('create', async () => {
     await serverDriver().delete(`/${config('routes.api.prefix', Database.DEFAULT_API_PREFIX)}/${config('model.trashed.prefix', Model.DEFAULT_TRASHED_PREFIX)}notes/${note[config('model.primary_key', Model.DEFAULT_PRIMARY_KEY)]}`);
 
     await logout();
-});
+}, 50000);

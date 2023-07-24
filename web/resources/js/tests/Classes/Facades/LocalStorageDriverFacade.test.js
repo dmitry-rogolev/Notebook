@@ -130,9 +130,9 @@ test('post', () => {
     expect(note).toHaveProperty(config('model.deleted_at'));
 
     expect(LocalStorageDriverFacade.get(`${config('routes.api.prefix', Database.DEFAULT_API_PREFIX)}/notes`).data.data).toHaveLength(4);
-    expect(LocalStorageDriverFacade.get(`${config('routes.api.prefix', Database.DEFAULT_API_PREFIX)}/notes/${config('model.uuid.prefix', Model.DEFAULT_UUID_PREFIX)}${note[config('model.primary_key', Model.DEFAULT_PRIMARY_KEY)]}`).data.data).toEqual(note);
+    expect(LocalStorageDriverFacade.get(`${config('routes.api.prefix', Database.DEFAULT_API_PREFIX)}/notes/${note[config('model.primary_key', Model.DEFAULT_PRIMARY_KEY)]}`).data.data).toEqual(note);
 
-    note = LocalStorageDriverFacade.post(`${config('routes.api.prefix', Database.DEFAULT_API_PREFIX)}/notes/${config('model.uuid.prefix', Model.DEFAULT_UUID_PREFIX)}${note[config('model.primary_key', Model.DEFAULT_PRIMARY_KEY)]}`, {title: 'new_title', text: 'new_text'}).data.data;
+    note = LocalStorageDriverFacade.post(`${config('routes.api.prefix', Database.DEFAULT_API_PREFIX)}/notes/${note[config('model.primary_key', Model.DEFAULT_PRIMARY_KEY)]}`, {title: 'new_title', text: 'new_text'}).data.data;
 
     expect(note).toHaveProperty(config('model.primary_key'));
     expect(note).toHaveProperty('title', 'new_title');
@@ -141,7 +141,7 @@ test('post', () => {
     expect(note).toHaveProperty(config('model.updated_at'));
     expect(note).toHaveProperty(config('model.deleted_at'));
 
-    expect(LocalStorageDriverFacade.get(`${config('routes.api.prefix', Database.DEFAULT_API_PREFIX)}/notes/${config('model.uuid.prefix', Model.DEFAULT_UUID_PREFIX)}${note[config('model.primary_key', Model.DEFAULT_PRIMARY_KEY)]}`).data.data).toEqual(note);
+    expect(LocalStorageDriverFacade.get(`${config('routes.api.prefix', Database.DEFAULT_API_PREFIX)}/notes/${note[config('model.primary_key', Model.DEFAULT_PRIMARY_KEY)]}`).data.data).toEqual(note);
 });
 
 test('patch', () => {
@@ -150,7 +150,7 @@ test('patch', () => {
     let updated = Object.assign({}, note);
     updated.title = 'new';
     updated.text = 'new';
-    updated = LocalStorageDriverFacade.patch(`${config('routes.api.prefix', Database.DEFAULT_API_PREFIX)}/notes/${config('model.uuid.prefix', Model.DEFAULT_UUID_PREFIX)}${note[config('model.primary_key', Model.DEFAULT_PRIMARY_KEY)]}`, updated).data.data;
+    updated = LocalStorageDriverFacade.patch(`${config('routes.api.prefix', Database.DEFAULT_API_PREFIX)}/notes/${note[config('model.primary_key', Model.DEFAULT_PRIMARY_KEY)]}`, updated).data.data;
     
     expect(updated).toHaveProperty(config('model.primary_key'));
     expect(updated).toHaveProperty('title', 'new');
@@ -159,7 +159,7 @@ test('patch', () => {
     expect(updated).toHaveProperty(config('model.updated_at'));
     expect(updated).toHaveProperty(config('model.deleted_at'));
 
-    expect(LocalStorageDriverFacade.get(`${config('routes.api.prefix', Database.DEFAULT_API_PREFIX)}/notes/${config('model.uuid.prefix', Model.DEFAULT_UUID_PREFIX)}${updated[config('model.primary_key', Model.DEFAULT_PRIMARY_KEY)]}`).data.data).toEqual(updated);
+    expect(LocalStorageDriverFacade.get(`${config('routes.api.prefix', Database.DEFAULT_API_PREFIX)}/notes/${updated[config('model.primary_key', Model.DEFAULT_PRIMARY_KEY)]}`).data.data).toEqual(updated);
 
     cache().clear();
 
@@ -186,15 +186,15 @@ test('patch', () => {
     cache().clear();
 
     note = LocalStorageDriverFacade.post(`${config('routes.api.prefix', Database.DEFAULT_API_PREFIX)}/notes`, {title: 'title', text: 'text'}).data.data;
-    LocalStorageDriverFacade.patch(`${config('routes.api.prefix', Database.DEFAULT_API_PREFIX)}/notes/${config('model.uuid.prefix', Model.DEFAULT_UUID_PREFIX)}${note[config('model.primary_key', Model.DEFAULT_PRIMARY_KEY)]}/title`, 'new_title').data.data;
+    LocalStorageDriverFacade.patch(`${config('routes.api.prefix', Database.DEFAULT_API_PREFIX)}/notes/${note[config('model.primary_key', Model.DEFAULT_PRIMARY_KEY)]}/title`, 'new_title').data.data;
 
-    expect(LocalStorageDriverFacade.get(`${config('routes.api.prefix', Database.DEFAULT_API_PREFIX)}/notes/${config('model.uuid.prefix', Model.DEFAULT_UUID_PREFIX)}${note[config('model.primary_key', Model.DEFAULT_PRIMARY_KEY)]}`).data.data).toHaveProperty('title', 'new_title');
+    expect(LocalStorageDriverFacade.get(`${config('routes.api.prefix', Database.DEFAULT_API_PREFIX)}/notes/${note[config('model.primary_key', Model.DEFAULT_PRIMARY_KEY)]}`).data.data).toHaveProperty('title', 'new_title');
 });
 
 test('delete', () => {
     let note = LocalStorageDriverFacade.post(`${config('routes.api.prefix', Database.DEFAULT_API_PREFIX)}/notes`, {title: 'title', text: 'text'}).data.data;
-    LocalStorageDriverFacade.delete(`${config('routes.api.prefix', Database.DEFAULT_API_PREFIX)}/notes/${config('model.uuid.prefix', Model.DEFAULT_UUID_PREFIX)}${note[config('model.primary_key', Model.DEFAULT_PRIMARY_KEY)]}`);
-    expect(LocalStorageDriverFacade.get(`${config('routes.api.prefix', Database.DEFAULT_API_PREFIX)}/notes/${config('model.uuid.prefix', Model.DEFAULT_UUID_PREFIX)}${note[config('model.primary_key', Model.DEFAULT_PRIMARY_KEY)]}`).data.data).toBeNull();
+    LocalStorageDriverFacade.delete(`${config('routes.api.prefix', Database.DEFAULT_API_PREFIX)}/notes/${note[config('model.primary_key', Model.DEFAULT_PRIMARY_KEY)]}`);
+    expect(LocalStorageDriverFacade.get(`${config('routes.api.prefix', Database.DEFAULT_API_PREFIX)}/notes/${note[config('model.primary_key', Model.DEFAULT_PRIMARY_KEY)]}`).data.data).toBeNull();
 
     LocalStorageDriverFacade.post(`${config('routes.api.prefix', Database.DEFAULT_API_PREFIX)}/notes`, [{title: 'title1', text: 'text1'}, {title: 'title2', text: 'text2'}], false, false);
     LocalStorageDriverFacade.delete(`${config('routes.api.prefix', Database.DEFAULT_API_PREFIX)}/notes`);

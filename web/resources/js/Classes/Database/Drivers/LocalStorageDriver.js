@@ -1,7 +1,6 @@
 import DriverInterface from "../../../Interfaces/DriverInterface";
 import NotTypeError from "../../Errors/NotTypeError";
 import ServerFacade from "../../Facades/Server";
-import Model from "../../Model/Model";
 import { cache, config, getIndexById, getValue, isArray, isNull, isObject, isString, keysByUrl, removeValue, setValue } from "../../helpers";
 import Database from "../Database";
 
@@ -195,10 +194,8 @@ class LocalStorageDriver extends DriverInterface
      */
     _replaceIdWithIndex(table, keys) {
         return keys.map((v) => {
-            if ((isString(v) && v.startsWith(config('model.uuid.prefix', Model.DEFAULT_UUID_PREFIX))) || ! isNaN(Number(v))) {
-                if (isNaN(Number(v))) {
-                    v = v.slice(config('model.uuid.prefix', Model.DEFAULT_UUID_PREFIX).length);
-                } else {
+            if ((isString(v) && v.split('-').length === 5) || ! isNaN(Number(v))) {
+                if (! isNaN(Number(v))) {
                     v = Number(v);
                 }
 

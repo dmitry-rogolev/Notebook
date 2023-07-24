@@ -22,7 +22,7 @@ it('get', async () => {
     await logout();
 
     let note = clientDriver().post(`/${config('routes.api.prefix', Model.DEFAULT_UUID_PREFIX)}/notes`, {title: 'title', text: 'text'}).data.data;
-    let result = (await DatabaseFacade.get(`/${config('routes.api.prefix', Model.DEFAULT_UUID_PREFIX)}/notes/${config('model.uuid.prefix')}${note[config('model.primary_key', Model.DEFAULT_PRIMARY_KEY)]}`)).data.data;
+    let result = (await DatabaseFacade.get(`/${config('routes.api.prefix', Model.DEFAULT_UUID_PREFIX)}/notes/${note[config('model.primary_key', Model.DEFAULT_PRIMARY_KEY)]}`)).data.data;
     
     expect(result).toHaveProperty(config('model.primary_key', Model.DEFAULT_PRIMARY_KEY), note[config('model.primary_key', Model.DEFAULT_PRIMARY_KEY)]);
     expect(result).toHaveProperty('title', 'title');
@@ -50,7 +50,7 @@ it('store', async () => {
     expect.assertions(12);
 
     let note = (await DatabaseFacade.store(`/${config('routes.api.prefix', Model.DEFAULT_UUID_PREFIX)}/notes`, {title: 'title', text: 'text'})).data.data;
-    let result = (await DatabaseFacade.get(`/${config('routes.api.prefix', Model.DEFAULT_UUID_PREFIX)}/notes/${config('model.uuid.prefix')}${note[config('model.primary_key', Model.DEFAULT_PRIMARY_KEY)]}`)).data.data;
+    let result = (await DatabaseFacade.get(`/${config('routes.api.prefix', Model.DEFAULT_UUID_PREFIX)}/notes/${note[config('model.primary_key', Model.DEFAULT_PRIMARY_KEY)]}`)).data.data;
     
     expect(result).toHaveProperty(config('model.primary_key', Model.DEFAULT_PRIMARY_KEY), note[config('model.primary_key', Model.DEFAULT_PRIMARY_KEY)]);
     expect(result).toHaveProperty('title', 'title');
@@ -81,7 +81,7 @@ it('update', async () => {
     let result = Object.assign({}, note);
     result.title = 'updated';
     result.text = 'updated';
-    result = (await DatabaseFacade.update(`/${config('routes.api.prefix', Model.DEFAULT_UUID_PREFIX)}/notes/${config('model.uuid.prefix')}${note[config('model.primary_key', Model.DEFAULT_PRIMARY_KEY)]}`, result)).data.data;
+    result = (await DatabaseFacade.update(`/${config('routes.api.prefix', Model.DEFAULT_UUID_PREFIX)}/notes/${note[config('model.primary_key', Model.DEFAULT_PRIMARY_KEY)]}`, result)).data.data;
     
     expect(result).toHaveProperty(config('model.primary_key', Model.DEFAULT_PRIMARY_KEY), note[config('model.primary_key', Model.DEFAULT_PRIMARY_KEY)]);
     expect(result).toHaveProperty('title', 'updated');
@@ -112,8 +112,8 @@ it('delete', async () => {
     expect.assertions(2);
 
     let note = (await DatabaseFacade.store(`/${config('routes.api.prefix', Model.DEFAULT_UUID_PREFIX)}/notes`, {title: 'title', text: 'text'})).data.data;
-    await DatabaseFacade.delete(`/${config('routes.api.prefix', Model.DEFAULT_UUID_PREFIX)}/notes/${config('model.uuid.prefix')}${note[config('model.primary_key', Model.DEFAULT_PRIMARY_KEY)]}`);
-    let result = (await DatabaseFacade.get(`/${config('routes.api.prefix', Model.DEFAULT_UUID_PREFIX)}/notes/${config('model.uuid.prefix')}${note[config('model.primary_key', Model.DEFAULT_PRIMARY_KEY)]}`)).data.data;
+    await DatabaseFacade.delete(`/${config('routes.api.prefix', Model.DEFAULT_UUID_PREFIX)}/notes/${note[config('model.primary_key', Model.DEFAULT_PRIMARY_KEY)]}`);
+    let result = (await DatabaseFacade.get(`/${config('routes.api.prefix', Model.DEFAULT_UUID_PREFIX)}/notes/${note[config('model.primary_key', Model.DEFAULT_PRIMARY_KEY)]}`)).data.data;
     
     expect(result).toBeNull();
 
