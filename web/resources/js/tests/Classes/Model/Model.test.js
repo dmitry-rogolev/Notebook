@@ -467,3 +467,44 @@ it('truncate', async () => {
 
     await logout();
 }, 50000);
+
+it('forceTruncate', async () => {
+    cache().clear();
+
+    let notes = [];
+
+    for (let i = 0; i < 5; i++) {
+        notes.push(await Note.create({
+            title: 'title', 
+            text: 'text', 
+        }));
+    }
+
+    await Note.truncate();
+    expect(await Note.all()).toHaveLength(0);
+    expect(await Note.all(true)).toHaveLength(5);
+    await Note.forceTruncate();
+    expect(await Note.all(true)).toHaveLength(0);
+
+    await auth();
+
+    await DatabaseFacade.delete(`/${config('routes.api.prefix', Database.DEFAULT_API_PREFIX)}/notes`);
+    await DatabaseFacade.delete(`/${config('routes.api.prefix', Database.DEFAULT_API_PREFIX)}/${config('model.trashed.prefix', Model.DEFAULT_TRASHED_PREFIX)}notes`);
+
+    notes = [];
+
+    for (let i = 0; i < 5; i++) {
+        notes.push(await Note.create({
+            title: 'title', 
+            text: 'text', 
+        }));
+    }
+
+    await Note.truncate();
+    expect(await Note.all()).toHaveLength(0);
+    expect(await Note.all(true)).toHaveLength(5);
+    await Note.forceTruncate();
+    expect(await Note.all(true)).toHaveLength(0);
+
+    await logout();
+}, 50000);
