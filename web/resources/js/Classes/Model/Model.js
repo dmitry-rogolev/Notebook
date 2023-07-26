@@ -260,28 +260,6 @@ class Model
 
     /**
      * 
-     * @returns {Array|null}
-     */
-    // static async allOnlyTrash() {
-    //     let data = await this._database.get(this._table + '/' + this._configuration.getPathTrash());
-
-    //     if (data) {
-    //         let models = [];
-
-    //         for (let model of data) {
-    //             let proxy = this._proxy(reactive(new this(model)));
-    //             proxy._isTrashed = true;
-    //             models.push(proxy);
-    //         }
-
-    //         return models;
-    //     }
-
-    //     return null;
-    // }
-
-    /**
-     * 
      * @param {String} table
      * @param {Object} attributes 
      * @returns {Model}
@@ -344,15 +322,23 @@ class Model
      * @returns {void}
      */
     static async truncate() {
-        await this._database.truncate(this._table);
+        if (! (await isAuth())) {
+            let models = await this.all();
+            models = models.map((item) => {
+                return ServerFacade.delete(item._originals);
+            });
+            await DatabaseFacade.store(`/${config('routes.api.prefix', Database.DEFAULT_API_PREFIX)}/${config('model.trashed.prefix', Model.DEFAULT_TRASHED_PREFIX)}${this.getTable()}`, models, false, false);
+        }
+
+        await DatabaseFacade.delete(`/${config('routes.api.prefix', Database.DEFAULT_API_PREFIX)}/${this.getTable()}`);
         this._removeCache();
     }
 
     /**
      * @returns {void}
      */
-    static async truncateTrash() {
-        await this._database.truncate(this._configuration.getUrlTrash(this._table));
+    static async forceTruncate() {
+        await DatabaseFacade.delete(`/${config('routes.api.prefix', Database.DEFAULT_API_PREFIX)}/${config('model.trashed.prefix', Model.DEFAULT_TRASHED_PREFIX)}${this.getTable()}`);
         this._removeCache();
     }
 
@@ -453,6 +439,13 @@ class Model
         models.splice(index, 1);
 
         cache(`${config('model.cache.prefix', Model.DEFAULT_CACHE_PREFIX)}${this.table}`, models);
+    }
+
+    /**
+     * @returns {void}
+     */
+    static _removeCache() {
+        cache().remove(`${config('model.cache.prefix', Model.DEFAULT_CACHE_PREFIX)}${this.table}`);
     }
 
     static proxy(model) {

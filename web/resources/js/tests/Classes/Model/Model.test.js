@@ -427,3 +427,43 @@ it('forceDelete', async () => {
 
     await logout();
 }, 50000);
+
+it('truncate', async () => {
+    cache().clear();
+
+    let notes = [];
+
+    for (let i = 0; i < 5; i++) {
+        notes.push(await Note.create({
+            title: 'title', 
+            text: 'text', 
+        }));
+    }
+
+    expect(await Note.all()).toHaveLength(5);
+    await Note.truncate();
+    expect(await Note.all()).toHaveLength(0);
+    expect(cache(`${config('model.cache.prefix', Model.DEFAULT_CACHE_PREFIX)}notes`)).toBeNull();
+    expect(await Note.all(true)).toHaveLength(5);
+
+    await auth();
+
+    await DatabaseFacade.delete(`/${config('routes.api.prefix', Database.DEFAULT_API_PREFIX)}/notes`);
+    await DatabaseFacade.delete(`/${config('routes.api.prefix', Database.DEFAULT_API_PREFIX)}/${config('model.trashed.prefix', Model.DEFAULT_TRASHED_PREFIX)}notes`);
+
+    notes = [];
+
+    for (let i = 0; i < 5; i++) {
+        notes.push(await Note.create({
+            title: 'title', 
+            text: 'text', 
+        }));
+    }
+
+    expect(await Note.all()).toHaveLength(5);
+    await Note.truncate();
+    expect(await Note.all()).toHaveLength(0);
+    expect(await Note.all(true)).toHaveLength(5);
+
+    await logout();
+}, 50000);
