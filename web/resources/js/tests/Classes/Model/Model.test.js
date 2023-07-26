@@ -1,3 +1,4 @@
+import { AxiosError } from "axios";
 import Database from "../../../Classes/Database/Database";
 import DatabaseFacade from "../../../Classes/Facades/DatabaseFacade";
 import ServerFacade from "../../../Classes/Facades/Server";
@@ -397,30 +398,32 @@ it('delete', async () => {
     await logout();
 }, 50000);
 
-// it('forceDelete', async () => {
-//     expect.assertions(1);
+it('forceDelete', async () => {
+    expect.assertions(2);
 
-//     let note = await Note.create({
-//         title: 'title', 
-//         text: 'text', 
-//     });
+    let note = await Note.create({
+        title: 'title', 
+        text: 'text', 
+    });
 
-//     await note.forceDelete();
+    await note.forceDelete();
 
-//     expect((await DatabaseFacade.get(`/${config('routes.api.prefix', Database.DEFAULT_API_PREFIX)}/notes/${note[config('model.primary_key', Model.DEFAULT_PRIMARY_KEY)]}`))?.data?.data).toBeNull();
+    expect((await DatabaseFacade.get(`/${config('routes.api.prefix', Database.DEFAULT_API_PREFIX)}/notes/${note[config('model.primary_key', Model.DEFAULT_PRIMARY_KEY)]}`))?.data?.data).toBeNull();
 
-//     await auth();
+    await auth();
 
-//     note = await Note.create({
-//         title: 'title', 
-//         text: 'text', 
-//     });
+    note = await Note.create({
+        title: 'title', 
+        text: 'text', 
+    });
 
-//     await note.forceDelete();
+    await note.forceDelete();
 
-//     let trashed = (await DatabaseFacade.get(`/${config('routes.api.prefix', Database.DEFAULT_API_PREFIX)}/${config('model.trashed.prefix', Model.DEFAULT_TRASHED_PREFIX)}notes/${note[config('model.primary_key', Model.DEFAULT_PRIMARY_KEY)]}`))?.data?.data;
+    try {
+        await DatabaseFacade.get(`/${config('routes.api.prefix', Database.DEFAULT_API_PREFIX)}/${config('model.trashed.prefix', Model.DEFAULT_TRASHED_PREFIX)}notes/${note[config('model.primary_key', Model.DEFAULT_PRIMARY_KEY)]}`);
+    } catch (e) {
+        expect(e).toBeInstanceOf(AxiosError);
+    }
 
-//     console.log(trashed);
-
-//     await logout();
-// });
+    await logout();
+}, 50000);

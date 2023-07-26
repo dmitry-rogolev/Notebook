@@ -331,7 +331,12 @@ class Model
      * @returns {void}
      */
     async forceDelete() {
-        await DatabaseFacade.delete(`/${config('routes.api.prefix', Database.DEFAULT_API_PREFIX)}/${config('model.trashed.prefix', Model.DEFAULT_TRASHED_PREFIX)}${this.table}/${this.primaryKey}`);
+        if (! (await isAuth()) && ! this.isTrashed) {
+            await DatabaseFacade.delete(`/${config('routes.api.prefix', Database.DEFAULT_API_PREFIX)}/${this.table}/${this.primaryKey}`);
+        } else {
+            await DatabaseFacade.delete(`/${config('routes.api.prefix', Database.DEFAULT_API_PREFIX)}/${config('model.trashed.prefix', Model.DEFAULT_TRASHED_PREFIX)}${this.table}/${this.primaryKey}`);
+        }
+
         this._removeAttributes();
     }
 
