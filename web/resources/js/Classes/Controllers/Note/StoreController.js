@@ -2,7 +2,7 @@ import NotTypeError from "../../Errors/NotTypeError";
 import Note from "../../Models/Note";
 import { isObject } from "../../helpers";
 import Controller from "../Controller";
-import { cutForbiddenTags } from '@/helpers';
+import { cutForbiddenTags } from '../../helpers';
 
 class StoreController extends Controller
 {

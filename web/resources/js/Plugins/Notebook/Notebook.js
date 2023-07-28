@@ -1,17 +1,5 @@
 import { router } from "@inertiajs/vue3";
 import { Inertia } from '@inertiajs/inertia';
-import Cache from "../../Classes/Cache";
-import Configuration from "../../Classes/Configuration";
-import DeleteAllController from "../../Classes/Controllers/Note/DeleteAllController";
-import DeleteController from "../../Classes/Controllers/Note/DeleteController";
-import IndexContoller from "../../Classes/Controllers/Note/IndexController";
-import StoreController from "../../Classes/Controllers/Note/StoreController";
-import UpdateController from "../../Classes/Controllers/Note/UpdateController";
-import TrashIndexController from "../../Classes/Controllers/Note/Trash/IndexController";
-import TrashDeleteController from "../../Classes/Controllers/Note/Trash/DeleteController";
-import TrashDeleteAllController from "../../Classes/Controllers/Note/Trash/DeleteAllController";
-import TrashRestoreController from "../../Classes/Controllers/Note/Trash/RestoreController";
-import TrashRestoreAllController from "../../Classes/Controllers/Note/Trash/RestoreAllController";
 import Fuse from 'fuse.js'
 
 class Notebook
