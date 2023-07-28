@@ -11,9 +11,17 @@ class StoreController extends Controller
      * @param {Object} note 
      * @returns {Object}
      */
-    static invoke(note = {}) {
+    static async invoke(note = {}) {
         if (! isObject(note)) {
             throw new NotTypeError('note', 'object');
+        }
+
+        if (! ('title' in note)) {
+            note.title = '';
+        }
+
+        if (! ('text' in note)) {
+            note.text = '';
         }
 
         if (note.text) {

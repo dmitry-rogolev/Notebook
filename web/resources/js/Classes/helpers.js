@@ -13,6 +13,7 @@ import plur from 'pluralize';
 import moment from 'moment';
 import Model from "./Model/Model";
 import { Inertia } from "@inertiajs/inertia";
+import { router as inertiaRouter } from "@inertiajs/vue3";
 
 /**
  * 
@@ -684,7 +685,7 @@ export function store() {
 
 /**
  * 
- * @returns {Function}
+ * @returns {Object}
  */
 export function inertia() {
     return Inertia;
@@ -714,4 +715,24 @@ export function t(str) {
     }
     
     return plugin('t')(str);
+}
+
+/**
+ * 
+ * @param {String} element 
+ * @returns {HTMLElement}
+ */
+export function createElement(element) {
+    if (! isString(element)) {
+        throw new NotTypeError('element', 'string');
+    }
+
+    return document.createElement(element);
+}
+
+/**
+ * 
+ */
+export function router() {
+    return inertiaRouter;
 }

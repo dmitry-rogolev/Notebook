@@ -1,9 +1,17 @@
-import { router } from "@inertiajs/vue3";
 import Fuse from 'fuse.js'
-import { cache, config, inertia, isBoolean, isNull, plugin, store, t } from "../../Classes/helpers";
+import { cache, config, createElement, inertia, isAuth, isBoolean, isNull, isObject, isString, notEmpty, plugin, router, store, t } from "../../Classes/helpers";
 import IndexController from "../../Classes/Controllers/Note/IndexController";
 import TrashIndexController from "../../Classes/Controllers/Note/Trash/IndexController";
 import Window from "../Window/Window";
+import StoreController from "../../Classes/Controllers/Note/StoreController";
+import NotTypeError from "../../Classes/Errors/NotTypeError";
+import UpdateController from "../../Classes/Controllers/Note/UpdateController";
+import DeleteController from "../../Classes/Controllers/Note/DeleteController";
+import TrashDeleteController from "../../Classes/Controllers/Note/Trash/DeleteController";
+import TruncateController from "../../Classes/Controllers/Note/TruncateController";
+import TrashTruncateController from "../../Classes/Controllers/Note/Trash/TruncateController";
+import RestoreController from "../../Classes/Controllers/Note/Trash/RestoreController";
+import RevertController from "../../Classes/Controllers/Note/Trash/RevertController";
 
 class Notebook
 {
@@ -14,13 +22,11 @@ class Notebook
     _isInit = false;
     _autosave = false;
     _timerAutosave = 0;
+    _search = '';
 
     _notes = [];
     _trashNotes = [];
-
-    // _search = '';
-
-    // _found = [];
+    _found = [];
 
     /**
      * @property {Boolean}
@@ -40,7 +46,7 @@ class Notebook
      * @property {Array}
      */
     get trashNotes() {
-        return this._trashNotes;
+        return this._trashNotes ?? [];
     }
 
     /**
@@ -53,9 +59,9 @@ class Notebook
     /**
      * @property {Array}
      */
-    // get found() {
-    //     return this._found;
-    // }
+    get found() {
+        return this._found ?? [];
+    }
 
     /**
      * 
@@ -144,12 +150,24 @@ class Notebook
     /**
      * @returns {void}
      */
-    openWindow() {
+    openWindow(trashNotes = false) {
         if (config('window.open', Window.DEFAULT_OPEN)) {
-            if (this.notes.length) {
-                plugin('window').open(this.notes[0]);
-            } else if (this.trashNotes.length) {
-                plugin('window').open(this.trashNotes[0]);
+            if (trashNotes) {
+                if (this.trashNotes.length) {
+                    plugin('window').open(this.trashNotes[0]);
+                } else if (this.notes.length) {
+                    plugin('window').open(this.notes[0]);
+                } else {
+                    this.closeWindow();
+                }
+            } else {
+                if (this.notes.length) {
+                    plugin('window').open(this.notes[0]);
+                } else if (this.trashNotes.length) {
+                    plugin('window').open(this.trashNotes[0]);
+                } else {
+                    this.closeWindow();
+                }
             }
         }
     }
@@ -161,144 +179,150 @@ class Notebook
         plugin('window').close();
     }
 
-    // create(note = {}) {
-    //     StoreController.store(note).then(note => {
-    //         this._notes.push(note);
-    //         this._$window.open(note);
-    //         this._$notifier.push({
-    //             message: this._$t('Created'), 
-    //             success: true, 
-    //         });
-    //     });
-    // } 
+    /**
+     * 
+     * @param {Object} note 
+     */
+    async create(note = {}) {
+        let note = await StoreController.invoke(note);
 
-    // openFile() {
-    //     let input = document.createElement('input');
-    //     input.type = 'file';
-    //     input.accept = 'text/*';
-    //     input.onchange = () => {
-    //         if (input.files[0]) {
-    //             input.files[0].arrayBuffer().then((arrayBuffer) => {
-    //                 this.create({
-    //                     title: input.files[0].name, 
-    //                     text: this._toHtml(new TextDecoder().decode(arrayBuffer)), 
-    //                 });
-    //             });
-    //         }
-    //     }
-    //     input.click();
-    // }
+        if (isObject(note)) {
+            this._notes.push(note);
+            plugin('window').open(note);
+            plugin('notifier').push({
+                message: t('Created'), 
+                success: true, 
+            });
+        }
+    } 
 
-    // update() {
-    //     if (this._$window.file.isDirty) {
-    //         UpdateController.update(this._$window.file).then(() => {
-    //             this._$notifier.push({
-    //                 message: this._$t('Saved'), 
-    //                 success: true, 
-    //             });
-    //         });
-    //     }
-    // }
+    /**
+     * @returns {void}
+     */
+    openFile() {
+        let input = createElement('input');
+        input.type = 'file';
+        input.accept = 'text/*';
+        input.onchange = () => {
+            if (input.files[0]) {
+                input.files[0].arrayBuffer().then((arrayBuffer) => {
+                    this.create({
+                        title: input.files[0].name, 
+                        text: this._toHtml(new TextDecoder().decode(arrayBuffer)), 
+                    });
+                });
+            }
+        }
+        input.click();
+    }
 
-    // delete() {
-    //     let note = this._$window.file;
-    //     DeleteController.delete(note).then(() => {
-    //         this._getNotes().then((notes) => {
-    //             this._notes = notes;
+    /**
+     * @returns {void}
+     */
+    async update() {
+        if (plugin('window').file.isDirty) {
+            await UpdateController.invoke(plugin('window').file);
+            plugin('notifier').push({
+                message: t('Saved'), 
+                success: true, 
+            });
+        }
+    }
 
-    //             this.find(this._search);
-    //             this._openWindow();
-    //             this._$notifier.push({
-    //                 message: this._$t('Deleted'), 
-    //                 success: true, 
-    //             });
-    //             this._getTrash().then(trash => {
-    //                 this._trash = trash;
-    //             });
-    //         });
-    //     });
-    // }
+    /**
+     * @returns {void}
+     */
+    async delete() {
+        await DeleteController.invoke(plugin('window').file);
 
-    // restore() {
-    //     let note = this._$window.file;
-    //     if (note.isTrashed) {
-    //         TrashRestoreController.restore(note).then(() => {
-    //             this._getNotes().then((notes) => {
-    //                 this._notes = notes;
-    //             });
-    //             this._getTrash().then(trash => {
-    //                 this._trash = trash;
-    //                 this._openWindowTrash();
-    //                 this._$notifier.push({
-    //                     message: this._$t('Restored'), 
-    //                     success: true, 
-    //                 });
-    //             });
-    //         });
-    //     }
-    // }
+        this._notes = await this._fetchNotes();
+        this._trashNotes = await this._fetchTrashNotes();
+        this.find(this._search);
 
-    // forceDelete() {
-    //     let note = this._$window.file;
-    //     if (note.isTrashed) {
-    //         TrashDeleteController.delete(note).then(() => {
-    //             this._getTrash().then(trash => {
-    //                 this._trash = trash;
-    //                 this._openWindowTrash();
-    //                 this._$notifier.push({
-    //                     message: this._$t('Deleted'), 
-    //                     success: true, 
-    //                 });
-    //             });
-    //         });
-    //     }
-    // }
+        this.openWindow();
 
-    // clear() {
-    //     if (this._notes.length) {
-    //         DeleteAllController.truncate().then(() => {
-    //             this._notes = [];
-    //             this._openWindowTrash();
-    //             this._$notifier.push({
-    //                 message: this._$t('Cleared'), 
-    //                 success: true, 
-    //             });
-    //             this._getTrash().then(trash => {
-    //                 this._trash = trash;
-    //             });
-    //         });
-    //     }
-    // }
+        plugin('notifier').push({
+            message: t('Deleted'), 
+            success: true, 
+        });
+    }
 
-    // restoreAll() {
-    //     if (this._trash.length) {
-    //         TrashRestoreAllController.restore().then(() => {
-    //             this._trash = [];
-    
-    //             this._getNotes().then((notes) => {
-    //                 this._notes = notes;
-    //                 this._openWindow();
-    //                 this._$notifier.push({
-    //                     message: this._$t('Restored'), 
-    //                     success: true, 
-    //                 });
-    //             });
-    //         });
-    //     }
-    // }
+    /**
+     * @returns {void}
+     */
+    async forceDelete() {
+        if (plugin('window').file.isTrashed) {
+            await TrashDeleteController.invoke(plugin('window').file);
+            this._trashNotes = await this._fetchTrashNotes();
+            this.openWindow(true);
+            plugin('notifier').push({
+                message: t('Deleted'), 
+                success: true, 
+            });
+        }
+    }
 
-    // forceClear() {
-    //     if (this._trash.length) {
-    //         TrashDeleteAllController.truncate().then(() => {
-    //             this._trash = [];
-    //             this._openWindow();
-    //             this._$notifier.push({
-    //                 message: this._$t('Cleared'), 
-    //                 success: true, 
-    //             });
-    //         });
-    //     }
-    // }
+    /**
+     * @returns {void}
+     */
+    async truncate() {
+        if (this._notes.length) {
+            await TruncateController.invoke();
+            this._notes = [];
+            this._trashNotes = await this._fetchTrashNotes();
+            this.openWindow(true);
+            plugin('notifier').push({
+                message: t('Cleared'), 
+                success: true, 
+            });
+        }
+    }
+
+    /**
+     * @returns {void}
+     */
+    async forceTruncate() {
+        if (this._trashNotes.length) {
+            await TrashTruncateController.invoke();
+            this._trashNotes = [];
+            this.openWindow();
+            plugin('notifier').push({
+                message: t('Cleared'), 
+                success: true, 
+            });
+        }
+    }
+
+    /**
+     * @returns {void}
+     */
+    async restore() {
+        if (plugin('window').file.isTrashed) {
+            await RestoreController.invoke(plugin('window').file);
+            this._notes = await this._fetchNotes();
+            this._trashNotes = await this._fetchTrashNotes();
+            plugin('notifier').push({
+                message: t('Restored'), 
+                success: true, 
+            });
+        }
+    }
+
+    /**
+     * @returns {void}
+     */
+    async revert() {
+        if (this._trashNotes.length) {
+            await RevertController.invoke();
+            this._trashNotes = [];
+            this._notes = await this._fetchNotes();
+            this.openWindow();
+            plugin('notifier').push({
+                message: t('Restored'), 
+                success: true, 
+            });
+        }
+    }
 
     /**
     * @returns {void}
@@ -342,46 +366,60 @@ class Notebook
         }
     }
 
-    // find(search) {
-    //     if (search) {
-    //         this._search = search;
+    /**
+     * 
+     * @param {String} search 
+     * @returns {void}
+     */
+    find(search) {
+        if (! isString(search)) {
+            throw new NotTypeError('search', 'string');
+        }
 
-    //         let fuse = new Fuse(this._notes, {
-    //             keys: [
-    //                 'title', 
-    //                 'text', 
-    //             ], 
-    //             includeMatches: true, 
-    //         });
+        if (notEmpty(search)) {
+            this._search = search;
 
-    //         this._found = fuse.search(search);
-    //     } else {
-    //         this._found = null;
-    //     }
-    // }
+            let fuse = new Fuse(this._notes, {
+                keys: ['title', 'text'], 
+                includeMatches: true, 
+            });
 
-    // logout() {
-    //     router.post(route('logout'));
-    //     this._closeWindow();
-    //     this._notes = [];
-    //     this._trash = [];
-    // }
+            this._found = fuse.search(search);
+        } else {
+            this._found = null;
+        }
+    }
 
-    // _updateNotes() {
-    //     this._getNotes().then((notes) => {
-    //         this._notes = notes;
-    //         this._openWindow();
-    //     });
-    // }
+    /**
+     * 
+     * @returns {void}
+     */
+    async logout() {
+        if (await isAuth()) {
+            router().post(route('logout'));
+            this.closeWindow();
+            this._notes = await this._fetchNotes();
+            this._trashNotes = await this._fetchTrashNotes();
+        }
+    }
 
-    // _toHtml(str) {
-    //     return str
-    //         .split('\n\n')
-    //         .map((v) => {
-    //             return `<div>${v.split('\n').join(' ')}</div>`;
-    //         })
-    //         .join('');
-    // }
+    /**
+     * 
+     * @param {String} str 
+     * @returns {String}
+     */
+    _toHtml(str) {
+        if (! isString(str)) {
+            throw new NotTypeError('str', 'string');
+        }
+
+        return str
+            .split('\n\n')
+            .map((v) => {
+                return `<div>${v.split('\n').join(' ')}</div>`;
+            })
+            .join('');
+    }
 
     _addKeyUpEventListener() {
         document.addEventListener('keyup', this._keyup);
