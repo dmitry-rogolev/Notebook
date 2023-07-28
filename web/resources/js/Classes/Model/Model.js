@@ -297,11 +297,22 @@ class Model
      * @returns {void}
      */
     async delete() {
-        await DatabaseFacade.delete(`/${config('routes.api.prefix', Database.DEFAULT_API_PREFIX)}/${this.table}/${this.primaryKey}`);
-        this._removeAttributes();
+        let attributes = null;
 
         if (! (await isAuth())) {
-            await DatabaseFacade.store(`/${config('routes.api.prefix', Database.DEFAULT_API_PREFIX)}/${config('model.trashed.prefix', Model.DEFAULT_TRASHED_PREFIX)}${this.table}`, ServerFacade.delete(this._originals), true, false);
+            attributes = (await DatabaseFacade.store(`/${config('routes.api.prefix', Database.DEFAULT_API_PREFIX)}/${config('model.trashed.prefix', Model.DEFAULT_TRASHED_PREFIX)}${this.table}`, ServerFacade.delete(this._originals), true, false))?.data?.data;
+            await DatabaseFacade.delete(`/${config('routes.api.prefix', Database.DEFAULT_API_PREFIX)}/${this.table}/${this.primaryKey}`);
+        } else {
+            attributes = (await DatabaseFacade.delete(`/${config('routes.api.prefix', Database.DEFAULT_API_PREFIX)}/${this.table}/${this.primaryKey}`))?.data?.data;
+        }
+
+        if (isObject(attributes) && ! isArray(attributes)) {
+            let keys = [config('model.created_at', Model.DEFAULT_CREATED_AT), config('model.updated_at', Model.DEFAULT_UPDATED_AT), config('model.deleted_at', Model.DEFAULT_DELETED_AT)];
+
+            this._originals = timestamps(identifiable(attributes), keys);
+            this._attributes = Object.assign({}, this._originals);
+            this._isTrashed = true;
+            this._removeAttributes();
         }
     }
 
@@ -346,15 +357,42 @@ class Model
      * @returns {void}
      */
     async restore() {
-        await this.constructor._database.restore(this.constructor._configuration.getUrlRestore(this.constructor._table, this._originals[this.constructor._primaryKey]));
-        this._isTrashed = false;
+        if (this.isTrashed) {
+            let attributes = null;
+
+            if (! (await isAuth())) {
+                attributes = (await DatabaseFacade.store(`/${config('routes.api.prefix', Database.DEFAULT_API_PREFIX)}/${this.table}`, ServerFacade.restore(this._originals), true, false))?.data?.data;
+                await DatabaseFacade.delete(`/${config('routes.api.prefix', Database.DEFAULT_API_PREFIX)}/${config('model.trashed.prefix', Model.DEFAULT_TRASHED_PREFIX)}${this.table}/${this.primaryKey}`);
+            } else {
+                attributes = (await DatabaseFacade.patch(`/${config('routes.api.prefix', Database.DEFAULT_API_PREFIX)}/${config('model.trashed.prefix', Model.DEFAULT_TRASHED_PREFIX)}${this.table}/${this.primaryKey}`))?.data?.data;
+            }
+
+            if (isObject(attributes) && ! isArray(attributes)) {
+                let keys = [config('model.created_at', Model.DEFAULT_CREATED_AT), config('model.updated_at', Model.DEFAULT_UPDATED_AT), config('model.deleted_at', Model.DEFAULT_DELETED_AT)];
+
+                this._originals = timestamps(identifiable(attributes), keys);
+                this._attributes = Object.assign({}, this._originals);
+                this._isTrashed = false;
+            }
+        }
     }
 
     /**
      * @returns {void}
      */
-    static async restoreTrash() {
-        await this._database.restore(this._configuration.getUrlRestore(this._table));
+    static async revert() {
+        if (! (await isAuth())) {
+            let models = await this.all(true);
+            models = models.map((item) => {
+                return ServerFacade.restore(item._originals);
+            });
+            if (notEmpty(models)) {
+                await DatabaseFacade.store(`/${config('routes.api.prefix', Database.DEFAULT_API_PREFIX)}/${this.getTable()}`, models, true, false);
+                await DatabaseFacade.delete(`/${config('routes.api.prefix', Database.DEFAULT_API_PREFIX)}/${config('model.trashed.prefix', Model.DEFAULT_TRASHED_PREFIX)}${this.getTable()}`);
+            }
+        } else {
+            await DatabaseFacade.update(`/${config('routes.api.prefix', Database.DEFAULT_API_PREFIX)}/${config('model.trashed.prefix', Model.DEFAULT_TRASHED_PREFIX)}${this.getTable()}`);
+        }
     }
 
     /**
@@ -363,26 +401,23 @@ class Model
      */
     _getAttributes() {
         let primary_key = config('model.primary_key', Model.DEFAULT_PRIMARY_KEY);
+        let models = cache(`${config('model.cache.prefix', Model.DEFAULT_CACHE_PREFIX)}${this.table}`);
 
-        if (primary_key in this._originals) {
-            let models = cache(`${config('model.cache.prefix', Model.DEFAULT_CACHE_PREFIX)}${this.table}`);
+        if (isArray(models) && notEmpty(models)) {
+            let id = this._originals[primary_key];
 
-            if (isArray(models) && notEmpty(models)) {
-                let id = this._originals[primary_key];
-
-                let model = models.find((v) => {
-                    if (isObject(v) && primary_key in v) {
-                        return v[primary_key] === id;
-                    }
-    
-                    return false;
-                });
-    
-                if (! isUndefined(model)) {
-                    return model;
+            let model = models.find((v) => {
+                if (isObject(v) && primary_key in v) {
+                    return v[primary_key] === id;
                 }
+
+                return false;
+            });
+
+            if (! isUndefined(model)) {
+                return model;
             }
-        } 
+        }
 
         return Object.assign({}, this._originals);
     }

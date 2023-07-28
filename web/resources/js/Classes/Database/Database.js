@@ -50,10 +50,10 @@ class Database
     /**
      * 
      * @param {String} url 
-     * @returns {void}
+     * @returns {any}
      */
     async delete(url, ...params) {
-        (await driver()).delete(url, ...params);
+        return (await driver()).delete(url, ...params);
     }
 }
 

@@ -4,7 +4,7 @@ import DatabaseFacade from "../../../Classes/Facades/DatabaseFacade";
 import ServerFacade from "../../../Classes/Facades/Server";
 import Model from "../../../Classes/Model/Model";
 import Note from "../../../Classes/Models/Note";
-import { cache, clientDriver, config, csrfCookie, empty, isArray, isObject, notEmpty, serverDriver } from "../../../Classes/helpers";
+import { cache, clientDriver, config, csrfCookie, empty, isArray, isAuth, isObject, notEmpty, serverDriver } from "../../../Classes/helpers";
 
 async function auth() {
     await csrfCookie();
@@ -365,7 +365,7 @@ it('save', async () => {
 }, 50000);
 
 it('delete', async () => {
-    expect.assertions(6);
+    expect.assertions(12);
 
     let note = await Note.create({
         title: 'title', 
@@ -373,6 +373,10 @@ it('delete', async () => {
     });
 
     await note.delete();
+
+    expect(note.isTrashed).toBeTruthy();
+    expect((await DatabaseFacade.get(`/${config('routes.api.prefix', Database.DEFAULT_API_PREFIX)}/notes/${note[config('model.primary_key', Model.DEFAULT_PRIMARY_KEY)]}`))?.data?.data).toBeNull();
+    expect((await DatabaseFacade.get(`/${config('routes.api.prefix', Database.DEFAULT_API_PREFIX)}/${config('model.trashed.prefix', Model.DEFAULT_TRASHED_PREFIX)}notes/${note[config('model.primary_key', Model.DEFAULT_PRIMARY_KEY)]}`))?.data?.data).not.toBeNull();
 
     let trashed = (await DatabaseFacade.get(`/${config('routes.api.prefix', Database.DEFAULT_API_PREFIX)}/${config('model.trashed.prefix', Model.DEFAULT_TRASHED_PREFIX)}notes/${note[config('model.primary_key', Model.DEFAULT_PRIMARY_KEY)]}`))?.data?.data;
 
@@ -388,6 +392,14 @@ it('delete', async () => {
     });
 
     await note.delete();
+
+    expect(note.isTrashed).toBeTruthy();
+    try {
+        await DatabaseFacade.get(`/${config('routes.api.prefix', Database.DEFAULT_API_PREFIX)}/notes/${note[config('model.primary_key', Model.DEFAULT_PRIMARY_KEY)]}`);
+    } catch (e) {
+        expect(e).toBeInstanceOf(AxiosError);
+    }
+    expect((await DatabaseFacade.get(`/${config('routes.api.prefix', Database.DEFAULT_API_PREFIX)}/${config('model.trashed.prefix', Model.DEFAULT_TRASHED_PREFIX)}notes/${note[config('model.primary_key', Model.DEFAULT_PRIMARY_KEY)]}`))?.data?.data).not.toBeNull();
 
     trashed = (await DatabaseFacade.get(`/${config('routes.api.prefix', Database.DEFAULT_API_PREFIX)}/${config('model.trashed.prefix', Model.DEFAULT_TRASHED_PREFIX)}notes/${note[config('model.primary_key', Model.DEFAULT_PRIMARY_KEY)]}`))?.data?.data;
 
@@ -469,7 +481,8 @@ it('truncate', async () => {
 }, 50000);
 
 it('forceTruncate', async () => {
-    cache().clear();
+    expect.assertions(6);
+    localStorage.clear();
 
     let notes = [];
 
@@ -504,6 +517,68 @@ it('forceTruncate', async () => {
     expect(await Note.all()).toHaveLength(0);
     expect(await Note.all(true)).toHaveLength(5);
     await Note.forceTruncate();
+    expect(await Note.all(true)).toHaveLength(0);
+
+    await logout();
+}, 50000);
+
+it('restore', async () => {
+    let note = await Note.create({
+        title: 'title', 
+        text: 'text', 
+    });
+
+    await note.delete();
+    expect(note.isTrashed).toBeTruthy();
+    await note.restore();
+    expect(note.isTrashed).toBeFalsy();
+    expect((await DatabaseFacade.get(`/${config('routes.api.prefix', Database.DEFAULT_API_PREFIX)}/notes/${note[config('model.primary_key', Model.DEFAULT_PRIMARY_KEY)]}`))?.data?.data).not.toBeNull();
+    expect((await DatabaseFacade.get(`/${config('routes.api.prefix', Database.DEFAULT_API_PREFIX)}/${config('model.trashed.prefix', Model.DEFAULT_TRASHED_PREFIX)}notes/${note[config('model.primary_key', Model.DEFAULT_PRIMARY_KEY)]}`))?.data?.data).toBeNull();
+}, 50000);
+
+it('revert', async () => {
+    expect.assertions(6);
+    localStorage.clear();
+
+    let notes = [];
+
+    for (let i = 0; i < 5; i++) {
+        notes.push(await Note.create({
+            title: 'title', 
+            text: 'text', 
+        }));
+    }
+
+    await Note.truncate();
+
+    expect(await Note.all(true)).toHaveLength(5);
+
+    await Note.revert();
+
+    expect(await Note.all()).toHaveLength(5);
+    expect(await Note.all(true)).toHaveLength(0);
+
+    await auth();
+
+    await DatabaseFacade.delete(`/${config('routes.api.prefix', Database.DEFAULT_API_PREFIX)}/notes`);
+    await DatabaseFacade.delete(`/${config('routes.api.prefix', Database.DEFAULT_API_PREFIX)}/${config('model.trashed.prefix', Model.DEFAULT_TRASHED_PREFIX)}notes`);
+
+    notes = [];
+
+    for (let i = 0; i < 5; i++) {
+        notes.push(await Note.create({
+            title: 'title', 
+            text: 'text', 
+        }));
+    }
+
+    await Note.truncate();
+
+    expect(await Note.all(true)).toHaveLength(5);
+
+    await Note.revert();
+
+    expect(await Note.all()).toHaveLength(5);
     expect(await Note.all(true)).toHaveLength(0);
 
     await logout();
