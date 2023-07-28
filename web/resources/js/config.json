@@ -33,11 +33,14 @@
     "notebook": {
         "cache": {
             "prefix": "__cache_notebook_"
+        }, 
+        "autosave": {
+            "default": false, 
+            "interval": 60000
         }
     }, 
     "window": {
         "open": true, 
-        "item": "first", 
         "cache": {
             "prefix": "__cache_window_"
         }
@@ -46,8 +49,5 @@
         "cache": {
             "prefix": "__cache_sidebar_"
         }
-    }, 
-    "autosave": {
-        "interval": 60000
     }
 }

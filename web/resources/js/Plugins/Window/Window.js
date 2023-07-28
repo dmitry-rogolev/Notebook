@@ -3,6 +3,8 @@ import Configuration from "../../Classes/Configuration";
 
 class Window 
 {
+    static DEFAULT_OPEN = true;
+
     _configuration = null;
     _element = null;
     _height = 0;

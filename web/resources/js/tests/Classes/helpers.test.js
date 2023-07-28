@@ -1,6 +1,6 @@
 import Cache from '../../Classes/Cache/Cache';
 import AxiosServerDriver from '../../Classes/Database/Drivers/AxiosServerDriver';
-import { cache, config, empty, getValue, uuid, is, isArray, isBoolean, isFunction, isJson, isNull, isNumber, isObject, isString, isUndefined, notEmpty, parseJson, rand, time, toJson, timestamp, zero, delay, sleep, server, csrfCookie, getCookie, register, user, serverDriver, driver, setValue, removeValue, getIndexById, url, keysByUrl, clientDriver, pluralize, timestamps, isDateFormatISO8601, identifiable, isAuth } from '../../Classes/helpers';
+import { cache, config, empty, getValue, uuid, is, isArray, isBoolean, isFunction, isJson, isNull, isNumber, isObject, isString, isUndefined, notEmpty, parseJson, rand, time, toJson, timestamp, zero, delay, sleep, csrfCookie, getCookie, user, serverDriver, driver, setValue, removeValue, getIndexById, url, keysByUrl, clientDriver, pluralize, timestamps, isDateFormatISO8601, identifiable, isAuth } from '../../Classes/helpers';
 import { jest } from '@jest/globals';
 import AxiosServerDriverFacade from '../../Classes/Facades/AxiosServerDriver';
 import LocalStorageDriver from '../../Classes/Database/Drivers/LocalStorageDriver';

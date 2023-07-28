@@ -12,6 +12,7 @@ import LocalStorageDriver from "./Database/Drivers/LocalStorageDriver";
 import plur from 'pluralize';
 import moment from 'moment';
 import Model from "./Model/Model";
+import { Inertia } from "@inertiajs/inertia";
 
 /**
  * 
@@ -663,4 +664,54 @@ export function identifiable(model) {
  */
 export async function isAuth() {
     return ! isNull(await user());
+}
+
+/**
+ * 
+ * @returns {Object}
+ */
+export function app() {
+    return window.app;
+}
+
+/**
+ * 
+ * @returns {Object}
+ */
+export function store() {
+    return plugin('store');
+}
+
+/**
+ * 
+ * @returns {Function}
+ */
+export function inertia() {
+    return Inertia;
+}
+
+/**
+ * 
+ * @param {String} plugin 
+ * @returns {any}
+ */
+export function plugin(plugin) {
+    if (! isString(plugin)) {
+        throw new NotTypeError('plugin', 'string');
+    }
+
+    return app().config.globalProperties[`$${plugin}`];
+}
+
+/**
+ * 
+ * @param {String} str 
+ * @returns {String}
+ */
+export function t(str) {
+    if (! isString(str)) {
+        throw new NotTypeError('str', 'string');
+    }
+    
+    return plugin('t')(str);
 }
