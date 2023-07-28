@@ -1,15 +1,15 @@
 import Note from "../../Models/Note";
 import Controller from "../Controller";
 
-class DeleteAllController extends Controller
+class TruncateController extends Controller
 {
     /**
      * 
      * @returns {void}
      */
-    static async truncate() {
+    static async invoke() {
         await Note.truncate();
     }
 }
 
-export default DeleteAllController;
+export default TruncateController;

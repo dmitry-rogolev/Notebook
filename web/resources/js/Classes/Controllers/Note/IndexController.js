@@ -7,9 +7,9 @@ class IndexContoller extends Controller
      * 
      * @returns {Array}
      */
-    static async index() {
+    static async invoke() {
         let $sort = window.app.config.globalProperties.$sort;
-        return $sort.sort(await Note.all()) ?? [];
+        return $sort.sort(await Note.all());
     }
 }
 

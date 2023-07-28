@@ -4,7 +4,7 @@ import Controller from "../../Controller";
 
 class DeleteController extends Controller
 {
-    static async delete(note) {
+    static async invoke(note) {
         if (! (note instanceof Note)) {
             throw new NotTypeError('note', 'Classes/Models/Note');
         }

@@ -1,4 +1,4 @@
-import NotObjectError from "../../Errors/NotObjectError";
+import NotTypeError from "../../Errors/NotTypeError";
 import Note from "../../Models/Note";
 import { isObject } from "../../helpers";
 import Controller from "../Controller";
@@ -11,9 +11,9 @@ class StoreController extends Controller
      * @param {Object} note 
      * @returns {Object}
      */
-    static store(note = {}) {
+    static invoke(note = {}) {
         if (! isObject(note)) {
-            throw new NotObjectError('note');
+            throw new NotTypeError('note', 'object');
         }
 
         if (note.text) {

@@ -9,7 +9,7 @@ class UpdateController extends Controller
      * @param {Object} note 
      * @returns {void}
      */
-    static async update(note) {
+    static async invoke(note) {
         if (! (note instanceof Note)) {
             throw new NotTypeError('note', 'Classes/Models/Note');
         }

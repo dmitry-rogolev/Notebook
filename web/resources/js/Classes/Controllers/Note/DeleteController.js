@@ -9,7 +9,7 @@ class DeleteController extends Controller
      * @param {Object} note 
      * @returns {void}
      */
-    static delete(note) {
+    static invoke(note) {
         if (! (note instanceof Note)) {
             throw new NotTypeError('note', 'Classes/Models/Note');
         }
