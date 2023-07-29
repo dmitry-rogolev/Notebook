@@ -731,8 +731,21 @@ export function createElement(element) {
 }
 
 /**
- * 
+ * @returns {Router}
  */
 export function router() {
     return inertiaRouter;
+}
+
+/**
+ * 
+ * @param {String} str 
+ * @returns {String}
+ */
+export function cutTags(str) {
+    if (! isString(str)) {
+        throw new NotTypeError('str', 'string');
+    }
+    
+	return str.replace(/<\/?[^>]+>/igm, '');
 }

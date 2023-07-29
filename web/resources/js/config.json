@@ -54,8 +54,82 @@
         }
     }, 
     "sidebar": {
+        "show": {
+            "notes": true, 
+            "search": false, 
+            "trash": false
+        }, 
+        "detailed": true, 
         "cache": {
             "prefix": "__cache_sidebar_"
+        }
+    }, 
+    "sort": {
+        "columns": [
+            "title", 
+            "updated_at"
+        ], 
+        "directions": [
+            "desc", 
+            "asc"
+        ]
+    }, 
+    "notification": {
+        "timeout": true, 
+        "interval": 2000
+    }, 
+    "mark": {
+        "options": {
+            "element": "span", 
+            "className": "bg-indigo-200 dark:bg-indigo-900", 
+            "acrossElements": true, 
+            "caseSensitive": false, 
+            "separateWordSearch": false
+        }
+    }, 
+    "editable": {
+        "commands": [
+            "bold",
+            "italic",
+            "underline",
+            "strikethrough",
+            "superscript",
+            "subscript",
+            "insertUnorderedList",
+            "insertOrderedList",
+            "formatBlock",
+            "insertHorizontalRule",
+            "insertImage",
+            "createLink",
+            "unlink",
+            "insertText",
+            "insertHTML",
+            "justifyLeft",
+            "justifyCenter",
+            "justifyRight",
+            "justifyFull",
+            "fontName",
+            "fontSize",
+            "foreColor",
+            "hiliteColor",
+            "undo",
+            "redo",
+            "selectAll",
+            "delete",
+            "removeFormat",
+            "cut",
+            "copy"
+        ], 
+        "options": {
+            "showUI": false,
+            "checkSupport": true,
+            "notify": true,
+            "cssMode": false,
+            "paragraphSeparator": "p",
+            "spellcheck": true,
+            "autofocus": false,
+            "successNotification": null,
+            "errorNotification": null
         }
     }
 }

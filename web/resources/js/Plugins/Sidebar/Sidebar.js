@@ -1,29 +1,47 @@
-import Cache from "../../Classes/Cache";
-import Configuration from "../../Classes/Configuration";
+import NotTypeError from "../../Classes/Errors/NotTypeError";
+import { isBoolean, isNull } from "../../Classes/helpers";
 
 class Sidebar 
 {
-    _configuration = null;
+    static DEFAULT_SHOW_NOTES = true;
+    static DEFAULT_SHOW_SEARCH = false;
+    static DEFAULT_SHOW_TRASH = false;
+    static DEFAULT_SHOW_DETAILED = true;
 
+    _isInit = false;
     _element = null;
     _height = 0;
     _width = 0;
     _resizeObserver = null;
-
     _showNotes = false;
     _showSearch = false;
     _showTrash = false;
-
     _detailed = true;
 
+    /**
+     * @property {Boolean}
+     */
+    get isInit() {
+        return this._isInit;
+    }
+
+    /**
+     * @property {HTMLElement}
+     */
     get element() {
         return this._element;
     }
 
+    /**
+     * @returns {Number}
+     */
     get height() {
         return this._height;
     }
 
+    /**
+     * @returns {Number}
+     */
     get width() {
         return this._width;
     }
@@ -57,204 +75,185 @@ class Sidebar
     }
 
     set isDetailed(v) {
-        if (typeof v !== 'boolean') {
-            throw new Error('The "isDetailed" property must be an boolean.');
+        if (isBoolean(v)) {
+            this._detailed = v;
         }
-
-        this._detailed = v;
-        this._setDeteiled(v);
     }
 
-    constructor(options = {}) {
-        this._configuration = Configuration.getInstance();
+    /**
+     * 
+     * @returns {Number}
+     */
+    getHeight() {
+        return document.documentElement.clientHeight - this._element.getBoundingClientRect().top;
     }
 
+    /**
+     * 
+     * @returns {Number}
+     */
+    getWidth() {
+        return this._element.getBoundingClientRect().width;
+    }
+
+    /**
+     * 
+     * @returns {Boolean}
+     */
+    getShowNotes() {
+        return config('sidebar.show.notes', Sidebar.DEFAULT_SHOW_NOTES);
+    }
+
+    /**
+     * 
+     * @returns {Boolean}
+     */
+    getShowSearch() {
+        return config('sidebar.show.search', Sidebar.DEFAULT_SHOW_SEARCH);
+    }
+
+    /**
+     * 
+     * @returns {Boolean}
+     */
+    getShowTrash() {
+        return config('sidebar.show.trash', Sidebar.DEFAULT_SHOW_TRASH);
+    }
+
+    /**
+     * 
+     * @returns {Boolean}
+     */
+    getDetailed() {
+        return config('sidebar.show.detailed', Sidebar.DEFAULT_SHOW_DETAILED);
+    }
+
+    /**
+     * 
+     * @param {HTMLElement} element 
+     * @returns {void}
+     */
     init(element) {
-        if (element && typeof element == 'object' && element instanceof HTMLElement) {
-            this._element = element;
-
-            this._initVariables();
-            this._observe();
-
-            return true;
+        if (! (element instanceof HTMLElement)) {
+            throw new NotTypeError('element', 'HTMLElement');
         }
-        return false;
+
+        if (! this.isInit) {
+            this._element = element;
+            this.initVariables();
+            this._observe();
+        }
     }
 
+    /**
+     * @returns {void}
+     */
     dispose() {
-        this._disconnect();
-        this._element = null;
-        this._disposeVariables();
+        if (this.isInit) {
+            this._element = null;
+            this.disposeVariables();
+            this._disconnect();
+            this._isInit = false;
+        }
     }
 
-    isInit() {
-        return !! this._element;
+    /**
+     * @returns {void}
+     */
+    initVariables() {
+        this._height = this.getHeight();
+        this._width = this.getWidth();
+        this._showNotes = this.getShowNotes();
+        this._showSearch = this.getShowSearch();
+        this._showTrash = this.getShowTrash();
+        this._detailed = this.getDetailed();
     }
 
-    _initVariables() {
-        this._height = this._calcHeight();
-        this._width = this._calcWidth();
-        this._showNotes = this._getShowNotes();
-        this._showSearch = this._getShowSearch();
-        this._showTrash = this._getShowTrash();
-        this._detailed = this._getDeteiled();
-    }
-
-    _disposeVariables() {
+    /**
+     * @returns {void}
+     */
+    disposeVariables() {
         this._height = 0;
         this._width = 0;
-        this._showNotes = false;
+        this._showNotes = true;
         this._showSearch = false;
         this._showTrash = false;
         this._detailed = false;
     }
 
+    /**
+     * @returns {void}
+     */
     showNotes() {
         this._showNotes = ! this._showNotes;
-        this._setShowNotes(this._showNotes);
         this._showSearch = false;
-        this._setShowSearch(false);
         this._showTrash = false;
-        this._setShowTrash(false);
     }
 
+    /**
+     * @returns {void}
+     */
     showSearch() {
         this._showSearch = ! this._showSearch;
-        this._setShowSearch(this._showSearch);
         this._showNotes = false;
-        this._setShowNotes(false);
         this._showTrash = false;
-        this._setShowTrash(false);
     }
 
+    /**
+     * @returns {void}
+     */
     showTrash() {
         this._showTrash = ! this._showTrash;
-        this._setShowTrash(this._showTrash);
         this._showNotes = false;
-        this._setShowNotes(false);
         this._showSearch = false;
-        this._setShowSearch(false);
     }
 
     /**
-     * 
-     * @returns {Boolean}
-     */
-    _getShowNotes() {
-        return Cache.get(this._configuration.getSidebarCachePrefix() + 'show_notes', false);
-    }
-
-    /**
-     * 
-     * @param {Boolean} show 
      * @returns {void}
      */
-    _setShowNotes(show) {
-        Cache.set(this._configuration.getSidebarCachePrefix() + 'show_notes', show);
-    }
-
-    /**
-     * 
-     * @returns {Boolean}
-     */
-    _getShowSearch() {
-        return Cache.get(this._configuration.getSidebarCachePrefix() + 'show_search', false);
-    }
-
-    /**
-     * 
-     * @param {Boolean} show 
-     * @returns {void}
-     */
-    _setShowSearch(show) {
-        Cache.set(this._configuration.getSidebarCachePrefix() + 'show_search', show);
-    }
-
-    /**
-     * 
-     * @returns {Boolean}
-     */
-    _getShowTrash() {
-        return Cache.get(this._configuration.getSidebarCachePrefix() + 'show_trash', false);
-    }
-
-    /**
-     * 
-     * @param {Boolean} show 
-     * @returns {void}
-     */
-    _setShowTrash(show) {
-        Cache.set(this._configuration.getSidebarCachePrefix() + 'show_trash', show);
-    }
-
-    /**
-     * 
-     * @returns {Boolean}
-     */
-    _getDeteiled() {
-        return Cache.get(this._configuration.getSidebarCachePrefix() + 'detailed', true);
-    }
-
-    /**
-     * 
-     * @param {Boolean} detailed 
-     * @returns {void}
-     */
-    _setDeteiled(detailed) {
-        Cache.set(this._configuration.getSidebarCachePrefix() + 'detailed', detailed);
-    }
-
-    _calcHeight() {
-        return document.documentElement.clientHeight - this._element.getBoundingClientRect().top;
-    }
-
-    _calcWidth() {
-        return this._element.getBoundingClientRect().width;
-    }
-
     _windowResizeEventHandler() {
-        let self = window.app.config.globalProperties.$sidebar;
-        self._height = self._calcHeight();
-        self._width = self._calcWidth();
+        plugin('sidebar')._height = plugin('sidebar').getHeight();
+        plugin('sidebar')._width = plugin('sidebar').getWidth();
     }
 
+    /**
+     * @returns {void}
+     */
     _addWindowResizeEventListeners() {
         window.addEventListener('resize', this._windowResizeEventHandler);
     }
 
+    /**
+     * @returns {void}
+     */
     _removeWindowResizeEventListeners() {
         window.removeEventListener('resize', this._windowResizeEventHandler);
     }
 
+    /**
+     * @returns {void}
+     */
     _observe() {
-        if (this.isInit()) {
-            if (! this._resizeObserver) {
-                this._resizeObserver = new ResizeObserver(() => {
-                    this._height = this._calcHeight();
-                    this._width = this._calcWidth();
-                });
-            }
-
-            this._resizeObserver.observe(this._element);
-
-            this._addWindowResizeEventListeners();
-
-            return true;
+        if (isNull(this._resizeObserver)) {
+            this._resizeObserver = new ResizeObserver(() => {
+                this._height = this.getHeight();
+                this._width = this.getWidth();
+            });
         }
 
-        return false;
+        this._resizeObserver.observe(this._element);
+        this._addWindowResizeEventListeners();
     }
 
+    /**
+     * @returns {void}
+     */
     _disconnect() {
-        if (this.isInit() && this._resizeObserver) {
+        if (this._resizeObserver instanceof ResizeObserver) {
             this._resizeObserver.disconnect();
             this._resizeObserver = null;
             this._removeWindowResizeEventListeners();
-
-            return true;
         }
-        
-        return false;
     }
 }
 

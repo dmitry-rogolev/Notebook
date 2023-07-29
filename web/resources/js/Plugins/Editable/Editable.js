@@ -1,12 +1,10 @@
+import NotTypeError from "../../Classes/Errors/NotTypeError";
+import { config, cutTags, isBoolean, isString, plugin } from "../../Classes/helpers";
+
 class Editable
 {
-    _app = window.app;
-
-    _selection = window.getSelection();
-
-    _commands = ['bold', 'italic', 'underline', 'strikethrough', 'superscript', 'subscript', 'insertUnorderedList', 'insertOrderedList', 'formatBlock', 'insertHorizontalRule', 'insertImage', 'createLink', 'unlink', 'insertText', 'insertHTML', 'justifyLeft', 'justifyCenter', 'justifyRight', 'justifyFull', 'fontName', 'fontSize', 'foreColor', 'hiliteColor', 'undo', 'redo', 'selectAll', 'delete', 'removeFormat', 'cut', 'copy'];
-
-    _defaultOptions = {
+    static DEFAULT_COMMANDS = ['bold', 'italic', 'underline', 'strikethrough', 'superscript', 'subscript', 'insertUnorderedList', 'insertOrderedList', 'formatBlock', 'insertHorizontalRule', 'insertImage', 'createLink', 'unlink', 'insertText', 'insertHTML', 'justifyLeft', 'justifyCenter', 'justifyRight', 'justifyFull', 'fontName', 'fontSize', 'foreColor', 'hiliteColor', 'undo', 'redo', 'selectAll', 'delete', 'removeFormat', 'cut', 'copy'];
+    static DEFAULT_OPTIONS = {
         showUI: false, 
         checkSupport: true, 
         notify: true, 
@@ -18,126 +16,229 @@ class Editable
         errorNotification: null,
     };
 
-    _cssMode = this._defaultOptions.cssMode;
+    _isInit = false
+    _element = null;
+    _spellcheck = false
+    _cssMode = false;
 
-    _editableElement = null;
-
-    spellcheck = this._defaultOptions.spellcheck;
-
-    get defaultOptions() {
-        return this._defaultOptions;
+    /**
+     * @property {Boolean}
+     */
+    get isInit() {
+        return this._isInit;
     }
 
-    get editableElement() {
-        return this._editableElement;
+    /**
+     * @property {Boolean}
+     */
+    get spellcheck() {
+        return this._spellcheck;
     }
 
-    get commands() {
-        return this._commands;
+    set spellcheck(v) {
+        if (isBoolean(v)) {
+            this._spellcheck = v;
+        }
     }
 
-    constructor(options) {
-        this._defaultOptions = this._parseOptions(options);
-        this._defineDefaultParagraphSeparator(this._defaultOptions.paragraphSeparator);
-        this.spellcheck = this._defaultOptions.spellcheck;
+    /**
+     * @property {Boolean}
+     */
+    get cssMode() {
+        return this._cssMode;
     }
 
-    init(editableElement) {
-        if (typeof editableElement == 'string') {
-            let element = document.querySelector(editableElement);
-            if (element) {
-                this._editableElement = element;
-            }
-        } 
-        
-        if (typeof editableElement == 'object' && editableElement instanceof HTMLElement && document.contains(editableElement)) {
-            this._editableElement = editableElement;
+    set cssMode(v) {
+        if (isBoolean(v)) {
+            this._cssMode = v;
+        }
+    }
+
+    /**
+     * @returns {HTMLElement}
+     */
+    get element() {
+        return this._element;
+    }
+
+    /**
+     * 
+     * @returns {Boolean}
+     */
+    getSpellcheck() {
+        return config('editable.options.spellcheck', Editable.DEFAULT_OPTIONS.spellcheck);
+    }
+
+    /**
+     * 
+     * @returns {Boolean}
+     */
+    getCssMode() {
+        return config('editable.options.cssMode', Editable.DEFAULT_OPTIONS.cssMode);
+    }
+
+    constructor() {
+        this._defineDefaultParagraphSeparator(config('editable.options.paragraphSeparator', Editable.DEFAULT_OPTIONS.paragraphSeparator));
+    }
+
+    /**
+     * 
+     * @param {String} separator 
+     * @returns {void}
+     */
+    _defineDefaultParagraphSeparator(separator) {
+        if (! isString(separator)) {
+            throw new NotTypeError('separator', 'string');
         }
 
-        this._addEventListeners();
-
-        if (this._editableElement) {
-            return true;
-        }
-
-        return false;
+        document.execCommand('defaultParagraphSeparator', false, separator);
     }
 
+    /**
+     * 
+     * @param {HTMLElement} element 
+     * @returns {void}
+     */
+    init(element) {
+        if (! (element instanceof HTMLElement)) {
+            throw new NotTypeError('element', 'HTMLElement');
+        }
+
+        if (! this.isInit) {
+            this._element = element;
+            this._spellcheck = this.getSpellcheck();
+            this._cssMode = this.getCssMode();  
+            this._addEventListeners();
+            this._isInit = true;
+        }
+    }
+
+    /**
+     * 
+     * @returns {void}
+     */
     dispose() {
-        this._removeEventListeners();
-        this._cssMode = this._defaultOptions.cssMode;
-        this._editableElement = null;
-        this.spellcheck = this._defaultOptions.spellcheck;
+        if (this.isInit) {
+            this._removeEventListeners();
+            this._element = null;
+            this._spellcheck = false;
+            this._cssMode = false;  
+            this._isInit = false;
+        }
     }
 
+    /**
+     * 
+     * @returns {void}
+     */
     execCommand(commandId, value = null, options = {}) {
-        if (! this._editableElement || ! this.hasFocus() || this._commands.indexOf(commandId) === -1) {
+        if (! this.isInit || ! this.hasFocus() || config('editable.commands', Editable.DEFAULT_COMMANDS).indexOf(commandId) === -1) {
             return false;
         }
 
-        let parsedOptions = this._parseOptions(options);
+        let options = config('editable.options', Editable.DEFAULT_OPTIONS);
         let done = null;
     
-        if (parsedOptions.cssMode) {
-            this._onCssMode();
+        if (this.cssMode) {
+            this.onCssMode();
         }
 
-        if (parsedOptions.checkSupport) {
-            done = this._execCommandIfSupported(commandId, parsedOptions.showUI, value);
+        if (config('editable.options.checkSupport', Editable.DEFAULT_OPTIONS.checkSupport)) {
+            done = this.execCommandIfSupported(commandId, config('editable.options.showUI', Editable.DEFAULT_OPTIONS.showUI), value);
         } else {
-            done = document.execCommand(commandId, parsedOptions.showUI, value);
+            done = document.execCommand(commandId, config('editable.options.showUI', Editable.DEFAULT_OPTIONS.showUI), value);
         }
 
-        if (done && commandId == 'fontSize' && parsedOptions.cssMode) {
+        if (done && commandId == 'fontSize' && this.cssMode) {
             this._fontSizeFix(value);
         }
 
-        if (parsedOptions.cssMode) {
-            this._offCssMode();
-        }
-
-        if (this._app.config.globalProperties.$notifier) {
-            if (done && parsedOptions.notify && parsedOptions.successNotification) {
-                this._app.config.globalProperties.$notifier.push(parsedOptions.successNotification);
-            } else if (! done && parsedOptions.notify && parsedOptions.errorNotification) {
-                this._app.config.globalProperties.$notifier.push(parsedOptions.errorNotification);
-            }
+        if (this.cssMode) {
+            this.offCssMode();
         }
 
         return done;
     }
 
+    /**
+     * 
+     * @returns {Boolean}
+     */
     hasFocus() {
-        if (this._editableElement) {
-            return this._editableElement.contains(this._selection.anchorNode);
+        if (this.isInit) {
+            return this._element.contains(window.getSelection().anchorNode);
         }
         return false;
     }
 
+    /**
+     * @returns {void}
+     */
+    onCssMode() {
+        document.execCommand('styleWithCSS', false, true);
+    }
+
+    /**
+     * @returns {void}
+     */
+    offCssMode() {
+        document.execCommand('styleWithCSS', false, false);
+    }
+
+    /**
+     * 
+     * @param {String} commandId 
+     * @param {Boolean} showUI 
+     * @param {any} value 
+     * @returns {Boolean}
+     */
+    execCommandIfSupported(commandId, showUI = false, value = null) {
+        if (document.queryCommandSupported(commandId)) {
+            return document.execCommand(commandId, showUI, value);
+        }
+    
+        return false;
+    }
+
+    /**
+     * 
+     * @param {String} fontSize 
+     * @returns {void}
+     */
+    _fontSizeFix(fontSize) {
+        let fontElement = window.getSelection().anchorNode.parentElement;
+        fontElement.removeAttribute("size");
+        fontElement.style.fontSize = fontSize;
+    }
+
+    /**
+     * @returns {void}
+     */
     toggleSpellcheck() {
-        if (this._editableElement) {
-            this.spellcheck = ! this.spellcheck;
-
-            return true;
-        }
-        return false;
+        this.spellcheck = ! this.spellcheck;
     }
 
+    /**
+     * @returns {void}
+     */
     _tab() {
-        if (this._editableElement && this._selection.rangeCount) {
-            let range = this._selection.getRangeAt(0);
+        if (this.isInit && window.getSelection().rangeCount) {
+            let range = window.getSelection().getRangeAt(0);
             let tabNode = document.createTextNode("\t");
             range.insertNode(tabNode);
             range.setStartAfter(tabNode);
             range.setEndAfter(tabNode); 
-            this._selection.removeAllRanges();
-            this._selection.addRange(range);
+            window.getSelection().removeAllRanges();
+            window.getSelection().addRange(range);
         }
     }
 
+    /**
+     * @returns {void}
+     */
     _shiftTab() {
-        if (this._editableElement && this._selection.rangeCount) {
-            let range = this._selection.getRangeAt(0);
+        if (this.isInit && window.getSelection().rangeCount) {
+            let range = window.getSelection().getRangeAt(0);
             let anchor = document.createTextNode('');
             range.insertNode(anchor);
 
@@ -156,159 +257,73 @@ class Editable
         }
     }
 
+    /**
+     * @returns {void}
+     */
     _deleteTagsOnPasteEvent(e) {
-        let text = e.clipboardData.getData('text/plain');
-        this.execCommand('insertHTML', this._cutTags(text));
+        this.execCommand('insertHTML', cutTags(e.clipboardData.getData('text/plain')));
     }
 
+    /**
+     * @returns {void}
+     */
     _keydownEventHandler(e) {
-        let self = window.app.config.globalProperties.$editable;
-    
         if (e.shiftKey && e.code == 'Tab') {
             e.preventDefault();
-            self._shiftTab();
+            plugin('editable')._shiftTab();
         } else if (e.code == 'Tab') {
             e.preventDefault();
-            self._tab();
+            plugin('editable')._tab();
         }
     }
 
+    /**
+     * @returns {void}
+     */
     _paste(e) {
-        let self = window.app.config.globalProperties.$editable;
         e.preventDefault();
-        self._deleteTagsOnPasteEvent(e);
+        plugin('editable')._deleteTagsOnPasteEvent(e);
     }
 
+    /**
+     * @returns {void}
+     */
+    _keyup(e) {
+        e.preventDefault();
+        e.stopPropagation();
+
+        if (plugin('window').file.id && ! plugin('window').file.isTrashed) {
+            // Find
+            if (e.altKey && e.code == 'KeyF') {
+                plugin('mark').show();
+            } 
+
+            // Replace
+            else if (e.altKey && e.code == 'KeyR') {
+                plugin('mark').showReplace();
+            } 
+        }
+    }
+
+    /**
+     * @returns {void}
+     */
     _addEventListeners() {
-        if (this._editableElement) {
+        if (this.element instanceof HTMLElement) {
             this._editableElement.addEventListener('keydown', this._keydownEventHandler);
             this._editableElement.addEventListener('paste', this._paste);
             document.addEventListener('keyup', this._keyup);
         }
     }
 
+    /**
+     * @returns {void}
+     */
     _removeEventListeners() {
-        if (this._editableElement) {
+        if (this.element instanceof HTMLElement) {
             this._editableElement.removeEventListener('keydown', this._keydownEventHandler);
             this._editableElement.removeEventListener('paste', this._paste);
             document.removeEventListener('keyup', this._keyup);
-        }
-    }
-
-    _defineDefaultParagraphSeparator(separator) {
-        document.execCommand('defaultParagraphSeparator', false, separator);
-    }
-
-    _onCssMode() {
-        this._cssMode = true;
-        document.execCommand('styleWithCSS', false, this._cssMode);
-    }
-
-    _offCssMode() {
-        this._cssMode = false;
-        document.execCommand('styleWithCSS', false, this._cssMode);
-    }
-
-    _parseOptions(options) {
-        let parsedOptions = {};
-
-        if (typeof options == 'object') {
-            if ('showUI' in options && typeof options.showUI == 'boolean') {
-                parsedOptions.showUI = options.showUI;
-            } else {
-                parsedOptions.showUI = this.defaultOptions.showUI;
-            }
-    
-            if ('checkSupport' in options && typeof options.checkSupport == 'boolean') {
-                parsedOptions.checkSupport = options.checkSupport;
-            } else {
-                parsedOptions.checkSupport = this.defaultOptions.checkSupport;
-            }
-            
-    
-            if ('notify' in options && typeof options.notify == 'boolean') {
-                parsedOptions.notify = options.notify;
-            } else {
-                parsedOptions.notify = this.defaultOptions.notify;
-            }
-    
-            if ('cssMode' in options && typeof options.cssMode == 'boolean') {
-                parsedOptions.cssMode = options.cssMode;
-            } else {
-                parsedOptions.cssMode = this.defaultOptions.cssMode;
-            }
-
-            if ('paragraphSeparator' in options && typeof options.paragraphSeparator == 'string') {
-                parsedOptions.paragraphSeparator = options.paragraphSeparator;
-            } else {
-                parsedOptions.paragraphSeparator = this.defaultOptions.paragraphSeparator;
-            }
-
-            if ('spellcheck' in options && typeof options.spellcheck == 'boolean') {
-                parsedOptions.spellcheck = options.spellcheck;
-            } else {
-                parsedOptions.spellcheck = this.defaultOptions.spellcheck;
-            }
-
-            if ('autofocus' in options && typeof options.autofocus == 'boolean') {
-                parsedOptions.autofocus = options.autofocus;
-            } else {
-                parsedOptions.autofocus = this.defaultOptions.autofocus;
-            }
-    
-            if ('successNotification' in options && typeof options.successNotification == 'object') {
-                parsedOptions.successNotification = options.successNotification;
-            } else {
-                parsedOptions.successNotification = this.defaultOptions.successNotification;
-            }
-    
-            if ('errorNotification' in options && typeof options.errorNotification == 'object') {
-                parsedOptions.errorNotification = options.errorNotification;
-            } else {
-                parsedOptions.errorNotification = this.defaultOptions.errorNotification;
-            }
-        } else {
-            parsedOptions = this.defaultOptions;
-        }
-    
-        return parsedOptions;
-    }
-
-    _execCommandIfSupported(commandId, showUI = false, value = null) {
-        if (document.queryCommandSupported(commandId)) {
-            return document.execCommand(commandId, showUI, value);
-        }
-    
-        return false;
-    }
-
-    _fontSizeFix(fontSize) {
-        let fontElement = this._selection.anchorNode.parentElement;
-        fontElement.removeAttribute("size");
-        fontElement.style.fontSize = fontSize;
-    }
-
-    _cutTags(str) {
-        return str.replace(/<\/?[^>]+>/igm, '');
-    }
-
-    _keyup(e) {
-        e.preventDefault();
-        e.stopPropagation();
-
-        let $mark = window.app.config.globalProperties.$mark;
-        let $window = window.app.config.globalProperties.$window;
-
-        if ($window.file.id && ! $window.file.isTrashed) {
-            // Find
-            if (e.altKey && e.code == 'KeyF') {
-                $mark.show();
-            } 
-
-            // Replace
-            else if (e.altKey && e.code == 'KeyR') {
-                $mark.showReplace();
-            } 
         }
     }
 }

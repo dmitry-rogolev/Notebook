@@ -23,10 +23,6 @@ function escapeRegex(str) {
 	return str.replace(/([\\\.\+\*\?\[\^\]\$\(\)\{\}\=\!\<\>\|\:])/gm, "\\$1");
 }
 
-function cutTags(str) {
-	return str.replace(/<\/?[^>]+>/igm, '');
-}
-
 function cutForbiddenTags(str) {
     return str.replace(/<\/?[^>]+>/igm, (v) => { 
         return /<\/?(script|meta|body|iframe|head|html).*>/igm.test(v) ? '' : v;
@@ -47,4 +43,4 @@ function getTextNodes(element) {
     return textNodes;
 }
 
-export { token, escapeHtml, escapeRegex, cutTags, cutForbiddenTags, getTextNodes };
+export { token, escapeHtml, escapeRegex, cutForbiddenTags, getTextNodes };

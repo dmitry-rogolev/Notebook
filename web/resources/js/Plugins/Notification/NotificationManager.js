@@ -1,48 +1,27 @@
+import NotTypeError from '../../Classes/Errors/NotTypeError';
+import { config, isNumber, isObject, isString } from '../../Classes/helpers';
 import Notification from './Notification';
 import { reactive } from 'vue';
 
-class NotificationManager {
-    _notifications = reactive([]);
-    _filledMod = true;
-    _interval = 2000;
-    _timeoutMod = true;
+class NotificationManager 
+{
+    static DEFAULT_TIMEOUT = true;
+    static DEFAULT_INTERVAL = 2000;
 
+    _notifications = reactive([]);
+
+    /**
+     * @returns {Number}
+     */
     get length() {
         return this._notifications.length;
     }
 
+    /**
+     * @returns {Array}
+     */
     get notifications() {
         return this._notifications;
-    }
-
-    get isFilledMod() {
-        return this._filledMod;
-    }
-
-    set isFilledMod(v) {
-        if (typeof v == 'boolean') {
-            this._filledMod = v;
-        }
-    }
-
-    get interval() {
-        return this._interval;
-    }
-
-    set interval(v) {
-        if (typeof v == 'number') {
-            this._interval = v;
-        }
-    }
-
-    get isTimeoutMod() {
-        return this._timeoutMod;
-    }
-
-    set isTimeoutMod(v) {
-        if (typeof v == 'boolean') {
-            this._timeoutMod = v;
-        }
     }
 
     /**
@@ -60,24 +39,20 @@ class NotificationManager {
 
         let notice = null;
 
-        if (typeof notification == 'object' && notification instanceof Notification) {
+        if (notification instanceof Notification) {
             notice = notification;
-        } else if (typeof notification == 'object' && 'message' in notification && notification.message) {
+        } else if (isObject(notification) && 'message' in notification && isString(notification.message)) {
             notice = this.createNotification(notification);
         } else {
             return;
         }
 
-        if (this._filledMod) {
-            if (notice.isFilled) {
-                this._notifications.push(notice);
-            }
-        } else {
+        if (notice.isFilled) {
             this._notifications.push(notice);
         }
 
-        if (this._timeoutMod) {
-            setTimeout(() => this.shift(), this._interval);
+        if (config('notification.timeout', NotificationManager.DEFAULT_TIMEOUT)) {
+            setTimeout(() => this.shift(), config('notification.interval', NotificationManager.DEFAULT_INTERVAL));
         }
     }
 
@@ -98,7 +73,12 @@ class NotificationManager {
      * @returns {Notification}
      */
     createNotification(options = {}) {
+        if (! isObject(options)) {
+            throw new NotTypeError('options', 'object');
+        }
+
         let message = '';
+
         if ('message' in options) {
             message = options.message;
             delete options.message;
@@ -115,9 +95,9 @@ class NotificationManager {
     remove(notification) {
         let index = -1;
 
-        if (typeof notification == 'object' && notification instanceof Notification) {
+        if (notification instanceof Notification) {
             index = this._notifications.indexOf(notification);
-        } else if (typeof notification == 'number' && notification !== -1) {
+        } else if (isNumber(notification) && notification >= 0) {
             index = notification;
         } else {
             return;

@@ -1,9 +1,39 @@
+import { isObject, isString } from "../../Classes/helpers";
+
 class Notification 
 {
     _message = '';
     _success = false;
     _error = false;
     _isFilled = false;
+
+    /**
+     * @property {String}
+     */
+    get message() {
+        return this._message;
+    }
+
+    /**
+     * @property {Boolean}
+     */
+    get success() {
+        return this._success;
+    }
+
+    /**
+     * @property {Boolean}
+     */
+    get error() {
+        return this._error;
+    }
+
+    /**
+     * @property {Boolean} 
+     */
+    get isFilled() {
+        return this._isFilled;
+    }
 
     /**
      * 
@@ -13,12 +43,12 @@ class Notification
      * @property {Boolean} options.error
      */
     constructor(message, options = {}) {
-        if (message && typeof message == 'string') {
+        if (isString(message)) {
             this._message = message;
             this._isFilled = true;
         }
         
-        if (options && typeof options == 'object') {
+        if (isObject(options)) {
             if ('success' in options) {
                 this._success = options.success;
             }
@@ -27,34 +57,6 @@ class Notification
                 this._error = options.error;
             }
         }
-    }
-
-    /**
-     * @property {String} message
-     */
-    get message() {
-        return this._message;
-    }
-
-    /**
-     * @property {Boolean} success
-     */
-    get success() {
-        return this._success;
-    }
-
-    /**
-     * @property {Boolean} error
-     */
-    get error() {
-        return this._error;
-    }
-
-    /**
-     * @property {Boolean} isFilled
-     */
-    get isFilled() {
-        return this._isFilled;
     }
 };
 
