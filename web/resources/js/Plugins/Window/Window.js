@@ -1,50 +1,57 @@
-import Cache from "../../Classes/Cache";
-import Configuration from "../../Classes/Configuration";
+import NotTypeError from "../../Classes/Errors/NotTypeError";
+import { cache, config, isBoolean, isNull, isObject, plugin } from "../../Classes/helpers";
 
 class Window 
 {
     static DEFAULT_OPEN = true;
+    static DEFAULT_CACHE_PREFIX = '__cache_window_';
+    static DEFAULT_FULLSCREEN = false;
+    static DEFAULT_STATUSBAR = true;
+    static DEFAULT_TOOLBAR = false;
+    static DEFAULT_STANDARD = false;
+    static DEFAULT_TABS = true;
+    static DEFAULT_RESIZE_INTERVAL = 200;
 
-    _configuration = null;
+    _isInit = false;
     _element = null;
     _height = 0;
     _width = 0;
+    _fullscreen = false;
     _statusbar = true;
     _toolbar = false;
-    _tabs = true;
     _standard = false;
+    _tabs = true;
     _resizeTimer = null;
-    _timerInterval = 100;
-
     _file = null;
     _defaultFile = null;
     _isOpen = false;
-    _fullscreen = false;
-
-    get windowElement() {
-        return this._element;
-    }
-
-    get height() {
-        return this._height;
-    }
-
-    get width() {
-        return this._width;
-    }
-
-    /**
-     * @property {Object}
-     */
-    get file() {
-        return this._file ?? this._defaultFile;
-    }
 
     /**
      * @property {Boolean}
      */
-    get isOpen() {
-        return this._isOpen;
+    get isInit() {
+        return this._isInit;
+    }
+
+    /**
+     * @property {HTMLElement}
+     */
+    get element() {
+        return this._element;
+    }
+
+    /**
+     * @property {Number}
+     */
+    get height() {
+        return this._height;
+    }
+
+    /**
+     * @property {Number}
+     */
+    get width() {
+        return this._width;
     }
 
     /**
@@ -71,64 +78,285 @@ class Window
     /**
      * @property {Boolean}
      */
-    get tabs() {
-        return this._tabs;
+    get standard() {
+        return this._standard;
     }
 
     /**
      * @property {Boolean}
      */
-    get standard() {
-        return this._standard;
+    get tabs() {
+        return this._tabs;
     }
 
-    constructor(options = {}) {
-        this._configuration = Configuration.getInstance();
+    /**
+     * @property {Object}
+     */
+    get file() {
+        return this._file ?? this._defaultFile;
     }
 
+    /**
+     * @property {Boolean}
+     */
+    get isOpen() {
+        return this._isOpen;
+    }
+
+    /**
+     * 
+     * @returns {Number}
+     */
+    getHeight() {
+        return document.documentElement.clientHeight - this.element.getBoundingClientRect().top;
+    }
+
+    /**
+     * 
+     * @returns {Number}
+     */
+    getWidth() {
+        return document.documentElement.clientWidth - this.element.getBoundingClientRect().left;
+    }
+
+    /**
+     * 
+     * @returns {Boolean}
+     */
+    getFullscreen() {
+        let fullscreen = cache(`${config('window.cache.prefix', Window.DEFAULT_CACHE_PREFIX)}fullscreen`);
+
+        if (isNull(fullscreen)) {
+            return config('window.fullscreen', Window.DEFAULT_FULLSCREEN);
+        }
+
+        return fullscreen;
+    }
+
+    /**
+     * 
+     * @param {Boolean} fullscreen 
+     * @returns {void}
+     */
+    setFullscreen(fullscreen) {
+        if (isBoolean(fullscreen)) {
+            cache(`${config('window.cache.prefix', Window.DEFAULT_CACHE_PREFIX)}fullscreen`, fullscreen);
+            this._fullscreen = fullscreen;
+        }
+    }
+
+    /**
+     * 
+     * @returns {Boolean}
+     */
+    getStatusbar() {
+        let statusbar = cache(`${config('window.cache.prefix', Window.DEFAULT_CACHE_PREFIX)}statusbar`);
+
+        if (isNull(statusbar)) {
+            return config('window.statusbar', Window.DEFAULT_STATUSBAR);
+        }
+
+        return statusbar;
+    }
+
+    /**
+     * 
+     * @param {Boolean} statusbar 
+     * @returns {void}
+     */
+    setStatusbar(statusbar) {
+        if (isBoolean(statusbar)) {
+            cache(`${config('window.cache.prefix', Window.DEFAULT_CACHE_PREFIX)}statusbar`, statusbar);
+            this._statusbar = statusbar;
+        }
+    }
+
+    /**
+     * 
+     * @returns {Boolean}
+     */
+    getToolbar() {
+        let toolbar = cache(`${config('window.cache.prefix', Window.DEFAULT_CACHE_PREFIX)}toolbar`);
+
+        if (isNull(toolbar)) {
+            return config('window.toolbar', Window.DEFAULT_TOOLBAR);
+        }
+
+        return toolbar;
+    }
+
+    /**
+     * 
+     * @param {Boolean} toolbar 
+     * @returns {void}
+     */
+    setToolbar(toolbar) {
+        if (isBoolean(toolbar)) {
+            cache(`${config('window.cache.prefix', Window.DEFAULT_CACHE_PREFIX)}toolbar`, toolbar);
+            this._toolbar = toolbar;
+        }
+    }
+
+    /**
+     * 
+     * @returns {Boolean}
+     */
+    getStandard() {
+        let standard = cache(`${config('window.cache.prefix', Window.DEFAULT_CACHE_PREFIX)}standard`);
+
+        if (isNull(standard)) {
+            return config('window.standard', Window.DEFAULT_STANDARD);
+        }
+
+        return standard;
+    }
+
+    /**
+     * 
+     * @param {Boolean} standard 
+     * @returns {void}
+     */
+    setStandard(standard) {
+        if (isBoolean(standard)) {
+            cache(`${config('window.cache.prefix', Window.DEFAULT_CACHE_PREFIX)}standard`, standard);
+            this._standard = standard;
+        }
+    }
+
+    /**
+     * 
+     * @returns {Boolean}
+     */
+    getTabs() {
+        let tabs = cache(`${config('window.cache.prefix', Window.DEFAULT_CACHE_PREFIX)}tabs`);
+
+        if (isNull(tabs)) {
+            return config('window.tabs', Window.DEFAULT_TABS);
+        }
+
+        return tabs;
+    }
+
+    /**
+     * 
+     * @param {Boolean} tabs 
+     * @returns {void}
+     */
+    setTabs(tabs) {
+        if (isBoolean(tabs)) {
+            cache(`${config('window.cache.prefix', Window.DEFAULT_CACHE_PREFIX)}tabs`, tabs);
+            this._tabs = tabs;
+        }
+    }
+
+    /**
+     * 
+     * @param {Object} file 
+     * @returns {void}
+     */
+    setFile(file) {
+        if (! isObject(file)) {
+            throw new NotTypeError('file', 'object');
+        }
+
+        this._file = file;
+    }
+
+    /**
+     * 
+     * @param {Object} file 
+     * @returns {void}
+     */
+    setDefaultFile(file) {
+        if (! isObject(file)) {
+            throw new NotTypeError('file', 'object');
+        }
+
+        this._defaultFile = file;
+    }
+
+    /**
+     * 
+     * @param {HTMLElement} element 
+     */
     init(element) {
-        if (element && typeof element == 'object' && element instanceof HTMLElement) {
+        if (! (element instanceof HTMLElement)) {
+            throw new NotTypeError('element', 'HTMLElement');
+        }
+
+        if (! this.isInit) {
             this._element = element;
-            this._initVariables();
+            this.initVariables();
             this._observe();
             this._addKeyUpEventListener();
-
-            return true;
+            this._isInit = true;
         }
-        return false;
     }
 
+    /**
+     * @returns {void}
+     */
     dispose() {
-        this._disconnect();
-        this._element = null;
-        this._disposeVariables();
-        this._removeKeyUpEventListener();
+        if (this.isInit) {
+            this._element = null;
+            this.disposeVariables();
+            this._disconnect();
+            this._removeKeyUpEventListener();
+            this._isInit = false;
+        }
     }
 
-    _initVariables() {
-        this._height = this._calcHeight();
-        this._width = this._calcWidth();
-        this._fullscreen = this._getFullscreen();
-        this._statusbar = this._getStatusbar();
-        this._toolbar = this._getToolbar();
-        this._standard = this._getStandard();
-        this._tabs = this._getTabs();
+    /**
+     * @returns {void}
+     */
+    initVariables() {
+        this._height = this.getHeight();
+        this._width = this.getWidth();
+        this._fullscreen = this.getFullscreen();
+        this._statusbar = this.getStatusbar();
+        this._toolbar = this.getToolbar();
+        this._standard = this.getStandard();
+        this._tabs = this.getTabs();
     }
 
-    _disposeVariables() {
+    /**
+     * @returns {void}
+     */
+    disposeVariables() {
         this._height = 0;
         this._width = 0;
         this._fullscreen = false;
         this._statusbar = false;
-        this._tabs = true;
-        this._standard = false;
         this._toolbar = false;
+        this._standard = false;
+        this._tabs = true;
     }
 
-    isInit() {
-        return !! this._element;
+    /**
+     * @returns {void}
+     */
+    _observe() {
+        if (this.isInit) {
+            this._resizeTimer = setInterval(() => {
+                this._height = this.getHeight();
+                this._width = this.getWidth();
+            }, config('window.resize.interval', Window.DEFAULT_RESIZE_INTERVAL));
+        }
     }
 
+    /**
+     * @returns {void}
+     */
+    _disconnect() {
+        if (this._resizeTimer !== 0) {
+            clearInterval(this._resizeTimer);
+            this._resizeTimer = 0;
+        }
+    }
+
+    /**
+     * @returns {void}
+     */
     print() {
         window.print();
     }
@@ -147,217 +375,73 @@ class Window
      * @returns {void}
      */
     close() {
-        this._isOpen = false;
         this._file = null;
+        this._isOpen = false;
     }
 
     /**
      * @returns {void}
      */
     toggleFullscreen() {
-        this._fullscreen = ! this._fullscreen;
-        this._setFullscreen(this._fullscreen);
+        this.setFullscreen(! this.fullscreen);
     }
 
     /**
      * @returns {void}
      */
     toggleStatusbar() {
-        this._statusbar = ! this._statusbar;
-        this._setStatusbar(this._statusbar);
+        this.setStatusbar(! this.statusbar);
     }
 
     /**
      * @returns {void}
      */
     toggleToolbar() {
-        this._toolbar = ! this._toolbar;
-        this._setToolbar(this._toolbar);
+        this.setToolbar(! this.toolbar);
     }
 
     /**
      * @returns {void}
      */
     showStandard() {
-        this._standard = true;
-        this._setStandard(true);
-        this._toolbar = true;
-        this._setToolbar(true);
-        this._tabs = false;
-        this._setTabs(false);
+        this.setStandard(true);
+        this.setToolbar(true);
+        this.setTabs(false);
     }
 
     /**
      * @returns {void}
      */
     showTabs() {
-        this._tabs = true;
-        this._setTabs(true);
-        this._standard = false;
-        this._setStandard(false);
-        this._toolbar = false;
-        this._setToolbar(false);
+        this.setTabs(true);
+        this.setStandard(false);
+        this.setToolbar(false);
     }
 
     /**
-     * 
-     * @param {Object} file 
      * @returns {void}
      */
-    setFile(file) {
-        if (typeof file !== 'object') {
-            throw new Error('The "file" parameter must be of type "object".');
-        }
-
-        this._file = file;
-    }
-
-    /**
-     * 
-     * @param {Object} file 
-     * @returns {void}
-     */
-    setDefaultFile(file) {
-        if (typeof file !== 'object') {
-            throw new Error('The "file" parameter must be of type "object".');
-        }
-
-        this._defaultFile = file;
-    }
-
-    /**
-     * 
-     * @returns {Boolean}
-     */
-    _getFullscreen() {
-        return Cache.get(this._configuration.getWindowCachePrefix() + 'fullscreen', false);
-    }
-
-    /**
-     * 
-     * @param {Boolean} fullscreen 
-     * @returns {void}
-     */
-    _setFullscreen(fullscreen) {
-        Cache.set(this._configuration.getWindowCachePrefix() + 'fullscreen', fullscreen);
-    }
-
-    /**
-     * 
-     * @returns {Boolean}
-     */
-    _getStatusbar() {
-        return Cache.get(this._configuration.getWindowCachePrefix() + 'statusbar', true);
-    }
-
-    /**
-     * 
-     * @param {Boolean} statusbar 
-     * @returns {void}
-     */
-    _setStatusbar(statusbar) {
-        Cache.set(this._configuration.getWindowCachePrefix() + 'statusbar', statusbar);
-    }
-
-    /**
-     * 
-     * @returns {Boolean}
-     */
-    _getToolbar() {
-        return Cache.get(this._configuration.getWindowCachePrefix() + 'toolbar', false);
-    }
-
-    /**
-     * 
-     * @param {Boolean} toolbar 
-     * @returns {void}
-     */
-    _setToolbar(toolbar) {
-        Cache.set(this._configuration.getWindowCachePrefix() + 'toolbar', toolbar);
-    }
-
-    /**
-     * 
-     * @returns {Boolean}
-     */
-    _getStandard() {
-        return Cache.get(this._configuration.getWindowCachePrefix() + 'standard', false);
-    }
-
-    /**
-     * 
-     * @param {Boolean} standard 
-     * @returns {void}
-     */
-    _setStandard(standard) {
-        Cache.set(this._configuration.getWindowCachePrefix() + 'standard', standard);
-    }
-
-    /**
-     * 
-     * @returns {Boolean}
-     */
-    _getTabs() {
-        return Cache.get(this._configuration.getWindowCachePrefix() + 'tabs', true);
-    }
-
-    /**
-     * 
-     * @param {Boolean} tabs 
-     * @returns {void}
-     */
-    _setTabs(tabs) {
-        Cache.set(this._configuration.getWindowCachePrefix() + 'tabs', tabs);
-    }
-
-    _calcHeight() {
-        return document.documentElement.clientHeight - this._element.getBoundingClientRect().top;
-    }
-
-    _calcWidth() {
-        return document.documentElement.clientWidth - this._element.getBoundingClientRect().left;
-    }
-
-    _observe() {
-        if (this.isInit()) {
-            this._resizeTimer = setInterval(() => {
-                this._height = this._calcHeight();
-                this._width = this._calcWidth();
-            }, this._timerInterval);
-
-            return true;
-        }
-
-        return false;
-    }
-
-    _disconnect() {
-        if (this.isInit() && this._resizeTimer) {
-            clearInterval(this._resizeTimer);
-
-            return true;
-        }
-        
-        return false;
-    }
-
     _addKeyUpEventListener() {
         document.addEventListener('keyup', this._keyup);
     }
 
+    /**
+     * @returns {void}
+     */
     _removeKeyUpEventListener() {
         document.removeEventListener('keyup', this._keyup);
     }
 
+    /**
+     * @returns {void}
+     */
     _keyup(e) {
         e.preventDefault();
         e.stopPropagation();
 
-        let $window = window.app.config.globalProperties.$window;
-
-        // In full screen
+        // toggle fullscreen
         if (e.altKey && e.code == 'KeyZ') {
-            $window.toggleFullscreen();
+            plugin('window').toggleFullscreen();
         } 
     }
 }

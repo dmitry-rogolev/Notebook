@@ -41,6 +41,14 @@
     }, 
     "window": {
         "open": true, 
+        "fullscreen": false, 
+        "statusbar": true, 
+        "toolbar": false, 
+        "standard": false, 
+        "tabs": true, 
+        "resize": {
+            "interval": 200
+        }, 
         "cache": {
             "prefix": "__cache_window_"
         }
