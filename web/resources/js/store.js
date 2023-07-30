@@ -30,9 +30,10 @@ const store = createStore({
                     document.body.classList.remove('dark');
                 }
             } else {
-                context.commit('dark', cache('dark') ?? false);
+                dark = cache('dark') ?? false;
+                context.commit('dark', dark);
 
-                if (context.getters.getDark) {
+                if (dark) {
                     document.body.classList.add('dark');
                 } else {
                     document.body.classList.remove('dark');

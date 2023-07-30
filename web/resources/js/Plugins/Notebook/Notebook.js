@@ -188,6 +188,7 @@ class Notebook
 
         if (isObject(note)) {
             this._notes.push(note);
+            plugin('sort').sort(this.notes);
             plugin('window').open(note);
             plugin('notifier').push({
                 message: t('Created'), 
@@ -379,7 +380,7 @@ class Notebook
         if (notEmpty(search)) {
             this._search = search;
 
-            let fuse = new Fuse(this._notes, {
+            let fuse = new Fuse(this.notes, {
                 keys: ['title', 'text'], 
                 includeMatches: true, 
             });

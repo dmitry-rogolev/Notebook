@@ -61,7 +61,7 @@
                 <SortbarPartial />
                 <TargetPartial>
                     <Sortable
-                        :list="trash"
+                        :list="trashNotes"
                         :itemKey="(item) => item.id"
                         >
                         <template #item="{element}">
@@ -115,8 +115,8 @@ export default {
         found() {
             return this.$notebook.found;
         }, 
-        trash() {
-            return this.$sort.sort(this.$notebook.trash);
+        trashNotes() {
+            return this.$sort.sort(this.$notebook.trashNotes);
         }, 
         note() {
             return this.$window.file;

@@ -26,7 +26,7 @@
                 {{ $t('Notes') }}
             </div>
             <ConfirmClearModalSidebarPartial @click="dropdown.hide()" />
-            <DropdownItemComponent v-if="showTrash" @click="$notebook.restoreAll(); dropdown.hide();">
+            <DropdownItemComponent v-if="showTrash" @click="$notebook.revert(); dropdown.hide();">
                 {{ $t('Restore all') }}
             </DropdownItemComponent>
         </template>

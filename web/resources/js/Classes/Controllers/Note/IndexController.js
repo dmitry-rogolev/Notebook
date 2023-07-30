@@ -1,4 +1,5 @@
 import Note from "../../Models/Note";
+import { plugin } from "../../helpers";
 import Controller from "../Controller";
 
 class IndexContoller extends Controller
@@ -8,8 +9,7 @@ class IndexContoller extends Controller
      * @returns {Array}
      */
     static async invoke() {
-        let $sort = window.app.config.globalProperties.$sort;
-        return $sort.sort(await Note.all());
+        return plugin('sort').sort(await Note.all());
     }
 }
 

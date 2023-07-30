@@ -12,8 +12,8 @@ class Sort
         "asc"
     ];
 
-    _column = '';
-    _direction = '';
+    _column = config('sort.columns.title', Sort.DEFAULT_COLUMNS[0]);
+    _direction = config('sort.directions.desc', Sort.DEFAULT_DIRECTIONS[0]);
 
     /**
      * @property {String}
@@ -49,7 +49,7 @@ class Sort
     sort(array) {
         if (isArray(array)) {
             array.sort((a, b) => {
-                if (this._direction == 'asc') {
+                if (this._direction === 'asc') {
                     if (a[this._column] > b[this._column]) {
                         return 1;
                     } else if (a[this._column] < b[this._column]) {
@@ -68,6 +68,8 @@ class Sort
                 }
             });
         }
+
+        return array;
     }
 
     /**

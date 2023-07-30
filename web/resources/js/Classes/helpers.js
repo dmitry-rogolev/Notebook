@@ -586,7 +586,7 @@ export async function user() {
         }
 
         try {
-            let response = await serverDriver().get(`/${config('routes.api.prefix', Database.DEFAULT_API_PREFIX)}/user`).catch(() => {});
+            let response = await serverDriver().get(`/${config('routes.api.prefix', Database.DEFAULT_API_PREFIX)}/user`);
             u = response?.data;
         } catch (e) {}
     }

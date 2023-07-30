@@ -1,9 +1,8 @@
 import { reactive } from 'vue';
-import { cache, config, driver, identifiable, isArray, isAuth, isNull, isObject, isString, isUndefined, notEmpty, pluralize, timestamps } from '../helpers';
+import { cache, config, identifiable, isArray, isAuth, isNull, isObject, isString, isUndefined, notEmpty, pluralize, timestamps } from '../helpers';
 import NotTypeError from '../Errors/NotTypeError';
 import DatabaseFacade from '../Facades/DatabaseFacade';
 import Database from '../Database/Database';
-import LocalStorageDriver from '../Database/Drivers/LocalStorageDriver';
 import ServerFacade from '../Facades/Server';
 
 class Model
@@ -338,7 +337,7 @@ class Model
             models = models.map((item) => {
                 return ServerFacade.delete(item._originals);
             });
-            await DatabaseFacade.store(`/${config('routes.api.prefix', Database.DEFAULT_API_PREFIX)}/${config('model.trashed.prefix', Model.DEFAULT_TRASHED_PREFIX)}${this.getTable()}`, models, false, false);
+            await DatabaseFacade.store(`/${config('routes.api.prefix', Database.DEFAULT_API_PREFIX)}/${config('model.trashed.prefix', Model.DEFAULT_TRASHED_PREFIX)}${this.getTable()}`, models, true, false);
         }
 
         await DatabaseFacade.delete(`/${config('routes.api.prefix', Database.DEFAULT_API_PREFIX)}/${this.getTable()}`);

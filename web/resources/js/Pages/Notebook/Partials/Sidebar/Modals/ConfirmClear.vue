@@ -12,7 +12,7 @@
                             type="button"
                             role="button"
                             class="block mr-3 bg-red-600 hover:bg-red-700 border-red-600 hover:border-red-600 border-2 text-gray-100 focus-visible:outline-none focus:ring-2 focus:ring-indigo-500 dark:focus:ring-indigo-600 rounded-lg shadow-md px-3 py-1.5 transition duration-300 ease-in-out"
-                            @click="showTrash ? $notebook.forceClear() : $notebook.clear(); modal.hide();" 
+                            @click="showTrash ? $notebook.forceTruncate() : $notebook.truncate(); modal.hide();" 
                             >
                             {{ $t("Yes, I'm sure") }}
                         </button>
@@ -82,7 +82,7 @@ export default {
             });
         }, 
         show() {
-            if (this.showTrash && this.$notebook.trash.length) {
+            if (this.showTrash && this.$notebook.trashNotes.length) {
                 this.modal.show();
             } else if (this.showNotes && this.$notebook.notes.length) {
                 this.modal.show();
