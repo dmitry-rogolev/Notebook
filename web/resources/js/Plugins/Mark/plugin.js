@@ -3,6 +3,6 @@ import { reactive } from 'vue';
 
 export default {
     install: (app, options = {}) => {
-        app.config.globalProperties.$mark = reactive(new Mark(options));
+        plugin('mark', reactive(new Mark()));
     }, 
 };

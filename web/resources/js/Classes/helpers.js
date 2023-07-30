@@ -694,11 +694,16 @@ export function inertia() {
 /**
  * 
  * @param {String} plugin 
+ * @param {any} value
  * @returns {any}
  */
-export function plugin(plugin) {
+export function plugin(plugin, value = null) {
     if (! isString(plugin)) {
         throw new NotTypeError('plugin', 'string');
+    }
+
+    if (! isNull(value)) {
+        app().config.globalProperties[`$${plugin}`] = value;
     }
 
     return app().config.globalProperties[`$${plugin}`];
@@ -746,6 +751,6 @@ export function cutTags(str) {
     if (! isString(str)) {
         throw new NotTypeError('str', 'string');
     }
-    
+
 	return str.replace(/<\/?[^>]+>/igm, '');
 }
