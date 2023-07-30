@@ -288,7 +288,7 @@ import TabComponent from '@/Components/Tabs/Trigger.vue';
 import TargetComponent from '@/Components/Tabs/Target.vue';
 import fonts from '@/assets/fonts.json';
 import { faker } from '@faker-js/faker';
-import { token } from '@/helpers';
+import { token } from '../../../../Classes/helpers';
 
 export default {
     name: 'WindowTabsPartial', 

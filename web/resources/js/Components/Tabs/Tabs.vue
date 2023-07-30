@@ -11,7 +11,7 @@
 
 <script>
 import { Tabs } from 'flowbite';
-import { token } from '@/helpers';
+import { token } from '../../Classes/helpers';
 
 export default {
     name: 'TabsComponent', 

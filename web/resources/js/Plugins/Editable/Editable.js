@@ -131,12 +131,11 @@ class Editable
      * 
      * @returns {void}
      */
-    execCommand(commandId, value = null, options = {}) {
+    execCommand(commandId, value = null) {
         if (! this.isInit || ! this.hasFocus() || config('editable.commands', Editable.DEFAULT_COMMANDS).indexOf(commandId) === -1) {
             return false;
         }
 
-        let options = config('editable.options', Editable.DEFAULT_OPTIONS);
         let done = null;
     
         if (this.cssMode) {
@@ -310,8 +309,8 @@ class Editable
      */
     _addEventListeners() {
         if (this.element instanceof HTMLElement) {
-            this._editableElement.addEventListener('keydown', this._keydownEventHandler);
-            this._editableElement.addEventListener('paste', this._paste);
+            this.element.addEventListener('keydown', this._keydownEventHandler);
+            this.element.addEventListener('paste', this._paste);
             document.addEventListener('keyup', this._keyup);
         }
     }
@@ -321,8 +320,8 @@ class Editable
      */
     _removeEventListeners() {
         if (this.element instanceof HTMLElement) {
-            this._editableElement.removeEventListener('keydown', this._keydownEventHandler);
-            this._editableElement.removeEventListener('paste', this._paste);
+            this.element.removeEventListener('keydown', this._keydownEventHandler);
+            this.element.removeEventListener('paste', this._paste);
             document.removeEventListener('keyup', this._keyup);
         }
     }

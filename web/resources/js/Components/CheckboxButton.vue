@@ -18,7 +18,7 @@
 </template>
 
 <script>
-import { token } from '@/helpers';
+import { token } from '../Classes/helpers';
 
 export default {
     name: 'CheckboxButtonComponent', 

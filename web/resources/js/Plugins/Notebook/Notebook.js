@@ -184,7 +184,7 @@ class Notebook
      * @param {Object} note 
      */
     async create(note = {}) {
-        let note = await StoreController.invoke(note);
+        note = await StoreController.invoke(note);
 
         if (isObject(note)) {
             this._notes.push(note);

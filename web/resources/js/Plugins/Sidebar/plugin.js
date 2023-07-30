@@ -1,3 +1,4 @@
+import { plugin } from '../../Classes/helpers';
 import Sidebar from './Sidebar';
 import { reactive } from 'vue';
 

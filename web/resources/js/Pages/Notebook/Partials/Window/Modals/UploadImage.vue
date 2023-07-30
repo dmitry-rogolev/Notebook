@@ -75,8 +75,8 @@ import TargetComponent from '@/Components/Tabs/Target.vue';
 import InputComponent from '@/Components/TextInput.vue';
 
 import { Modal } from 'flowbite';
-import { token } from '@/helpers';
 import Dropzone from "dropzone";
+import { token } from '../../../../../Classes/helpers';
 
 export default {
     name: 'UploadImageWindowModalPartial', 

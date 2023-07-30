@@ -1,3 +1,4 @@
+import { plugin } from '../../Classes/helpers';
 import Window from './Window';
 import { reactive } from 'vue';
 

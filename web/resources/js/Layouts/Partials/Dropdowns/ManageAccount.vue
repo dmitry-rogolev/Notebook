@@ -24,9 +24,9 @@
 </template>
 
 <script>
-import { router } from '@inertiajs/vue3';
 import DropdownComponent from '@/Components/Dropdown/Dropdown.vue';
 import DropdownItemComponent from '@/Components/Dropdown/Item.vue';
+import { router } from '../../../Classes/helpers';
 
 export default {
     name: 'ManageAccountDropdownPartial', 
@@ -46,7 +46,7 @@ export default {
 
     methods: {
         logout() {
-            router.post(route('logout'));
+            router().post(route('logout'));
         }, 
     }, 
 }

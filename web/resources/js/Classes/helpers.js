@@ -580,13 +580,13 @@ export function keysByUrl(path) {
 export async function user() {
     let u = usePage()?.props?.auth?.user;
 
-    if (! u) {
+    if (isUndefined(u)) {
         if (isUndefined(getCookie('XSRF-TOKEN'))) {
             await csrfCookie();
         }
 
         try {
-            let response = await serverDriver().get(`/${config('routes.api.prefix', Database.DEFAULT_API_PREFIX)}/user`);
+            let response = await serverDriver().get(`/${config('routes.api.prefix', Database.DEFAULT_API_PREFIX)}/user`).catch(() => {});
             u = response?.data;
         } catch (e) {}
     }
@@ -753,4 +753,75 @@ export function cutTags(str) {
     }
 
 	return str.replace(/<\/?[^>]+>/igm, '');
+}
+
+/**
+ * 
+ * @param {Number} count 
+ * @param {String} prefix 
+ * @returns {String}
+ */
+export function token(count = 60, prefix = 'token_') {
+    let chars = 'abcdefghijklmnopqrstuvwxyzABCDEFGHIJKLMNOPQRSTUVWXYZ0123456789';
+    let token = prefix;
+    for (let i = 0; i < count; i++) {
+        token += chars[Math.floor(Math.random() * chars.length)];
+    }
+    return token;
+}
+
+/**
+ * 
+ * @param {String} str 
+ * @returns {String}
+ */
+export function escapeHtml(str) {
+    var map = {
+        '&': '&amp;',
+        '<': '&lt;',
+        '>': '&gt;',
+        '"': '&quot;',
+        "'": '&#039;'
+    };
+    
+    return str.replace(/[&<>"']/gm, function(m) { return map[m]; });
+}
+
+/**
+ * 
+ * @param {String} str 
+ * @returns {String}
+ */
+export function cutForbiddenTags(str) {
+    return str.replace(/<\/?[^>]+>/igm, (v) => { 
+        return /<\/?(script|meta|body|iframe|head|html).*>/igm.test(v) ? '' : v;
+    });
+}
+
+/**
+ * 
+ * @param {String} str 
+ * @returns {String}
+ */
+export function escapeRegex(str) {
+	return str.replace(/([\\\.\+\*\?\[\^\]\$\(\)\{\}\=\!\<\>\|\:])/gm, "\\$1");
+}
+
+/**
+ * 
+ * @param {HTMLElement} element 
+ * @returns {Array}
+ */
+export function getTextNodes(element) {
+    let textNodes = [];
+
+    element.childNodes.forEach((v) => {
+        if (v.nodeType == 3) {
+            textNodes.push(v);
+        } else {
+            textNodes = textNodes.concat(this.getTextNodes(v));
+        }
+    });
+
+    return textNodes;
 }

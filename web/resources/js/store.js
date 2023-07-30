@@ -1,4 +1,5 @@
 import { createStore } from 'vuex';
+import { cache, config, isUndefined, plugin } from './Classes/helpers';
 
 const store = createStore({
     state() {
@@ -6,13 +7,7 @@ const store = createStore({
             dark: false, 
             locale: 'ru', 
         };
-    }, 
-
-    getters: {
-        getDark() {
-            return localStorage.getItem('dark') == 'true' ? true : false;
-        }, 
-    }, 
+    },  
 
     mutations: {
         dark(state, dark) {
@@ -25,9 +20,9 @@ const store = createStore({
 
     actions: {
         dark(context, dark) {
-            if (dark != undefined) {
+            if (! isUndefined(dark)) {
                 context.commit('dark', dark);
-                localStorage.setItem('dark', dark);
+                cache('dark', dark);
 
                 if (dark) {
                     document.body.classList.add('dark');
@@ -35,7 +30,7 @@ const store = createStore({
                     document.body.classList.remove('dark');
                 }
             } else {
-                context.commit('dark', context.getters.getDark);
+                context.commit('dark', cache('dark') ?? false);
 
                 if (context.getters.getDark) {
                     document.body.classList.add('dark');
@@ -47,12 +42,12 @@ const store = createStore({
         locale(context, locale) {
             if (locale != undefined) {
                 context.commit('locale', locale);
-                localStorage.setItem('locale', locale);
-                window.app.config.globalProperties.$i18n.locale = locale;
+                cache('locale', locale);
+                plugin('i18n').locale = locale;
             } else {
-                let locale = localStorage.getItem('locale');
+                locale = cache('locale') ?? config('locale.default', 'ru');
                 context.commit('locale', locale);
-                window.app.config.globalProperties.$i18n.locale = locale;
+                plugin('i18n').locale = locale;
             }
         }, 
     }, 

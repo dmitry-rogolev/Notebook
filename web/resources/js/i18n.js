@@ -1,10 +1,11 @@
 import { createI18n } from 'vue-i18n';
 import messages from './assets/messages';
+import { config } from './Classes/helpers';
 
 const i18n = createI18n({
     messages: messages, 
-    locale: 'ru', 
-    fallbackLocale: 'en', 
+    locale: config('locale.default', 'ru'), 
+    fallbackLocale: config('locale.fallback', config('locale.default', 'ru') === 'ru' ? 'en' : 'ru'), 
     globalInjection: true,
     pluralRules: {
         ru: (choice, choicesLength, orgRule) => {

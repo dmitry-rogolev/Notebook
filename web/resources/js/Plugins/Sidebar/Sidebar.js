@@ -1,5 +1,5 @@
 import NotTypeError from "../../Classes/Errors/NotTypeError";
-import { isBoolean, isNull } from "../../Classes/helpers";
+import { config, isBoolean, isNull } from "../../Classes/helpers";
 
 class Sidebar 
 {

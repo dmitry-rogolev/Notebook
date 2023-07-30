@@ -118,7 +118,6 @@ import TriggerComponent from '@/Components/Modal/Trigger.vue';
 import { Modal } from 'flowbite';
 import TabLinkComponent from '@/Components/TabLink.vue';
 import CardButtonComponent from '@/Components/CardButton.vue';
-import { token } from '@/helpers';
 import symbols from '@/assets/symbols.json';
 import arrows from '@/assets/arrows.json';
 import currencies from '@/assets/currencies.json';
@@ -126,6 +125,7 @@ import letters from '@/assets/letters.json';
 import math from '@/assets/math.json';
 import numbers from '@/assets/numbers.json';
 import punctuation from '@/assets/punctuation.json';
+import { token } from '../../../../../Classes/helpers';
 
 export default {
     name: 'InsertSymbolsWindowModalPartial', 

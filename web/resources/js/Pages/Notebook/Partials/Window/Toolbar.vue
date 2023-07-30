@@ -193,7 +193,7 @@ import FontSizePartial from './Dropdowns/Sub/Toolbar/FontSize.vue';
 import SaveAsPartial from './Modals/Toolbar/SaveAs.vue';
 import fonts from '@/assets/fonts.json';
 import { faker } from '@faker-js/faker';
-import { token } from '@/helpers';
+import { token } from '../../../../Classes/helpers';
 
 export default {
     name: 'WindowToolbarPartial', 

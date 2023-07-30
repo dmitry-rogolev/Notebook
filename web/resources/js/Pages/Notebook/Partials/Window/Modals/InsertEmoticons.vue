@@ -44,8 +44,8 @@ import TriggerComponent from '@/Components/Modal/Trigger.vue';
 import { Modal } from 'flowbite';
 import TabLinkComponent from '@/Components/TabLink.vue';
 import CardButtonComponent from '@/Components/CardButton.vue';
-import { token } from '@/helpers';
 import emoticons from '@/assets/emoticons.json';
+import { token } from '../../../../../Classes/helpers';
 
 export default {
     name: 'InsertEmoticonsWindowModalPartial', 

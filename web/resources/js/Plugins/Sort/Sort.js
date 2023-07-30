@@ -47,29 +47,27 @@ class Sort
      * @returns {void}
      */
     sort(array) {
-        if (! isArray(array)) {
-            throw new NotTypeError('array', 'Array');
+        if (isArray(array)) {
+            array.sort((a, b) => {
+                if (this._direction == 'asc') {
+                    if (a[this._column] > b[this._column]) {
+                        return 1;
+                    } else if (a[this._column] < b[this._column]) {
+                        return -1;
+                    } else {
+                        return 0;
+                    }
+                } else {
+                    if (a[this._column] > b[this._column]) {
+                        return -1;
+                    } else if (a[this._column] < b[this._column]) {
+                        return 1;
+                    } else {
+                        return 0;
+                    }
+                }
+            });
         }
-
-        array.sort((a, b) => {
-            if (this._direction == 'asc') {
-                if (a[this._column] > b[this._column]) {
-                    return 1;
-                } else if (a[this._column] < b[this._column]) {
-                    return -1;
-                } else {
-                    return 0;
-                }
-            } else {
-                if (a[this._column] > b[this._column]) {
-                    return -1;
-                } else if (a[this._column] < b[this._column]) {
-                    return 1;
-                } else {
-                    return 0;
-                }
-            }
-        });
     }
 
     /**

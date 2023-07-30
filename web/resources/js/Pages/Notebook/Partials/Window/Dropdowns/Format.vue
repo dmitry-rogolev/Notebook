@@ -114,7 +114,7 @@ import DropdownItemComponent from '@/Components/Dropdown/Item.vue';
 import BlockFormatDropdownPartial from './Sub/Menu/BlockFormat.vue';
 import FontDropdownPartial from './Sub/Menu/Font.vue';
 import FontSizeDropdownPartial from './Sub/Menu/FontSize.vue';
-import { token } from '@/helpers';
+import { token } from '../../../../../Classes/helpers';
 
 export default {
     name: 'WindowFormatDropdownPartial', 

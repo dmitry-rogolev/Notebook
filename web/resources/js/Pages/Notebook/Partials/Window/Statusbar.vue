@@ -15,7 +15,7 @@
 
 <script>
 import WindowStatusbarComponent from '@/Plugins/Window/Components/WindowStatusbar.vue';
-import { cutTags } from '@/helpers';
+import { cutTags } from '../../../../Classes/helpers';
 
 export default {
     name: 'WindowStatusbarPartial', 

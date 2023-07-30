@@ -1,6 +1,10 @@
 {
     "app_name": "Notebook", 
     "app_url": "http://127.0.0.1:8000", 
+    "locale": {
+        "default": "ru", 
+        "fallback": "en"
+    }, 
     "routes": {
         "api": {
             "prefix": "api"

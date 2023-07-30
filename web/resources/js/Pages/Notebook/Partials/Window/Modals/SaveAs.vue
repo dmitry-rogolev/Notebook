@@ -51,7 +51,7 @@ import ModalComponent from '@/Components/Modal/Modal.vue';
 import TriggerComponent from '@/Components/Modal/Trigger.vue';
 import InputComponent from '@/Components/TextInput.vue';
 import { Modal } from 'flowbite';
-import { cutTags } from '@/helpers';
+import { cutTags } from '../../../../../Classes/helpers';
 
 export default {
     name: 'SaveAsModalWindowPartial', 

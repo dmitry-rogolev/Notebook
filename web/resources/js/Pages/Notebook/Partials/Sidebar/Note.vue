@@ -15,7 +15,7 @@
 
 <script>
 import ItemSidebarComponent from '@/Plugins/Sidebar/Components/Item.vue';
-import { cutTags } from '@/helpers';
+import { cutTags } from '../../../../Classes/helpers';
 
 export default {
     name: 'NoteSidebarPartial', 
