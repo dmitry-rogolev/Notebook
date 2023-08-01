@@ -54,7 +54,7 @@ export default {
 
     methods: {
         cutTags(str) {
-            return cutTags(str);
+            return cutTags(str ?? '');
         }, 
         setDateAgo() {
             if (this.note.isTrashed) {

@@ -152,7 +152,7 @@ export default {
                 contentType: false,
                 processData: false,
             }).then(response => {
-                this.$editable.editableElement.focus();
+                this.$editable.element.focus();
                 this.$editable.execCommand('insertImage', this.basePath + '/api/notes/' + this.$window.file.id + '/images/' + response.data.image.name);
                 this.modal.hide();
             });
@@ -173,7 +173,7 @@ export default {
             }
         }, 
         defineFocus() {
-            this.$editable.editableElement.focus();
+            this.$editable.element.focus();
 
             if (this.range) {
                 window.getSelection().removeAllRanges();

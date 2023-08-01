@@ -13,7 +13,7 @@
 
             <button 
                 type="button"
-                @click="this.case = ! this.case; $mark.toggleCase();"
+                @click="$mark.toggleCase();"
                 class="px-4 focus-visible:outline-none text-gray-700 dark:text-gray-300 border-0 transition duration-200 ease-in-out"
                 :class="this.case ? 'bg-gray-200 dark:bg-gray-700' : ''"
                 :title="$t('Case sensitive')"
@@ -75,7 +75,6 @@ export default {
         return {
             search: '', 
             replace: '', 
-            case: false, 
         };
     },
 
@@ -91,6 +90,9 @@ export default {
                 this.search = v;
                 this.$mark.find(v);
             }, 
+        }, 
+        case() {
+            return this.$mark.case;
         }, 
     },
 }

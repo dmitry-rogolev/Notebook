@@ -132,7 +132,9 @@ class Mark
         this._base.unmark();
         this._replacedNodes = [];
         if (isString(keyword)) {
-            this._base.mark(keyword, config('mark.options', Mark.DEFAULT_OPTIONS));
+            let options = config('mark.options', Mark.DEFAULT_OPTIONS);
+            options.caseSensitive = this.case;
+            this._base.mark(keyword, options);
         }
     }
 
@@ -152,6 +154,7 @@ class Mark
                 this._replacedNodes.push(node);
                 node.textContent = replace;
             };
+            options.caseSensitive = this.case;
             this._base.mark(keyword, options);
         }
     }

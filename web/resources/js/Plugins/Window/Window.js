@@ -21,7 +21,7 @@ class Window
     _toolbar = false;
     _standard = false;
     _tabs = true;
-    _resizeTimer = null;
+    _resizeTimer = 0;
     _file = null;
     _defaultFile = null;
     _isOpen = false;
@@ -336,7 +336,8 @@ class Window
      * @returns {void}
      */
     _observe() {
-        if (this.isInit) {
+        if (this._resizeTimer === 0) {
+            console.log(this.getHeight(), this.getWidth(), config('window.resize.interval', Window.DEFAULT_RESIZE_INTERVAL));
             this._resizeTimer = setInterval(() => {
                 this._height = this.getHeight();
                 this._width = this.getWidth();

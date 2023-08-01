@@ -1,5 +1,5 @@
 import Fuse from 'fuse.js'
-import { cache, config, createElement, inertia, isAuth, isBoolean, isNull, isObject, isString, notEmpty, plugin, router, store, t } from "../../Classes/helpers";
+import { cache, clientDriver, config, createElement, inertia, isAuth, isBoolean, isNull, isObject, isString, notEmpty, plugin, router, serverDriver, store, t } from "../../Classes/helpers";
 import IndexController from "../../Classes/Controllers/Note/IndexController";
 import TrashIndexController from "../../Classes/Controllers/Note/Trash/IndexController";
 import Window from "../Window/Window";
@@ -12,6 +12,8 @@ import TruncateController from "../../Classes/Controllers/Note/TruncateControlle
 import TrashTruncateController from "../../Classes/Controllers/Note/Trash/TruncateController";
 import RestoreController from "../../Classes/Controllers/Note/Trash/RestoreController";
 import RevertController from "../../Classes/Controllers/Note/Trash/RevertController";
+import Database from '../../Classes/Database/Database';
+import Model from '../../Classes/Model/Model';
 
 class Notebook
 {
@@ -105,6 +107,7 @@ class Notebook
                 store().dispatch('locale');
             });
 
+            await this.export();
             this._autosave = this.getAutosave();
             this._notes = await this._fetchNotes();
             this._trashNotes = await this._fetchTrashNotes();
@@ -326,6 +329,26 @@ class Notebook
     }
 
     /**
+     * @returns {void}
+     */
+    async export() {
+        if (await isAuth()) {
+            let notes = clientDriver().get(`/${config('routes.api.prefix', Database.DEFAULT_API_PREFIX)}/notes`)?.data?.data;
+            let trashNotes = clientDriver().get(`/${config('routes.api.prefix', Database.DEFAULT_API_PREFIX)}/${config('model.trashed.prefix', Model.DEFAULT_TRASHED_PREFIX)}notes`)?.data?.data;
+
+            if (! isNull(notes) && notEmpty(notes)) {
+                await serverDriver().post(`/${config('routes.api.prefix', Database.DEFAULT_API_PREFIX)}/notes/export`, {notes: notes});
+                clientDriver().delete(`/${config('routes.api.prefix', Database.DEFAULT_API_PREFIX)}/notes`)
+            }
+
+            if (! isNull(trashNotes) && notEmpty(trashNotes)) {
+                await serverDriver().post(`/${config('routes.api.prefix', Database.DEFAULT_API_PREFIX)}/${config('model.trashed.prefix', Model.DEFAULT_TRASHED_PREFIX)}notes/export`, {notes: trashNotes});
+                clientDriver().delete(`/${config('routes.api.prefix', Database.DEFAULT_API_PREFIX)}/${config('model.trashed.prefix', Model.DEFAULT_TRASHED_PREFIX)}notes`)
+            }
+        }
+    }
+
+    /**
     * @returns {void}
     */
     toggleAutosave() {
@@ -397,10 +420,10 @@ class Notebook
      */
     async logout() {
         if (await isAuth()) {
-            router().post(route('logout'));
+            await router().post(route('logout'));
             this.closeWindow();
-            this._notes = await this._fetchNotes();
-            this._trashNotes = await this._fetchTrashNotes();
+            this._notes = [];
+            this._trashNotes = [];
         }
     }
 

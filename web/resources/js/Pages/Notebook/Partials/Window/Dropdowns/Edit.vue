@@ -51,7 +51,7 @@
                         <i class="fa-solid fa-trash w-6 text-center mr-2"></i>
                         <span>{{ $t('Delete') }}</span>
                     </div>
-                    <div class="text-xs font-bold">{{ $t('Delete') }}</div>
+                    <div class="text-xs font-bold">Delete</div>
                 </div>
             </DropdownItemComponent>
 
