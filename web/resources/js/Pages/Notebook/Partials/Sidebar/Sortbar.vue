@@ -1,10 +1,10 @@
 <template>
-    <SortbarComponent class="px-2 border-gray-300 dark:border-gray-600 border-b">
+    <SortbarComponent class="md:px-2 border-gray-300 dark:border-gray-600 border-r md:border-r-0 bg-white dark:bg-gray-800">
         <OptionsDropdownPartial />
         <button 
             type="button"
             role="button"
-            class="hover:bg-gray-200 dark:hover:bg-gray-700 px-2 text-gray-700 dark:text-gray-300"
+            class="hover:bg-gray-200 dark:hover:bg-gray-700 px-2 py-1 md:py-0 text-gray-700 dark:text-gray-300 text-2xl md:text-lg"
             @click="$sort.toggleDirection();"
             :title="direction == 'asc' ? $t('in ascending order') : $t('in descending order')"
             >

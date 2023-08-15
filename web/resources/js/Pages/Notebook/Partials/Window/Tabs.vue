@@ -3,44 +3,44 @@
         <TabsComponent 
             activeClasses="border-indigo-500 dark:border-indigo-600 text-indigo-500 dark:text-indigo-600 cursor-default pointer-events-none"
             inactiveClasses="border-gray-300 dark:border-gray-600 text-gray-700 dark:text-gray-300 hover:border-gray-400 dark:hover:border-gray-500 hover:text-gray-800 dark:hover:text-gray-200 focus:border-indigo-500 dark:focus:border-indigo-600 focus:text-indigo-500 dark:focus:text-indigo-600"
-            triggersContainerClass="border-gray-300 dark:border-gray-600 border-b px-4 bg-gray-100 dark:bg-slate-800 text-xs md:text-sm lg:text-base"
+            triggersContainerClass="border-gray-300 dark:border-gray-600 border-b px-4 bg-gray-100 dark:bg-slate-800 text-base md:text-sm lg:text-base overflow-x-auto"
             >
             <template #triggers>
-                <TabComponent class="px-1 md:px-2 lg:px-3 py-1 mr-0 md:mr-1 lg:mr-2 border-b-2">
+                <TabComponent class="px-1 md:px-2 lg:px-3 py-1 mr-2 md:mr-1 lg:mr-2 border-b-2">
                     {{ $t('File') }}
                 </TabComponent>
-                <TabComponent class="px-1 md:px-2 lg:px-3 py-1 mr-0 md:mr-1 lg:mr-2 border-b-2">
+                <TabComponent class="px-1 md:px-2 lg:px-3 py-1 mr-2 md:mr-1 lg:mr-2 border-b-2">
                     {{ $t('Edit') }}
                 </TabComponent>
-                <TabComponent class="px-1 md:px-2 lg:px-3 py-1 mr-0 md:mr-1 lg:mr-2 border-b-2">
+                <TabComponent class="px-1 md:px-2 lg:px-3 py-1 mr-2 md:mr-1 lg:mr-2 border-b-2">
                     {{ $t('Insert') }}
                 </TabComponent>
-                <TabComponent class="px-1 md:px-2 lg:px-3 py-1 mr-0 md:mr-1 lg:mr-2 border-b-2">
+                <TabComponent class="px-1 md:px-2 lg:px-3 py-1 mr-2 md:mr-1 lg:mr-2 border-b-2">
                     {{ $t('Format') }}
                 </TabComponent>
-                <TabComponent class="px-1 md:px-2 lg:px-3 py-1 mr-0 md:mr-1 lg:mr-2 border-b-2">
+                <TabComponent class="px-1 md:px-2 lg:px-3 py-1 mr-2 md:mr-1 lg:mr-2 border-b-2">
                     {{ $t('Tools') }}
                 </TabComponent>
-                <TabComponent class="px-1 md:px-2 lg:px-3 py-1 border-b-2">
+                <TabComponent class="px-1 md:px-2 lg:px-3 py-1 mr-2 md:mr-1 lg:mr-2 border-b-2">
                     {{ $t('View') }}
                 </TabComponent>
                 <button 
                     type="button"
                     role="button"
                     :title="fullscreen ? $t('Fullscreen on') : $t('Fullscreen off')"
-                    class="ml-auto px-2 md:px-3 lg:px-4 py-1 text-xs md:text-sm lg:text-base text-gray-700 dark:text-gray-300 hover:bg-gray-200 dark:hover:bg-slate-600 focus:bg-gray-200 dark:focus:bg-slate-600 focus-visible:outline-none transition duration-200 ease-in-out select-none"
+                    class="ml-auto px-2 md:px-3 lg:px-4 py-1 text-xs md:text-sm lg:text-base text-gray-700 dark:text-gray-300 hover:bg-gray-200 dark:hover:bg-slate-600 focus:bg-gray-200 dark:focus:bg-slate-600 focus-visible:outline-none transition duration-200 ease-in-out select-none hidden md:block"
                     @click="$window.toggleFullscreen()"
                     >
                     <i v-if="fullscreen" class="fa-solid fa-down-left-and-up-right-to-center fa-rotate-90"></i>
                     <i v-else class="fa-solid fa-up-right-and-down-left-from-center fa-rotate-90"></i>
                 </button>
-                <button :title="$t('Close')" role="button" @click="$window.close()" @mouseenter="showXmark = true" @mouseleave="showXmark = false" type="button" class="px-2 md:px-3 lg:px-4 py-1 text-xs md:text-sm lg:text-base text-gray-700 dark:text-gray-300 hover:bg-gray-200 dark:hover:bg-slate-600 focus:bg-gray-200 dark:focus:bg-slate-600 focus-visible:outline-none transition duration-200 ease-in-out select-none">
+                <button :title="$t('Close')" role="button" @click="$window.close()" @mouseenter="showXmark = true" @mouseleave="showXmark = false" type="button" class="px-3 md:px-3 lg:px-4 py-1 text-base md:text-sm lg:text-base text-gray-700 dark:text-gray-300 hover:bg-gray-200 dark:hover:bg-slate-600 focus:bg-gray-200 dark:focus:bg-slate-600 focus-visible:outline-none transition duration-200 ease-in-out select-none ml-auto md:ml-0">
                     <div v-if="changed && ! showXmark" class="bg-gray-600 dark:bg-gray-300 rounded-full w-3 h-3 min-w-[0.75rem] min-h-[0.75rem]"></div>
                     <i v-else class="fa-solid fa-xmark"></i>
                 </button>
             </template>
             <template #targets>
-                <TargetComponent class="flex flex-wrap px-2 sm:px-4 py-1 bg-gray-50 dark:bg-slate-800 border-gray-300 dark:border-gray-600 border-b text-gray-700 dark:text-gray-300">
+                <TargetComponent class="flex flex-nowrap md:flex-wrap px-2 sm:px-4 py-1 bg-gray-50 dark:bg-slate-800 border-gray-300 dark:border-gray-600 border-b text-gray-700 dark:text-gray-300 overflow-y-auto">
                     <div role="menuitem">
                         <ToolbarButtonComponent @click="$notebook.create();" :title="$t('New note')">
                             <i class="fa-solid fa-file"></i>
@@ -75,7 +75,7 @@
                         </ToolbarButtonComponent>
                     </div>
                 </TargetComponent>
-                <TargetComponent class="flex flex-wrap px-2 sm:px-4 py-1 bg-gray-50 dark:bg-slate-800 border-gray-300 dark:border-gray-600 border-b text-gray-700 dark:text-gray-300">
+                <TargetComponent class="flex flex-nowrap md:flex-wrap px-2 sm:px-4 py-1 bg-gray-50 dark:bg-slate-800 border-gray-300 dark:border-gray-600 border-b text-gray-700 dark:text-gray-300 overflow-y-auto">
                     <div role="menuitem">
                         <ToolbarButtonComponent @click="$editable.execCommand('undo');" :title="$t('Undo')">
                             <i class="fa-solid fa-rotate-left"></i>
@@ -124,7 +124,7 @@
                         </ToolbarButtonComponent>
                     </div>
                 </TargetComponent>
-                <TargetComponent class="flex flex-wrap px-2 sm:px-4 py-1 bg-gray-50 dark:bg-slate-800 border-gray-300 dark:border-gray-600 border-b text-gray-700 dark:text-gray-300">
+                <TargetComponent class="flex flex-nowrap md:flex-wrap px-2 sm:px-4 py-1 bg-gray-50 dark:bg-slate-800 border-gray-300 dark:border-gray-600 border-b text-gray-700 dark:text-gray-300 overflow-y-auto">
                     <div role="menuitem">
                         <ToolbarButtonComponent @click="$editable.execCommand('insertUnorderedList')" :title="$t('Unordered list')">
                             <i class="fa-solid fa-list-ul"></i>
@@ -153,7 +153,7 @@
                         <InsertEmoticonsWindowToolbarModalPartial />
                     </div>
                 </TargetComponent>
-                <TargetComponent class="flex flex-wrap px-2 sm:px-4 py-1 bg-gray-50 dark:bg-slate-800 border-gray-300 dark:border-gray-600 border-b text-gray-700 dark:text-gray-300">
+                <TargetComponent class="flex flex-nowrap md:flex-wrap px-2 sm:px-4 py-1 bg-gray-50 dark:bg-slate-800 border-gray-300 dark:border-gray-600 border-b text-gray-700 dark:text-gray-300 overflow-y-auto">
                     <div role="menuitem">
                         <BlockFormatPartial />
                     </div>
@@ -242,14 +242,14 @@
                         </ToolbarButtonComponent>
                     </div>
                 </TargetComponent>
-                <TargetComponent class="flex flex-wrap px-2 sm:px-4 py-1 bg-gray-50 dark:bg-slate-800 border-gray-300 dark:border-gray-600 border-b text-gray-700 dark:text-gray-300">
+                <TargetComponent class="flex flex-nowrap md:flex-wrap px-2 sm:px-4 py-1 bg-gray-50 dark:bg-slate-800 border-gray-300 dark:border-gray-600 border-b text-gray-700 dark:text-gray-300 overflow-y-auto">
                     <div role="menuitem">
                         <ToolbarButtonComponent @click="$editable.toggleSpellcheck();" :title="spellcheck ? $t('Spell check on') : $t('Spell check off')">
                             <i class="fa-solid fa-spell-check" :class="{'text-indigo-500 dark:text-indigo-600': spellcheck}"></i>
                         </ToolbarButtonComponent>
                     </div>
                 </TargetComponent>
-                <TargetComponent class="flex flex-wrap px-2 sm:px-4 py-1 bg-gray-50 dark:bg-slate-800 border-gray-300 dark:border-gray-600 border-b text-gray-700 dark:text-gray-300">
+                <TargetComponent class="flex flex-nowrap md:flex-wrap px-2 sm:px-4 py-1 bg-gray-50 dark:bg-slate-800 border-gray-300 dark:border-gray-600 border-b text-gray-700 dark:text-gray-300 overflow-y-auto">
                     <div role="menuitem">
                         <ToolbarButtonComponent @click="$window.showStandard();" :title="$t('Standard menu')">
                             <i class="fa-solid fa-table-list"></i>
@@ -260,7 +260,7 @@
                             <i class="fa-solid fa-heart-pulse" :class="{'text-indigo-500 dark:text-indigo-600': statusbar}"></i>
                         </ToolbarButtonComponent>
                     </div>
-                    <div role="menuitem">
+                    <div role="menuitem" class="hidden md:block">
                         <ToolbarButtonComponent @click="$window.toggleFullscreen();" :title="fullscreen ? $t('Fullscreen on') : $t('Fullscreen off')">
                             <i v-if="fullscreen" class="fa-solid fa-down-left-and-up-right-to-center fa-rotate-90"></i>
                             <i v-else class="fa-solid fa-up-right-and-down-left-from-center fa-rotate-90"></i>

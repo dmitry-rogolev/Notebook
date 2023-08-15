@@ -1,11 +1,13 @@
 <template>
     <AppLayout :title="$t('Main')">
         <main class="flex-auto flex flex-col">
-            <div class="flex-auto flex">
+            <div class="flex-auto flex flex-col-reverse md:flex-row md:flex-nowrap">
 
-                <SidebarPartial />
+                <transition name="slide">
+                    <SidebarPartial />
+                </transition>
 
-                <WindowPartial v-show="windowIsOpen" />
+                <WindowPartial v-show="windowIsOpen" class="flex-auto" />
 
             </div>
         </main>
@@ -59,5 +61,14 @@ export default {
 .header-leave-to {
   opacity: 0;
   transform: translateY(-100%);
+}
+.slide-enter-active,
+.slide-leave-active {
+  transition: all 0.2s ease;
+}
+.slide-enter-from,
+.slide-leave-to {
+  opacity: 0;
+  transform: translateX(-100%);
 }
 </style>

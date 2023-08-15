@@ -108,7 +108,10 @@ class Window
      * @returns {Number}
      */
     getHeight() {
-        return document.documentElement.clientHeight - this.element.getBoundingClientRect().top;
+        if (document.documentElement.clientWidth > 768) {
+            return document.documentElement.clientHeight;
+        }
+        return document.documentElement.clientHeight - plugin('sidebar').getHeight();
     }
 
     /**
@@ -337,7 +340,6 @@ class Window
      */
     _observe() {
         if (this._resizeTimer === 0) {
-            console.log(this.getHeight(), this.getWidth(), config('window.resize.interval', Window.DEFAULT_RESIZE_INTERVAL));
             this._resizeTimer = setInterval(() => {
                 this._height = this.getHeight();
                 this._width = this.getWidth();

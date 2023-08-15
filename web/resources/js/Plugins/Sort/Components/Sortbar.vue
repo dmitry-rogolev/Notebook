@@ -1,5 +1,5 @@
 <template>
-    <section class="flex flex-nowrap justify-between select-none">
+    <section class="flex flex-col md:flex-row md:flex-nowrap justify-between select-none">
         <slot></slot>
     </section>
 </template>

@@ -1,36 +1,33 @@
 <template>
-    <transition name="slide">
-        <section 
-            v-show="! fullscreen || show" 
-            ref="sidebar" 
-            class="flex flex-nowrap print:hidden" 
-            role="menubar" 
-            :style="{height: height, maxHeight: height}"
-            @mouseleave="show = false"
-            v-bind="$attrs"
-            >
-            <div :class="[triggersContainerClass]">
-                <slot name="triggers"></slot>
+    <section 
+        v-show="! fullscreen || show" 
+        ref="sidebar" 
+        class="flex flex-col md:flex-row md:flex-nowrap print:hidden w-screen md:w-auto z-10 h-auto md:h-screen" 
+        role="menubar" 
+        @mouseleave="show = false"
+        >
+        <div class="order-2 md:order-1" :class="[triggersContainerClass]">
+            <slot name="triggers"></slot>
+        </div>
+        <transition enter-active-class="transition duration-200 ease-in-out" leave-active-class="transition duration-200 ease-in-out" enter-from-class="opacity-0 translate-y-full md:translate-y-0 md:-translate-x-full" leave-to-class="opacity-0 translate-y-full md:translate-y-0 md:-translate-x-full">
+            <div 
+                v-if="active" 
+                class="order-1 md:order-2"
+                :class="[targetsContainerClass]" 
+                tabindex="-1"
+                role="menu" 
+                >
+                <slot name="targets"></slot>
             </div>
-            <transition name="slide">
-                <div 
-                    v-if="active" 
-                    :class="[targetsContainerClass]" 
-                    tabindex="-1"
-                    role="menu" 
-                    >
-                    <slot name="targets"></slot>
-                </div>
-            </transition>
-        </section>
-    </transition>
-    <teleport to="body">
-        <div 
-            v-show="fullscreen && ! show"
-            class="absolute top-0 left-0 bottom-0 w-2 z-[100]"
-            @mouseenter="show = true"
-            ></div>
-    </teleport>
+        </transition>
+        <teleport to="body">
+            <div 
+                v-show="fullscreen && ! show"
+                class="absolute top-0 left-0 bottom-0 w-2 z-[100]"
+                @mouseenter="show = true"
+                ></div>
+        </teleport>
+    </section>
 </template>
 
 <script>
@@ -45,12 +42,12 @@ export default {
     },
 
     computed: {
-        height() {
-            return this.$sidebar.height + 'px';
-        }, 
-        width() {
-            return this.$sidebar.width + 'px';
-        }, 
+        // height() {
+        //     return this.$sidebar.height + 'px';
+        // }, 
+        // width() {
+        //     return this.$sidebar.width + 'px';
+        // }, 
         fullscreen() {
             return this.$window.fullscreen;
         },
@@ -82,13 +79,5 @@ export default {
 </script>
 
 <style scoped>
-.slide-enter-active,
-.slide-leave-active {
-  transition: all 0.2s ease;
-}
-.slide-enter-from,
-.slide-leave-to {
-  opacity: 0;
-  transform: translateX(-100%);
-}
+
 </style>

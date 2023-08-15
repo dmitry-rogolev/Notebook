@@ -85,7 +85,7 @@ class Sidebar
      * @returns {Number}
      */
     getHeight() {
-        return document.documentElement.clientHeight - this._element.getBoundingClientRect().top;
+        return this._element.getBoundingClientRect().height;
     }
 
     /**

@@ -1,7 +1,7 @@
 <template>
     <ItemSidebarComponent
         :class="{'bg-gray-50 hover:bg-gray-100 dark:bg-slate-800 cursor-pointer dark:hover:bg-slate-700': note.id != this.currentNote?.id, 'bg-indigo-200 dark:bg-indigo-900 cursor-default': note.id == this.currentNote?.id}"
-        class="p-2 lg:p-3 border-b border-gray-300 dark:border-gray-600 transition duration-200 ease-in-out select-none w-full text-left focus-visible:outline-none focus:bg-indigo-200 dark:focus:bg-indigo-900"
+        class="p-2 lg:p-3 md:first:border-t border-r md:border-r-0 md:border-b border-gray-300 dark:border-gray-600 transition duration-200 ease-in-out select-none min-w-[10rem] max-w-[10rem] md:min-w-full md:max-w-full text-left focus-visible:outline-none focus:bg-indigo-200 dark:focus:bg-indigo-900 flex flex-col justify-between"
         >
         <div class="flex flex-nowrap">
             <div class="flex-auto truncate text-base lg:text-lg font-bold text-gray-700 dark:text-gray-300">{{ note.title ? note.title : $t('No name') }}</div>

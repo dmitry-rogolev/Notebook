@@ -1,5 +1,5 @@
 <template>
-    <WindowToolbarComponent class="flex flex-wrap px-2 sm:px-4 py-1 bg-gray-50 dark:bg-slate-800 border-gray-300 dark:border-gray-600 border-b text-gray-700 dark:text-gray-300">
+    <WindowToolbarComponent class="flex flex-nowrap md:flex-wrap px-2 sm:px-4 py-1 bg-gray-50 dark:bg-slate-800 border-gray-300 dark:border-gray-600 border-b text-gray-700 dark:text-gray-300 overflow-x-auto">
         <div role="menuitem">
             <ToolbarButtonComponent @click="$notebook.create();" :title="$t('New note')">
                 <i class="fa-solid fa-file"></i>
