@@ -19,17 +19,13 @@ class Model
     _attributes = {};
     _isDirty = false;
     _isTrashed = false;
-    _table = '';
+    static _table = 'Model';
 
     /**
      * @property {String}
      */
     get table() {
-        if (! this._table) {
-            this._table = this.getTable();
-        }
-
-        return this._table;
+        return this.getTable();
     }
 
     /**
@@ -96,7 +92,7 @@ class Model
      * @returns {String}
      */
     static getTable() {
-        return pluralize(this.name.toLowerCase());
+        return pluralize(this._table.toLowerCase());
     }
 
     /**

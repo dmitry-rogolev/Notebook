@@ -106,7 +106,7 @@ class Notebook
             inertia().on('success', () => {
                 store().dispatch('locale');
             });
-
+            
             await this.export();
             this._autosave = this.getAutosave();
             this._notes = await this._fetchNotes();
