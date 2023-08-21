@@ -100,7 +100,7 @@ class Model
      * @returns {String}
      */
     getTable() {
-        return pluralize(this.constructor.name.toLowerCase());
+        return pluralize(this.constructor._table.toLowerCase());
     }
 
     /**
