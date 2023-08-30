@@ -2,7 +2,7 @@
     <SidebarComponent
         :active="showNotes || showSearch || showTrash" 
         triggersContainerClass="bg-white dark:bg-gray-800 border-gray-300 dark:border-gray-600 border-t md:border-t-0 md:border-r z-10 flex justify-center"
-        targetsContainerClass="bg-white dark:bg-gray-800 border-gray-300 dark:border-gray-600 border-t md:border-t-0 md:border-r md:h-full md:min-w-[8rem] md:w-40 lg:w-52 xl:w-64 md:resize-x focus-visible:outline-none overflow-auto"
+        targetsContainerClass="bg-white dark:bg-gray-800 border-gray-300 dark:border-gray-600 border-t md:border-t-0 md:border-r md:h-full md:min-w-[8rem] md:w-40 lg:w-52 xl:w-64 md:resize-x focus-visible:outline-none overflow-auto touch-pan-x"
         >
         <template #triggers>
             <div class="flex md:flex-col overflow-auto">
@@ -34,7 +34,7 @@
                 <SortbarPartial />
                 <TargetPartial>
                     <Sortable
-                        class="flex md:flex-col h-full"
+                        class="hidden md:flex md:flex-col h-full"
                         :list="notes"
                         :itemKey="(item) => item.id"
                         >
@@ -47,6 +47,14 @@
                                 />
                         </template>
                     </Sortable>
+                    <div class="flex-auto flex md:hidden h-full">
+                        <NotePartial
+                            v-for="note in notes"
+                            :key="note.id"
+                            :note="note"
+                            @click="$window.open(note);"
+                            />
+                    </div>
                 </TargetPartial>
             </div>
             <TargetPartial v-show="showSearch" class="flex flex-col">
