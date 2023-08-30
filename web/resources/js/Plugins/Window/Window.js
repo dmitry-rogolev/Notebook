@@ -109,9 +109,9 @@ class Window
      */
     getHeight() {
         if (document.documentElement.clientWidth > 768) {
-            return document.documentElement.clientHeight;
+            return window.innerHeight;
         }
-        return document.documentElement.clientHeight - plugin('sidebar').getHeight();
+        return window.innerHeight - plugin('sidebar').getHeight();
     }
 
     /**

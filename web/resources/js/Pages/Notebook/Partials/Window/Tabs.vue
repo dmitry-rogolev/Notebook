@@ -3,7 +3,7 @@
         <TabsComponent 
             activeClasses="border-indigo-500 dark:border-indigo-600 text-indigo-500 dark:text-indigo-600 cursor-default pointer-events-none"
             inactiveClasses="border-gray-300 dark:border-gray-600 text-gray-700 dark:text-gray-300 hover:border-gray-400 dark:hover:border-gray-500 hover:text-gray-800 dark:hover:text-gray-200 focus:border-indigo-500 dark:focus:border-indigo-600 focus:text-indigo-500 dark:focus:text-indigo-600"
-            triggersContainerClass="border-gray-300 dark:border-gray-600 border-b px-4 bg-gray-100 dark:bg-slate-800 text-base md:text-sm lg:text-base overflow-x-auto"
+            triggersContainerClass="border-gray-300 dark:border-gray-600 border-b px-4 bg-gray-100 dark:bg-slate-800 text-lg md:text-sm lg:text-base overflow-x-auto"
             >
             <template #triggers>
                 <TabComponent class="px-1 md:px-2 lg:px-3 py-1 mr-2 md:mr-1 lg:mr-2 border-b-2">

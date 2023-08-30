@@ -1,13 +1,13 @@
 <template>
     <AppLayout :title="$t('Main')">
         <main class="flex-auto flex flex-col">
-            <div class="flex-auto flex flex-col-reverse md:flex-row md:flex-nowrap">
+            <div class="flex-auto grid grid-rows-2 md:grid-rows-1 md:flex max-h">
 
                 <transition name="slide">
-                    <SidebarPartial />
+                    <SidebarPartial class="row-start-3 md:row-start-auto" />
                 </transition>
 
-                <WindowPartial v-show="windowIsOpen" class="flex-auto" />
+                <WindowPartial v-show="windowIsOpen" class="flex-auto row-span-2 md:row-span-11" />
 
             </div>
         </main>
@@ -37,6 +37,13 @@ export default {
         },
     }, 
 
+    methods: {
+        resize() {
+            let vh = window.innerHeight * 0.01;
+            document.documentElement.style.setProperty('--vh', `${vh}px`);
+        }, 
+    }, 
+
     created() {
         this.$notebook.init();
     }, 
@@ -44,10 +51,13 @@ export default {
     mounted() {
         this.$store.dispatch('dark');
         this.$store.dispatch('locale');
+        this.resize();
+        window.addEventListener('resize', this.resize);
     }, 
 
     unmounted() {
         this.$notebook.dispose();
+        window.removeEventListener('resize', this.resize);
     }, 
 }
 </script>
@@ -70,5 +80,11 @@ export default {
 .slide-leave-to {
   opacity: 0;
   transform: translateX(-100%);
+}
+.max-h {
+    height: 100vh; 
+    max-height: 100vh;
+    height: calc(var(--vh, 1vh) * 100);
+    max-height: calc(var(--vh, 1vh) * 100);
 }
 </style>

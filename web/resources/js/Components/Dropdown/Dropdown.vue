@@ -108,7 +108,7 @@ export default {
             return Object.assign({}, this.defaultOptions, this.options);
         }, 
         defineMaxHeight() {
-            this.maxHeight = document.documentElement.clientHeight - this.$refs.trigger.getBoundingClientRect().bottom - this.rem + 'px';
+            this.maxHeight = window.innerHeight - this.$refs.trigger.getBoundingClientRect().bottom - this.rem + 'px';
         }, 
         defineWindowResizeListener() {
             document.addEventListener('resize', this.defineMaxHeight);
