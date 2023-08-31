@@ -1,5 +1,5 @@
 <template>
-    <WindowMenu class="px-1 sm:px-2 bg-gray-100 dark:bg-slate-700 border-gray-300 dark:border-gray-600 border-b overflow-x-auto">
+    <WindowMenu class="px-1 sm:px-2 bg-gray-100 dark:bg-slate-700 border-gray-300 dark:border-gray-600 border-b overflow-x-auto h-[5.3rem] md:h-[3.2rem] lg:h-[3.6rem]">
 
         <FileDropdownPartial />
 

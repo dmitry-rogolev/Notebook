@@ -1,5 +1,5 @@
 <template>
-    <DropdownComponent ref="dropdown" triggerClass="px-3 md:px-2 lg:px-3 py-1 text-base md:text-sm lg:text-base text-gray-700 dark:text-gray-300 bg-gray-100 hover:bg-gray-200 dark:bg-slate-700 dark:hover:bg-slate-600 focus:bg-gray-200 dark:focus:bg-slate-600 text-gray-700 dark:text-gray-300">
+    <DropdownComponent ref="dropdown" triggerClass="px-3 md:px-2 lg:px-3 py-1 text-base md:text-sm lg:text-base text-gray-700 dark:text-gray-300 bg-gray-100 hover:bg-gray-200 dark:bg-slate-700 dark:hover:bg-slate-600 focus:bg-gray-200 dark:focus:bg-slate-600 text-gray-700 dark:text-gray-300 h-full">
         <template #trigger>
             {{ $t('Format') }}
         </template>
