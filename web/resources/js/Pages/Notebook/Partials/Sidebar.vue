@@ -5,7 +5,7 @@
         targetsContainerClass="bg-white dark:bg-gray-800 border-gray-300 dark:border-gray-600 border-t md:border-t-0 md:border-r md:h-full md:min-w-[8rem] md:w-40 lg:w-52 xl:w-64 md:resize-x focus-visible:outline-none overflow-auto touch-pan-x"
         >
         <template #triggers>
-            <div class="flex md:flex-col overflow-auto">
+            <div class="flex md:flex-col overflow-auto px-2">
                 <TriggerSidebarPartial @click="$sidebar.showNotes();" :active="showNotes" :title="$t('Notes')">
                     <i class="fa-solid fa-note-sticky"></i>
                 </TriggerSidebarPartial>
