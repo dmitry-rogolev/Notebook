@@ -33,7 +33,6 @@ import WindowToolbarPartial from '@/Pages/Notebook/Partials/Window/Toolbar.vue';
 import WindowTabsPartial from '@/Pages/Notebook/Partials/Window/Tabs.vue';
 import EditableComponent from '@/Plugins/Editable/Components/Editable.vue';
 import MarkPartial from './Window/Mark.vue';
-import { plugin } from '../../../Classes/helpers';
 
 export default {
     name: 'WindowPartial', 
@@ -65,7 +64,7 @@ export default {
     methods: {
         getEditableHeight() {
             if (document.documentElement.clientWidth < 768) {
-                return (window.innerHeight - this.$refs.header.$el.getBoundingClientRect().bottom - this.$refs.statusbar.$el.getBoundingClientRect().height - plugin('sidebar').getHeight()) + 'px';
+                return (window.innerHeight - this.$refs.header.$el.getBoundingClientRect().bottom - this.$refs.statusbar.$el.getBoundingClientRect().height - this.$sidebar.height) + 'px';
             }
 
             return (window.innerHeight - this.$refs.header.$el.getBoundingClientRect().bottom - this.$refs.statusbar.$el.getBoundingClientRect().height) + 'px';

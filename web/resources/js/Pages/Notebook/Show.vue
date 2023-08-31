@@ -1,13 +1,13 @@
 <template>
     <AppLayout :title="$t('Main')">
         <main class="flex-auto flex flex-col">
-            <div class="flex-auto grid grid-rows-2 md:grid-rows-1 md:flex max-h">
+            <div class="flex-auto max-h flex flex-col md:flex-row md:flex-nowrap">
 
                 <transition name="slide">
-                    <SidebarPartial class="row-start-3 md:row-start-auto" />
+                    <SidebarPartial class="order-2 md:order-none" />
                 </transition>
 
-                <WindowPartial v-show="windowIsOpen" class="flex-auto row-span-2 md:row-span-11" />
+                <WindowPartial v-show="windowIsOpen" class="order-1 md:order-none" />
 
             </div>
         </main>
