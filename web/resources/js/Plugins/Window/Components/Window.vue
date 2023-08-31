@@ -1,5 +1,5 @@
 <template>
-    <section ref="window" class="relative grid w-full print:max-h-none print:h-auto" :style="{maxHeight: height, height: height, maxWidth: width, width: width}">
+    <section ref="window" class="relative w-full print:max-h-none print:h-auto" :style="{maxHeight: height, height: height, maxWidth: width, width: width}">
         <slot></slot>
     </section>
 </template>
