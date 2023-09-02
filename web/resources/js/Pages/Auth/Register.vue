@@ -30,7 +30,7 @@ onMounted(() => {
 </script>
 
 <template>
-    <Head title="Register" />
+    <Head :title="$t('Register')" />
 
     <AuthenticationCard>
         <template #logo>
